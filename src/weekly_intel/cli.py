@@ -105,6 +105,11 @@ def build_parser() -> argparse.ArgumentParser:
     weekly.add_argument("--iso-week")
     weekly.add_argument("--output", type=Path)
     weekly.add_argument(
+        "--site-data",
+        type=Path,
+        help="Export the built issue for the web front end.",
+    )
+    weekly.add_argument(
         "--department",
         type=Path,
         default=root / "config" / "departments" / "orbitinfer.yaml",
@@ -409,6 +414,12 @@ def main(argv: list[str] | None = None) -> int:
         result = WeeklyPipelineService(database, department).build(
             iso_week, start, end, output
         )
+        exported_site_data = None
+        if args.site_data is not None:
+            with database.transaction() as connection:
+                exported_site_data = SiteDataExportAgent().export(
+                    connection, result.issue_id, args.site_data
+                )
         print(
             json.dumps(
                 {
@@ -424,6 +435,11 @@ def main(argv: list[str] | None = None) -> int:
                     "paper_contents_fetched": result.paper_contents_fetched,
                     "paper_contents_failed": result.paper_contents_failed,
                     "output": str(result.output_path),
+                    "site_data": (
+                        str(exported_site_data)
+                        if exported_site_data is not None
+                        else None
+                    ),
                 },
                 ensure_ascii=False,
             )
