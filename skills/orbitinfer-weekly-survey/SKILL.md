@@ -27,18 +27,25 @@ Never request, read, configure, or call an external model API key.
 
 5. Read `runs/codex/current-brief.json`. Treat its scores as a shortlist, not
    the editorial decision.
-6. Select at most eight items and at most thirty minutes total. Prefer:
+6. Inspect the newest `runs/*.json` collection audit. If OpenReview reports
+   `challenge_required`, do not retry the challenge in a loop. Continue with
+   arXiv and Crossref candidates, and verify any claimed top-venue status
+   against the conference's official accepted-paper/program page. Record
+   OpenReview as unavailable for that run rather than treating the whole survey
+   as failed. GitHub releases collected through the official Atom feed are
+   acceptable first-party release evidence when API credentials are absent.
+7. Select at most eight items and at most thirty minutes total. Prefer:
    accepted top-venue work, important paper revisions, consequential
    benchmarks/datasets/framework releases, high-quality fixed-pool WeChat
    syntheses, and research strongly adjacent to OrbitInfer.
-7. Reject routine arXiv churn, generic AI news, unverified promotional claims,
+8. Reject routine arXiv churn, generic AI news, unverified promotional claims,
    minor releases, and weakly related satellite/network material.
-8. Open each selected primary source. Use WeChat only as interpretation; verify
+9. Open each selected primary source. Use WeChat only as interpretation; verify
    factual claims against the paper, official project, conference page, dataset,
    or repository. Never infer methods or results from the title.
-9. Write `runs/codex/current-analysis.json` using
+10. Write `runs/codex/current-analysis.json` using
    [references/analysis-schema.md](references/analysis-schema.md).
-10. Import and validate:
+11. Import and validate:
 
    ```powershell
    .\.venv\Scripts\weekly-intel.exe import-codex-analysis `
@@ -47,9 +54,9 @@ Never request, read, configure, or call an external model API key.
    npm.cmd --prefix site run build
    ```
 
-11. If the importer reports blockers, fix the evidence or omit the unsupported
+12. If the importer reports blockers, fix the evidence or omit the unsupported
     item. Do not lower the quality threshold.
-12. Start the local review services:
+13. Start the local review services:
 
     ```powershell
     powershell.exe -ExecutionPolicy Bypass -File `
@@ -58,7 +65,7 @@ Never request, read, configure, or call an external model API key.
 
     Leave the issue in `review`; never approve, push, or publish without the
     researcher’s explicit confirmation.
-13. Report the candidate count, selected count, source failures, reading time,
+14. Report the candidate count, selected count, source failures, reading time,
     readiness, and the local review URL in the Scheduled result.
 
 ## Editorial rules
