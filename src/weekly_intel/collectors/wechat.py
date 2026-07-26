@@ -162,6 +162,8 @@ class WechatPoolCollector:
                         "item_title": title,
                         "source_account": source.name,
                         "account_id": source.options.get("account_id"),
+                        "account_alias": source.options.get("account_alias"),
+                        "feed_provider": source.options.get("provider"),
                         "related_arxiv_ids": related_arxiv_ids,
                     },
                     raw_payload=raw,

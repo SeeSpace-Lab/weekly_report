@@ -88,6 +88,15 @@ $env:WEEKLY_LLM_MODEL = "<model-name>"
 $env:WEEKLY_FETCH_FULLTEXT = "1"
 ```
 
+本地 WeRSS 已按 `config/sources.yaml` 中的真实 Feed ID 对接。启动容器并完成公众号平台授权后：
+
+```powershell
+$env:WECHAT_FEED_BASE_URL = "http://127.0.0.1:8001/feed"
+.\.venv\Scripts\weekly-intel.exe collect-wechat --days 7
+```
+
+GitHub Actions 无法访问开发机的 `127.0.0.1`。正式自动运行前，需要把 WeRSS 部署到可由 Actions 访问的受控地址，再把该地址配置为仓库变量 `WECHAT_FEED_BASE_URL`。
+
 其他可选凭据：
 
 - `OPENREVIEW_TOKEN`

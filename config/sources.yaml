@@ -172,9 +172,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: S_Core
-    account_id: jiqizhixin
+    provider: we-mp-rss
+    account_alias: almosthuman2014
+    account_id: MP_WXS_3073282833
     feed_url_env: WECHAT_FEED_JIQIZHIXIN
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -183,7 +185,9 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: S_Core
-    account_id: baai_hub
+    provider: we-mp-rss
+    account_alias: BAAIHub
+    account_id: MP_WXS_3598841003
     feed_url_env: WECHAT_FEED_BAAI_HUB
     homepage_url: https://hub.baai.ac.cn/
     access_mode: website_plus_subscription
@@ -195,10 +199,12 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: S_Core
-    account_id: paperweekly
+    provider: we-mp-rss
+    account_alias: paperweekly
+    account_id: MP_WXS_3201788143
     feed_url_env: WECHAT_FEED_PAPERWEEKLY
     content_role: paper_interpretation
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -207,9 +213,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: S_Core
-    account_id: ai_frontline
+    provider: we-mp-rss
+    account_alias: ai-front
+    account_id: MP_WXS_3554086560
     feed_url_env: WECHAT_FEED_AI_FRONTLINE
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -218,7 +226,9 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: S_Core
-    account_id: oneflow
+    provider: we-mp-rss
+    account_alias: OneFlowTechnology
+    account_id: MP_WXS_3598661977
     feed_url_env: WECHAT_FEED_ONEFLOW
     homepage_url: https://www.oneflow.org/
     account_hint: OneFlowTechnology
@@ -231,9 +241,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: A_Active
-    account_id: qbitai
+    provider: we-mp-rss
+    account_alias: QbitAI
+    account_id: MP_WXS_3236757533
     feed_url_env: WECHAT_FEED_QBITAI
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -242,9 +254,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: A_Active
-    account_id: aiera
+    provider: we-mp-rss
+    account_alias: AI_era
+    account_id: MP_WXS_3271041950
     feed_url_env: WECHAT_FEED_AIERA
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -253,9 +267,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: A_Active
-    account_id: ai_tech_review
+    provider: we-mp-rss
+    account_alias: aitechtalk
+    account_id: MP_WXS_3098132220
     feed_url_env: WECHAT_FEED_AI_TECH_REVIEW
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -264,9 +280,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: A_Active
-    account_id: xixiaoyao
+    provider: we-mp-rss
+    account_alias: xixiaoyaoQAQ
+    account_id: MP_WXS_3207765945
     feed_url_env: WECHAT_FEED_XIXIAOYAO
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
@@ -275,9 +293,11 @@ sources:
     source_type: wechat
     connector: WechatPoolCollector
     tier: A_Active
-    account_id: datafuntalk
+    provider: we-mp-rss
+    account_alias: datafuntalk
+    account_id: MP_WXS_3555329283
     feed_url_env: WECHAT_FEED_DATAFUNTALK
-    access_mode: pending_subscription_adapter
+    access_mode: local_subscription_ready
     fallbacks: [sogou_search, chrome, manual_url]
     schedule: daily
 
