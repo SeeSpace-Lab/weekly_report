@@ -2,11 +2,22 @@ from __future__ import annotations
 
 import sqlite3
 import uuid
+from dataclasses import dataclass
 from pathlib import Path
 
 from .db import Database
 from .render import MarkdownRenderAgent
+from .site_export import SiteDataExportAgent
 from .utils import isoformat, utc_now
+
+
+@dataclass(frozen=True, slots=True)
+class ApprovalReadiness:
+    issue_id: str
+    iso_week: str
+    status: str
+    ready: bool
+    blockers: tuple[str, ...]
 
 
 class ReviewService:
@@ -111,6 +122,122 @@ class ReviewService:
                 """,
                 (isoformat(utc_now()), issue_id),
             )
+
+    def current_issue_id(self, department_id: str = "orbitinfer") -> str:
+        with self.database.session() as connection:
+            row = connection.execute(
+                """
+                SELECT issue_id FROM weekly_issues
+                WHERE department_id=?
+                ORDER BY iso_week DESC, created_at DESC LIMIT 1
+                """,
+                (department_id,),
+            ).fetchone()
+        if not row:
+            raise ValueError(f"no issue found for department: {department_id}")
+        return str(row["issue_id"])
+
+    def approval_readiness(self, issue_id: str) -> ApprovalReadiness:
+        with self.database.session() as connection:
+            issue = connection.execute(
+                """
+                SELECT issue_id, iso_week, status
+                FROM weekly_issues WHERE issue_id=?
+                """,
+                (issue_id,),
+            ).fetchone()
+            if not issue:
+                raise ValueError(f"issue not found: {issue_id}")
+            rows = connection.execute(
+                """
+                SELECT s.content_role, r.canonical_title,
+                       c.method_zh, c.result_zh, c.evidence_json,
+                       c.confidence, c.model_version
+                FROM weekly_selections s
+                JOIN research_items r ON r.item_id=s.item_id
+                LEFT JOIN deep_read_cards c ON c.selection_id=s.selection_id
+                WHERE s.issue_id=?
+                  AND s.section NOT IN ('venue_updates', 'library_review')
+                  AND s.content_role IN ('must_read', 'deep_read')
+                ORDER BY s.section, s.position
+                """,
+                (issue_id,),
+            ).fetchall()
+        blockers: list[str] = []
+        if not rows:
+            blockers.append("本期没有可审核的精读条目")
+        for row in rows:
+            title = str(row["canonical_title"])
+            model_version = str(row["model_version"] or "")
+            if (
+                not row["method_zh"]
+                or not row["result_zh"]
+                or not row["evidence_json"]
+            ):
+                blockers.append(f"《{title}》缺少方法、结果或证据")
+                continue
+            if model_version.startswith(("deterministic", "fallback:")):
+                blockers.append(f"《{title}》仍是规则占位卡片")
+            if float(row["confidence"] or 0) < 0.6:
+                blockers.append(f"《{title}》精读置信度低于 0.60")
+        return ApprovalReadiness(
+            issue_id=str(issue["issue_id"]),
+            iso_week=str(issue["iso_week"]),
+            status=str(issue["status"]),
+            ready=not blockers,
+            blockers=tuple(blockers),
+        )
+
+    def approve_all_and_export(
+        self,
+        issue_id: str,
+        reviewer: str,
+        output: Path,
+    ) -> ApprovalReadiness:
+        readiness = self.approval_readiness(issue_id)
+        if readiness.status == "published":
+            raise ValueError("published issue cannot be re-approved")
+        if not readiness.ready:
+            raise ValueError("; ".join(readiness.blockers))
+        with self.database.session() as connection:
+            rows = connection.execute(
+                """
+                SELECT s.selection_id, s.section,
+                       (
+                           SELECT r.decision FROM editorial_reviews r
+                           WHERE r.selection_id=s.selection_id
+                           ORDER BY r.created_at DESC LIMIT 1
+                       ) AS latest_decision
+                FROM weekly_selections s
+                WHERE s.issue_id=?
+                ORDER BY s.section, s.position
+                """,
+                (issue_id,),
+            ).fetchall()
+        for row in rows:
+            if row["latest_decision"] == "reject":
+                continue
+            decision = (
+                "reject"
+                if row["section"] in {"venue_updates", "library_review"}
+                else "approve"
+            )
+            if row["latest_decision"] == decision:
+                continue
+            self.review_selection(
+                str(row["selection_id"]),
+                reviewer=reviewer,
+                decision=decision,
+                comment=(
+                    "整期审核确认"
+                    if decision == "approve"
+                    else "不进入部门周报正文"
+                ),
+            )
+        self.approve_issue(issue_id)
+        with self.database.transaction() as connection:
+            SiteDataExportAgent().export(connection, issue_id, output)
+        return self.approval_readiness(issue_id)
 
     def publish_issue(self, issue_id: str, page_url: str | None = None) -> None:
         with self.database.transaction() as connection:

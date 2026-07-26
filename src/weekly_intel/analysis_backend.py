@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import os
+import time
+import urllib.error
 import urllib.request
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Protocol
 
 
@@ -98,48 +100,99 @@ class DeterministicAnalysisBackend:
         )
 
 
-class OpenAICompatibleJSONBackend:
-    def __init__(self, base_url: str, api_key: str, model: str):
+class OpenAIResponsesJSONBackend:
+    """Evidence-constrained deep reads through the OpenAI Responses API."""
+
+    _schema = {
+        "type": "object",
+        "properties": {
+            "summary_zh": {"type": "string"},
+            "title_zh": {"type": "string"},
+            "problem_zh": {"type": "string"},
+            "method_zh": {"type": "string"},
+            "result_zh": {"type": "string"},
+            "contributions": {
+                "type": "array",
+                "items": {"type": "string"},
+            },
+            "evidence": {
+                "type": "array",
+                "items": {"type": "string"},
+            },
+            "limitations": {
+                "type": "array",
+                "items": {"type": "string"},
+            },
+            "department_implication": {"type": "string"},
+            "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        },
+        "required": [
+            "summary_zh",
+            "title_zh",
+            "problem_zh",
+            "method_zh",
+            "result_zh",
+            "contributions",
+            "evidence",
+            "limitations",
+            "department_implication",
+            "confidence",
+        ],
+        "additionalProperties": False,
+    }
+
+    def __init__(
+        self,
+        base_url: str,
+        api_key: str,
+        model: str,
+        max_attempts: int = 3,
+    ):
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.model = model
-        self.model_version = f"openai-compatible:{model}"
+        self.max_attempts = max_attempts
+        self.model_version = f"openai-responses:{model}"
 
     def deep_read(self, item: dict[str, Any]) -> DeepReadResult:
         endpoint = (
-            f"{self.base_url}/chat/completions"
+            f"{self.base_url}/responses"
             if self.base_url.endswith("/v1")
-            else f"{self.base_url}/v1/chat/completions"
+            else f"{self.base_url}/v1/responses"
         )
-        schema_instruction = """
-仅输出JSON对象，字段必须为：
-summary_zh: string；
-title_zh: string（准确、简洁的中文标题）；
-problem_zh: string（论文解决什么问题）；
-method_zh: string（核心方法或系统机制）；
-result_zh: string（关键实验结果；无可靠数字时明确说明）；
-contributions: string[]；
-evidence: string[]；
-limitations: string[]；
-department_implication: string；
-confidence: 0到1数字。
-不得把摘要中不存在的信息写成事实；信息不足时明确说明。
-"""
         user_payload = {
             "department": "星载大模型推理引擎",
-            "task": "为研究员生成周报精读卡片",
+            "task": "生成可直接进入研究员周报的中文精读卡片",
             "item": item,
         }
         body = {
             "model": self.model,
-            "temperature": 0.1,
-            "response_format": {"type": "json_object"},
-            "messages": [
+            "store": False,
+            "reasoning": {"effort": "medium"},
+            "max_output_tokens": 2500,
+            "text": {
+                "verbosity": "medium",
+                "format": {
+                    "type": "json_schema",
+                    "name": "weekly_paper_deep_read",
+                    "strict": True,
+                    "schema": self._schema,
+                },
+            },
+            "input": [
                 {
                     "role": "system",
                     "content": (
-                        "你是严谨的系统与大模型推理研究情报分析员。"
-                        + schema_instruction
+                        "你是严谨的大模型推理系统研究情报分析员。"
+                        "目标是让研究员在一分钟内理解这项工作的研究问题、"
+                        "核心机制、实验结果及其对星载受限资源推理的意义。"
+                        "只能使用输入中的摘要、正文和来源元数据；不得用记忆补充事实。"
+                        "方法要说明机制而非重复标题。结果优先给出原文明确报告的"
+                        "数据、基线和实验条件；证据不足时必须写“输入材料未披露”。"
+                        "evidence 中逐条写明支持方法或结果的输入原文片段或忠实转述，"
+                        "并以“摘要证据：”或“全文证据：”开头。"
+                        "不得把推断写成论文结论。department_implication 必须区分"
+                        "直接可用价值与邻近参考价值。"
                     ),
                 },
                 {
@@ -148,19 +201,10 @@ confidence: 0到1数字。
                 },
             ],
         }
-        request = urllib.request.Request(
-            endpoint,
-            data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-            },
-            method="POST",
-        )
-        with urllib.request.urlopen(request, timeout=90) as response:
-            payload = json.loads(response.read().decode("utf-8"))
-        content = payload["choices"][0]["message"]["content"]
-        result = json.loads(content)
+        payload = self._request_with_retry(endpoint, body)
+        result = json.loads(self._output_text(payload))
+        if not result["evidence"]:
+            raise ValueError("model returned no evidence")
         return DeepReadResult(
             title_zh=str(result["title_zh"]),
             summary_zh=str(result["summary_zh"]),
@@ -175,13 +219,94 @@ confidence: 0到1数字。
             model_version=self.model_version,
         )
 
+    def _request_with_retry(
+        self, endpoint: str, body: dict[str, Any]
+    ) -> dict[str, Any]:
+        last_error: Exception | None = None
+        for attempt in range(self.max_attempts):
+            request = urllib.request.Request(
+                endpoint,
+                data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                },
+                method="POST",
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=180) as response:
+                    return json.loads(response.read().decode("utf-8"))
+            except urllib.error.HTTPError as error:
+                detail = error.read().decode("utf-8", errors="replace")[:1000]
+                last_error = RuntimeError(
+                    f"OpenAI API HTTP {error.code}: {detail}"
+                )
+                if error.code not in {408, 409, 429, 500, 502, 503, 504}:
+                    break
+            except (OSError, TimeoutError, json.JSONDecodeError) as error:
+                last_error = error
+            if attempt + 1 < self.max_attempts:
+                time.sleep(2**attempt)
+        raise RuntimeError("OpenAI deep read failed") from last_error
+
+    @staticmethod
+    def _output_text(payload: dict[str, Any]) -> str:
+        if payload.get("status") not in {None, "completed"}:
+            raise RuntimeError(
+                f"OpenAI response incomplete: {payload.get('status')}"
+            )
+        for output in payload.get("output", []):
+            if output.get("type") != "message":
+                continue
+            for content in output.get("content", []):
+                if content.get("type") == "refusal":
+                    raise RuntimeError(
+                        f"OpenAI refused deep read: {content.get('refusal')}"
+                    )
+                if content.get("type") == "output_text":
+                    return str(content["text"])
+        if payload.get("output_text"):
+            return str(payload["output_text"])
+        raise RuntimeError("OpenAI response did not contain output text")
+
+
+class FallbackAnalysisBackend:
+    """Keep the private draft available while making fallback visible."""
+
+    def __init__(
+        self, primary: AnalysisBackend, fallback: AnalysisBackend | None = None
+    ):
+        self.primary = primary
+        self.fallback = fallback or DeterministicAnalysisBackend()
+        self.model_version = primary.model_version
+
+    def deep_read(self, item: dict[str, Any]) -> DeepReadResult:
+        try:
+            return self.primary.deep_read(item)
+        except Exception as error:
+            fallback_result = self.fallback.deep_read(item)
+            return replace(
+                fallback_result,
+                limitations=(
+                    *fallback_result.limitations,
+                    f"模型精读失败：{type(error).__name__}；本卡片不可批准发布。",
+                ),
+                confidence=min(fallback_result.confidence, 0.4),
+                model_version=(
+                    f"fallback:{self.primary.model_version}:"
+                    f"{type(error).__name__}"
+                ),
+            )
+
 
 def backend_from_environment() -> AnalysisBackend:
     api_key = os.environ.get("WEEKLY_LLM_API_KEY")
-    model = os.environ.get("WEEKLY_LLM_MODEL")
+    model = os.environ.get("WEEKLY_LLM_MODEL", "gpt-5.6")
     base_url = os.environ.get(
         "WEEKLY_LLM_BASE_URL", "https://api.openai.com/v1"
     )
-    if api_key and model:
-        return OpenAICompatibleJSONBackend(base_url, api_key, model)
+    if api_key:
+        return FallbackAnalysisBackend(
+            OpenAIResponsesJSONBackend(base_url, api_key, model)
+        )
     return DeterministicAnalysisBackend()

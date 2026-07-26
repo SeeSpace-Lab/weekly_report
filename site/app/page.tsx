@@ -28,7 +28,10 @@ export default function PortalHome() {
         </nav>
         <div className="issueStatus">
           <span className="pulse" />
-          私域审核
+          {reportData.issue.status === "approved" ||
+          reportData.issue.status === "published"
+            ? "本期已审核"
+            : "私域审核"}
         </div>
       </header>
 
@@ -39,7 +42,13 @@ export default function PortalHome() {
           <strong>{reportData.issue.isoWeek}</strong>
           <span>{date(reportData.issue.windowStart)}—{date(reportData.issue.windowEnd)}</span>
           <span>周一 09:00 更新</span>
-          <span>{reportData.issue.status === "approved" ? "审核通过" : "内部审核中"}</span>
+          <span>
+            {reportData.issue.status === "published"
+              ? "已发布"
+              : reportData.issue.status === "approved"
+                ? "审核通过 · 待公开发布"
+                : "内部审核中"}
+          </span>
         </div>
         <div className="portalMetrics">
           <div><strong>2</strong><span>部门入口</span></div>
@@ -58,7 +67,13 @@ export default function PortalHome() {
         <div className="departmentCards">
           <a className="departmentCard activeDepartment" href="/departments/orbitinfer">
             <div className="departmentNumber">01</div>
-            <span className="statusTag">本周已生成 · 审核中</span>
+            <span className="statusTag">
+              {reportData.issue.status === "published"
+                ? "本周已发布"
+                : reportData.issue.status === "approved"
+                  ? "本周审核通过"
+                  : "本周已生成 · 审核中"}
+            </span>
             <h3>星载大模型<br />推理引擎</h3>
             <p>动态功率预算、推理调度、KV Cache、MoE Runtime、量化、可靠性与边缘分布式推理。</p>
             <dl>

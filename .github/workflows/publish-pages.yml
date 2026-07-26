@@ -58,6 +58,7 @@ jobs:
         working-directory: site
         run: |
           npm ci
+          node scripts/prepare-public-data.mjs
           npm run export:pages
 
       - uses: actions/configure-pages@v5

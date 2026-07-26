@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import reportData from "../../report-data.json";
+import ApprovalPanel from "../../components/ApprovalPanel";
 
 type DeepRead = {
   titleZh: string;
@@ -120,7 +121,11 @@ export default function Home() {
         </nav>
         <div className="issueStatus">
           <span className="pulse" />
-          {report.issue.status === "published" ? "已发布" : "研究员审核中"}
+          {report.issue.status === "published"
+            ? "已发布"
+            : report.issue.status === "approved"
+              ? "审核通过 · 待公开发布"
+              : "研究员审核中"}
         </div>
       </header>
 
@@ -157,6 +162,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <ApprovalPanel
+        status={report.issue.status}
+        isoWeek={report.issue.isoWeek}
+      />
 
       <section className="trendPanel" aria-labelledby="trend-title">
         <div className="sectionIndex">01</div>
@@ -254,6 +264,22 @@ export default function Home() {
                               <dd>{deepRead.resultZh}</dd>
                             </div>
                           </dl>
+                          {!!deepRead.evidence.length && (
+                            <details className="evidencePanel">
+                              <summary>证据与局限</summary>
+                              <ul>
+                                {deepRead.evidence.map((evidence) => (
+                                  <li key={evidence}>{evidence}</li>
+                                ))}
+                              </ul>
+                              {!!deepRead.limitations.length && (
+                                <p>
+                                  <b>局限：</b>
+                                  {deepRead.limitations.join("；")}
+                                </p>
+                              )}
+                            </details>
+                          )}
                         </div>
                       ) : (
                         <p className="summary">

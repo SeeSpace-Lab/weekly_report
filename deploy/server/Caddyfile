@@ -15,6 +15,13 @@
 		respond "ok" 200
 	}
 
+	handle /api/review/* {
+		basic_auth {
+			reviewer {$WEEKLY_REVIEW_PASSWORD_HASH}
+		}
+		reverse_proxy 127.0.0.1:8010
+	}
+
 	handle {
 		basic_auth {
 			reviewer {$WEEKLY_REVIEW_PASSWORD_HASH}

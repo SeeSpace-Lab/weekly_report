@@ -11,6 +11,10 @@ The production-like review deployment lives entirely under
 
 Runtime secrets are stored outside the repository under
 `/data1/chenwenjin/services/caddy` with mode `0600`.
+The weekly pipeline runtime file is
+`/data1/chenwenjin/services/weekly-report/runtime.env`, also with mode `0600`.
+It provides `WEEKLY_LLM_API_KEY`, `WEEKLY_LLM_MODEL`,
+`WEEKLY_LLM_BASE_URL` and `WEEKLY_FETCH_FULLTEXT`.
 
 The user-level systemd units keep WeRSS, the review site and Caddy running.
 `weekly-report.timer` generates a new report every Monday at 09:00
@@ -24,6 +28,13 @@ authenticated `/feed/*` route.
 The repository GitHub Action is manual-only during development. The
 server timer updates the private review site first; publishing to GitHub
 Pages is a separate, reviewer-approved step.
+
+`weekly-review-api.service` listens only on `127.0.0.1:8010`. Caddy exposes
+its fixed status and approval endpoints behind the same HTTP Basic
+authentication as the review site. Approval runs the evidence quality gate,
+marks the issue approved, rebuilds the private site and pushes only
+allowlisted generated report files with a repository-scoped GitHub deploy
+key. It never triggers the Pages workflow.
 
 ## Compliance audit
 

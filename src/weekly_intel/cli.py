@@ -126,6 +126,15 @@ def build_parser() -> argparse.ArgumentParser:
     approve = subparsers.add_parser("approve-issue")
     approve.add_argument("issue_id")
 
+    approve_export = subparsers.add_parser("approve-and-export")
+    approve_export.add_argument("--issue-id")
+    approve_export.add_argument("--reviewer", default="private-review-site")
+    approve_export.add_argument(
+        "--output",
+        type=Path,
+        default=root / "site" / "app" / "report-data.json",
+    )
+
     publish = subparsers.add_parser("publish-issue")
     publish.add_argument("issue_id")
     publish.add_argument("--page-url")
@@ -452,6 +461,27 @@ def main(argv: list[str] | None = None) -> int:
         database.initialize(args.schema)
         ReviewService(database).approve_issue(args.issue_id)
         print(json.dumps({"issue_id": args.issue_id, "status": "approved"}))
+        return 0
+    if args.command == "approve-and-export":
+        database.initialize(args.schema)
+        service = ReviewService(database)
+        issue_id = args.issue_id or service.current_issue_id()
+        readiness = service.approve_all_and_export(
+            issue_id, args.reviewer, args.output
+        )
+        print(
+            json.dumps(
+                {
+                    "issue_id": issue_id,
+                    "iso_week": readiness.iso_week,
+                    "status": readiness.status,
+                    "ready": readiness.ready,
+                    "blockers": readiness.blockers,
+                    "output": str(args.output.resolve()),
+                },
+                ensure_ascii=False,
+            )
+        )
         return 0
     if args.command == "publish-issue":
         database.initialize(args.schema)

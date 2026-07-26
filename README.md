@@ -61,6 +61,14 @@ npm.cmd --prefix site run build
 `Publish approved report to GitHub Pages`，确认字段输入 `publish`。工作流生成纯静态快照并部署；
 本仓库不会自动执行这一步。
 
+私域部门页提供“确认本期周报”按钮。按钮只会在所有精读卡片均由大模型生成、包含证据且
+置信度不低于 `0.60` 时通过质量门禁。确认后服务器会批准正文条目、排除不属于周报正文的
+论文库回看和顶会动态、将整期状态改为 `approved`、重新构建私域站并把审核快照推送到
+GitHub。它不会自动触发 Pages。
+
+GitHub Pages 构建时只导出已批准或已发布的历史周报，并将当前批准快照显示为“已发布”。
+服务器私域页面则显示“审核通过 · 待公开发布”。
+
 本地验证静态 Pages 产物：
 
 ```powershell
@@ -105,16 +113,19 @@ npm.cmd --prefix site run export:pages
 模型精读：
 
 ```powershell
-$env:WEEKLY_LLM_API_KEY = "<key>"
+$env:WEEKLY_LLM_API_KEY = "<new-secret-key>"
 $env:WEEKLY_LLM_BASE_URL = "https://api.openai.com/v1"
-$env:WEEKLY_LLM_MODEL = "<model-name>"
-```
-
-对入选 arXiv 论文抓取可读 HTML 全文供内部精读：
-
-```powershell
+$env:WEEKLY_LLM_MODEL = "gpt-5.6"
 $env:WEEKLY_FETCH_FULLTEXT = "1"
 ```
+
+未设置密钥时，系统使用可测试的确定性分析后端；它会保守标记证据不足，并且质量门禁会阻止
+这类占位卡片被批准。设置后会调用 OpenAI Responses API，以严格 JSON Schema 生成中文卡片。
+方法、结果和数字只能来自输入摘要或全文节选，卡片会同时保存证据与局限。API 暂时失败时
+会生成显式 fallback 卡片以维持私域草稿可用，但 fallback 卡片同样不能批准。
+
+服务器密钥保存在 `/data1/chenwenjin/services/weekly-report/runtime.env`，权限必须为 `0600`；
+不要把密钥发到聊天、写入仓库或放进网页环境变量。
 
 本地 WeRSS 已按 `config/sources.yaml` 中的真实 Feed ID 对接。启动容器并完成公众号平台授权后：
 

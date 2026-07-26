@@ -171,6 +171,13 @@ class WeeklyPipelineTest(unittest.TestCase):
             ]
             self.assertGreaterEqual(len(deep_reads), 3)
             self.assertIn("问题", deep_reads[0]["problemZh"])
+            readiness = ReviewService(database).approval_readiness(
+                result.issue_id
+            )
+            self.assertFalse(readiness.ready)
+            self.assertTrue(
+                any("规则占位卡片" in blocker for blocker in readiness.blockers)
+            )
 
             review_service = ReviewService(database)
             with database.session() as connection:

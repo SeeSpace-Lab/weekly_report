@@ -8,4 +8,7 @@ src/*.egg-info/
 services/*-data/
 runs/site-stage-*/
 runs/*.tgz
+runs/*.json
 site/.git.sites-backup/
+deploy/server/runtime.env
+.server-password

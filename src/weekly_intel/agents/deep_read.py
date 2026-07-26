@@ -58,12 +58,21 @@ class PaperDeepReadAgent:
         completed = 0
         now = isoformat(utc_now())
         for row in rows:
+            analysis_content = self._analysis_content(
+                row["content_text"] or "",
+                row["abstract_or_summary"] or "",
+            )
             result = self.backend.deep_read(
                 {
                     "title": row["canonical_title"],
                     "url": row["canonical_url"],
                     "summary": row["abstract_or_summary"],
-                    "content": (row["content_text"] or "")[:12000],
+                    "content": analysis_content,
+                    "content_scope": (
+                        "全文节选"
+                        if row["content_text"]
+                        else "仅摘要或来源说明"
+                    ),
                     "publication_status": row["publication_status"],
                     "assessment_rationale": row["assessment_rationale"],
                 }
@@ -176,3 +185,43 @@ class PaperDeepReadAgent:
                         )
             completed += 1
         return completed
+
+    @staticmethod
+    def _analysis_content(
+        content: str, summary: str, limit: int = 36_000
+    ) -> str:
+        """Keep the beginning plus method/result windows from long papers."""
+        normalized = "\n".join(
+            line.strip() for line in content.splitlines() if line.strip()
+        )
+        if not normalized:
+            return summary[:limit]
+        if len(normalized) <= limit:
+            return normalized
+        chunks = [normalized[:12_000]]
+        lowered = normalized.casefold()
+        for keyword in (
+            "method",
+            "approach",
+            "system design",
+            "implementation",
+            "evaluation",
+            "experiment",
+            "results",
+            "benchmark",
+            "limitation",
+        ):
+            start = 0
+            while len("\n\n".join(chunks)) < limit:
+                index = lowered.find(keyword, start)
+                if index < 0:
+                    break
+                left = max(0, index - 700)
+                right = min(len(normalized), index + 3300)
+                excerpt = normalized[left:right]
+                if excerpt not in chunks:
+                    chunks.append(excerpt)
+                start = index + len(keyword)
+                if len(chunks) >= 9:
+                    break
+        return "\n\n[节选分隔]\n\n".join(chunks)[:limit]
