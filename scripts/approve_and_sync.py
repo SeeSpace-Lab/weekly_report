@@ -88,7 +88,12 @@ def main() -> int:
         run(["git", "push", "origin", "main"])
     print(
         json.dumps(
-            {"status": "approved", "isoWeek": iso_week, "synced": True},
+            {
+                "status": "approved",
+                "isoWeek": iso_week,
+                "synced": True,
+                "publicationTriggered": True,
+            },
             ensure_ascii=False,
         )
     )

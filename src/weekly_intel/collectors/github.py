@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+import html
 import json
 import os
+import re
+import subprocess
 import urllib.error
 import urllib.request
 import uuid
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from typing import Any, Callable
 
@@ -18,6 +22,27 @@ from ..contracts import (
     SourceConfig,
 )
 from ..utils import isoformat, json_dumps, sha256_text, utc_now
+
+
+def _authentication_token(source: SourceConfig) -> str | None:
+    """Resolve GitHub credentials without persisting a token in the project."""
+    token_env = str(source.options.get("token_env", "GITHUB_TOKEN"))
+    for variable in (token_env, "GH_TOKEN"):
+        token = os.environ.get(variable)
+        if token:
+            return token.strip()
+    try:
+        result = subprocess.run(
+            ["gh", "auth", "token", "--hostname", "github.com"],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=5,
+        )
+    except (FileNotFoundError, subprocess.SubprocessError):
+        return None
+    return result.stdout.strip() if result.returncode == 0 else None
 
 
 def _datetime(value: str | None) -> datetime | None:
@@ -35,6 +60,7 @@ class GitHubCollector:
         self,
         fetcher: Callable[[str, dict[str, str], float], bytes] | None = None,
     ):
+        self._custom_fetcher = fetcher is not None
         self._fetcher = fetcher or self._fetch
 
     @staticmethod
@@ -42,6 +68,98 @@ class GitHubCollector:
         request = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(request, timeout=timeout) as response:
             return response.read()
+
+    def parse_atom(
+        self,
+        payload: bytes,
+        source: SourceConfig,
+        repository: str,
+        window: CollectionWindow,
+        run_id: str,
+    ) -> CollectionBatch:
+        namespace = {"atom": "http://www.w3.org/2005/Atom"}
+        root = ET.fromstring(payload)
+        documents: list[CollectedDocument] = []
+        latest_seen: datetime | None = None
+        entries = root.findall("atom:entry", namespace)
+        for entry in entries:
+            updated = _datetime(entry.findtext("atom:updated", namespaces=namespace))
+            if updated:
+                latest_seen = max(latest_seen or updated, updated)
+            if not updated or not (window.start <= updated <= window.end):
+                continue
+            link = next(
+                (
+                    node.attrib.get("href")
+                    for node in entry.findall("atom:link", namespace)
+                    if node.attrib.get("rel", "alternate") == "alternate"
+                ),
+                None,
+            )
+            entry_id = entry.findtext("atom:id", default="", namespaces=namespace)
+            name = entry.findtext(
+                "atom:title", default=entry_id, namespaces=namespace
+            ).strip()
+            content = entry.findtext(
+                "atom:content", default="", namespaces=namespace
+            )
+            summary = html.unescape(re.sub(r"<[^>]+>", " ", content))
+            summary = re.sub(r"\s+", " ", summary).strip()
+            version = (
+                link.rsplit("/tag/", 1)[-1]
+                if link and "/tag/" in link
+                else name
+            )
+            author = entry.findtext(
+                "atom:author/atom:name", default="", namespaces=namespace
+            )
+            raw_payload = {
+                "id": entry_id,
+                "title": name,
+                "updated": isoformat(updated),
+                "url": link,
+                "version": version,
+                "summary": summary,
+            }
+            documents.append(
+                CollectedDocument(
+                    source_id=source.source_id,
+                    external_id=entry_id or version,
+                    document_type=DocumentType.RELEASE,
+                    canonical_url=link,
+                    title=f"{repository} {name}",
+                    published_at=updated,
+                    updated_at_source=updated,
+                    discovered_at=utc_now(),
+                    authors=(author,) if author else (),
+                    summary=summary or None,
+                    language="en",
+                    identifiers={"github": repository.casefold()},
+                    metadata={
+                        "item_title": repository,
+                        "repository": repository,
+                        "version": version,
+                        "prerelease": False,
+                        "draft": False,
+                        "assets": 0,
+                        "transport": "atom",
+                    },
+                    raw_payload=raw_payload,
+                    content_hash=sha256_text(json_dumps(raw_payload)),
+                )
+            )
+        return CollectionBatch(
+            run_id=run_id,
+            source_id=source.source_id,
+            status=BatchStatus.OK if documents else BatchStatus.UNCHANGED,
+            documents=documents,
+            next_cursor=isoformat(latest_seen),
+            stats={
+                "fetched": len(entries),
+                "in_window": len(documents),
+                "transport": "atom",
+            },
+        )
 
     def collect(
         self,
@@ -76,11 +194,23 @@ class GitHubCollector:
             ),
             "X-GitHub-Api-Version": "2022-11-28",
         }
-        token_env = source.options.get("token_env", "GITHUB_TOKEN")
-        token = os.environ.get(str(token_env))
+        token = _authentication_token(source)
         if token:
             headers["Authorization"] = f"Bearer {token}"
         try:
+            if not token and not self._custom_fetcher:
+                atom_url = f"https://github.com/{repository}/releases.atom"
+                atom_payload = self._fetcher(
+                    atom_url,
+                    {
+                        "Accept": "application/atom+xml",
+                        "User-Agent": headers["User-Agent"],
+                    },
+                    float(source.options.get("timeout_seconds", 30)),
+                )
+                return self.parse_atom(
+                    atom_payload, source, repository, window, run_id
+                )
             payload = self._fetcher(
                 url, headers, float(source.options.get("timeout_seconds", 30))
             )

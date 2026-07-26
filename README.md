@@ -38,7 +38,7 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 - Python 不调用外部模型 API；Codex 本地计划任务生成中文题名、一句话摘要、问题、方法、结果和证据等结构化字段；
 - `run-weekly` 同时生成周报、运行审计和 `site/app/report-data.json`；
 - Codex 每周在本地项目中生成待审版本，研究员通过本地页面审核；
-- GitHub Pages 只接受状态为 `approved` 的快照，并且只能手动触发。
+- GitHub Pages 只接受状态为 `approved` 的快照；本地确认后自动触发，手动工作流保留为故障恢复入口。
 
 ## 安装
 
@@ -57,17 +57,17 @@ npm.cmd --prefix site run build
 ## 本地审核与 GitHub Pages
 
 Codex 计划任务只更新本地审核站，不自动公开。研究员完成逐条审阅并将整期状态设为
-`approved` 后，本地审核按钮重新导出网页数据并把审核快照提交到仓库。随后在 GitHub Actions 中手动运行
-`Publish approved report to GitHub Pages`，确认字段输入 `publish`。工作流生成纯静态快照并部署；
-本仓库不会自动执行这一步。
+`approved` 后，本地审核按钮重新导出网页数据并把审核快照提交到仓库。该次推送自动触发
+`Publish approved report to GitHub Pages`，工作流再次核验状态后生成纯静态快照并部署。
+手动触发入口仍然保留，供自动发布失败时重试。
 
 本地部门页提供“确认本期周报”按钮。按钮只会在所有精读卡片均由 Codex 生成、包含证据且
 置信度不低于 `0.60` 时通过质量门禁。确认后会批准正文条目、将整期状态改为
 `approved`、重新构建本地站并把审核快照推送到
-GitHub。它不会自动触发 Pages。
+GitHub；仅当这次推送包含已批准的周报快照时，Pages 才会自动发布。
 
 GitHub Pages 构建时只导出已批准或已发布的历史周报，并将当前批准快照显示为“已发布”。
-本地审核页面则显示“审核通过 · 待公开发布”。
+本地审核页面会显示审核通过以及 Pages 正在构建发布。
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File scripts\start_local_review.ps1
@@ -140,7 +140,7 @@ Codex 计划任务需要本机开机、Codex 桌面应用运行且 Docker Deskto
 其他可选凭据：
 
 - `OPENREVIEW_TOKEN`
-- `GITHUB_TOKEN`
+- `GITHUB_TOKEN`（可选；未配置时 GitHub Release 自动改用官方 Atom Feed，避免匿名 API 限流）
 - `HF_TOKEN`
 - `WECHAT_FEED_BASE_URL` 或各公众号配置对应的 Feed 环境变量
 - `WECHAT_FEED_AUTH_TOKEN`（云端 Feed 开启鉴权时）

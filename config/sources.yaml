@@ -39,20 +39,21 @@ sources:
     api_v2: https://api2.openreview.net
     legacy_api: https://api.openreview.net
     venues:
+      - {venue_id: ICLR.cc/2026/Conference, venue: ICLR, year: 2026}
+      - {venue_id: NeurIPS.cc/2026/Conference, venue: NeurIPS, year: 2026}
+      - {venue_id: MLSys.org/2026/Conference, venue: MLSys, year: 2026}
+      - {venue_id: ICML.cc/2026/Conference, venue: ICML, year: 2026}
+    historical_library_venues:
       - {venue_id: ICLR.cc/2024/Conference, venue: ICLR, year: 2024}
       - {venue_id: ICLR.cc/2025/Conference, venue: ICLR, year: 2025}
-      - {venue_id: ICLR.cc/2026/Conference, venue: ICLR, year: 2026}
       - {venue_id: NeurIPS.cc/2024/Conference, venue: NeurIPS, year: 2024}
       - {venue_id: NeurIPS.cc/2025/Conference, venue: NeurIPS, year: 2025}
-      - {venue_id: NeurIPS.cc/2026/Conference, venue: NeurIPS, year: 2026}
       - {venue_id: MLSys.org/2024/Conference, venue: MLSys, year: 2024}
       - {venue_id: MLSys.org/2025/Conference, venue: MLSys, year: 2025}
-      - {venue_id: MLSys.org/2026/Conference, venue: MLSys, year: 2026}
       - {venue_id: ICML.cc/2024/Conference, venue: ICML, year: 2024}
       - {venue_id: ICML.cc/2025/Conference, venue: ICML, year: 2025}
-      - {venue_id: ICML.cc/2026/Conference, venue: ICML, year: 2026}
-    page_size: 500
-    max_pages: 10
+    page_size: 100
+    max_pages: 3
     timeout_seconds: 30
     user_agent: weekly-intel/0.1 (OrbitInfer research survey)
     token_env: OPENREVIEW_TOKEN

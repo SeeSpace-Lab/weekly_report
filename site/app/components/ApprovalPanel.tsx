@@ -38,7 +38,7 @@ export default function ApprovalPanel({
         );
       }
       setState("done");
-      setMessage("审核状态和静态数据已同步到 GitHub，正在刷新页面。");
+      setMessage("审核快照已同步，GitHub Pages 发布流程已经启动。");
       window.setTimeout(() => window.location.reload(), 1800);
     } catch (error) {
       setState("error");
@@ -53,7 +53,7 @@ export default function ApprovalPanel({
           <span>APPROVAL GATE</span>
           <strong>{isoWeek} 已审核通过</strong>
           <p>
-            审核快照已同步至 GitHub，公开发布仍需手动触发 Pages 工作流。
+            审核快照已同步至 GitHub，Pages 正在自动构建并发布公开版本。
           </p>
         </div>
       </aside>
@@ -67,7 +67,7 @@ export default function ApprovalPanel({
         <strong>{isoWeek} 私域审核</strong>
         <p>
           确认后将锁定本期内容、移除审核中标识，并把已批准快照同步到
-          GitHub。此操作不会自动公开发布。
+          GitHub，随后自动触发 Pages 公开发布。
         </p>
       </div>
       <div className="approvalAction">
@@ -75,7 +75,7 @@ export default function ApprovalPanel({
           <>
             <p>请再次确认：当前页面内容可以作为本期公开版本。</p>
             <div>
-              <button onClick={approve}>确认并同步</button>
+              <button onClick={approve}>确认、同步并发布</button>
               <button
                 className="secondaryButton"
                 onClick={() => setState("idle")}

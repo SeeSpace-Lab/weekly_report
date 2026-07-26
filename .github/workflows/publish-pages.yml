@@ -1,11 +1,20 @@
 name: Publish approved report to GitHub Pages
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "site/app/report-data.json"
+      - "site/app/archive-data.json"
   workflow_dispatch:
     inputs:
       confirm:
         description: "输入 publish 确认发布当前 approved 周报"
         required: true
+        type: string
+      issue:
+        description: "批准时锁定的 ISO 周，例如 2026-W30"
+        required: false
         type: string
 
 permissions:
@@ -19,7 +28,7 @@ concurrency:
 
 jobs:
   verify:
-    if: ${{ inputs.confirm == 'publish' }}
+    if: ${{ github.event_name == 'push' || inputs.confirm == 'publish' }}
     runs-on: ubuntu-latest
     outputs:
       issue: ${{ steps.issue.outputs.issue }}
@@ -35,12 +44,22 @@ jobs:
           if (report.issue.status !== "approved") {
             throw new Error(`Refusing publication: issue status is ${report.issue.status}`);
           }
+          if (
+            process.env.EXPECTED_ISSUE &&
+            report.issue.isoWeek !== process.env.EXPECTED_ISSUE
+          ) {
+            throw new Error(
+              `Refusing publication: expected ${process.env.EXPECTED_ISSUE}, found ${report.issue.isoWeek}`,
+            );
+          }
           const fs = require("node:fs");
           fs.appendFileSync(
             process.env.GITHUB_OUTPUT,
             `issue=${report.issue.isoWeek}\n`,
           );
           NODE
+        env:
+          EXPECTED_ISSUE: ${{ inputs.issue }}
 
   build:
     needs: verify

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+import urllib.parse
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -90,8 +91,14 @@ class OpenReviewPipelineTest(unittest.TestCase):
         )
 
     def test_api2_value_fields_are_parsed(self) -> None:
+        requested_urls: list[str] = []
+
+        def fetch(url: str, headers: dict[str, str], timeout: float) -> bytes:
+            requested_urls.append(url)
+            return note_payload()
+
         collector = OpenReviewCollector(
-            fetcher=lambda url, headers, timeout: note_payload()
+            fetcher=fetch
         )
         batch = collector.collect(openreview_source(), self.window)
         self.assertEqual(batch.status.value, "ok")
@@ -100,6 +107,14 @@ class OpenReviewPipelineTest(unittest.TestCase):
         self.assertEqual(document.metadata["venue_status"], "MLSys 2026 Oral")
         self.assertEqual(
             document.identifiers["openreview_forum"], "openreview-forum-1"
+        )
+        query = urllib.parse.parse_qs(
+            urllib.parse.urlparse(requested_urls[0]).query
+        )
+        self.assertEqual(query["sort"], ["tmdate:desc"])
+        self.assertEqual(
+            query["mintmdate"],
+            [str(int(self.window.start.timestamp() * 1000))],
         )
 
     def test_challenge_is_reported_as_blocked(self) -> None:

@@ -79,13 +79,17 @@ class OpenReviewCollector:
         venue_id: str,
         offset: int,
         limit: int,
+        modified_since: datetime | None = None,
     ) -> str:
         endpoint = str(source.options.get("api_v2", "https://api2.openreview.net"))
         params = {
             "content.venueid": venue_id,
             "limit": str(limit),
             "offset": str(offset),
+            "sort": "tmdate:desc",
         }
+        if modified_since:
+            params["mintmdate"] = str(int(modified_since.timestamp() * 1000))
         return f"{endpoint.rstrip('/')}/notes?{urllib.parse.urlencode(params)}"
 
     def parse_note(
@@ -185,6 +189,15 @@ class OpenReviewCollector:
         token = os.environ.get(str(token_env)) if token_env else None
         if token:
             headers["Authorization"] = f"Bearer {token}"
+        modified_since = window.start
+        if cursor:
+            try:
+                cursor_time = datetime.fromisoformat(cursor.replace("Z", "+00:00"))
+                if cursor_time.tzinfo is None:
+                    cursor_time = cursor_time.replace(tzinfo=timezone.utc)
+                modified_since = max(modified_since, cursor_time)
+            except ValueError:
+                pass
         discovered_at = utc_now()
         documents: list[CollectedDocument] = []
         errors: list[CollectionError] = []
@@ -195,7 +208,11 @@ class OpenReviewCollector:
                 venue_id = venue["venue_id"] if isinstance(venue, dict) else str(venue)
                 for page in range(max_pages):
                     url = self.build_url(
-                        source, venue_id, page * page_size, page_size
+                        source,
+                        venue_id,
+                        page * page_size,
+                        page_size,
+                        modified_since,
                     )
                     payload = self._fetcher(url, headers, timeout)
                     body = json.loads(payload.decode("utf-8"))
