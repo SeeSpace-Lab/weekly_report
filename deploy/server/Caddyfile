@@ -1,6 +1,4 @@
-114-111-22-106.nip.io {
-	encode zstd gzip
-
+(weekly_review_routes) {
 	@authorized_feed {
 		path /feed/*
 		header Authorization "Bearer {$WECHAT_FEED_AUTH_TOKEN}"
@@ -28,8 +26,19 @@
 		}
 		reverse_proxy 127.0.0.1:3000
 	}
+}
 
+114-111-22-106.nip.io {
+	encode zstd gzip
+	import weekly_review_routes
 	log {
 		output file /data1/chenwenjin/log/caddy-access.log
 	}
+}
+
+# SSH port forwarding can expose this loopback-only listener without opening
+# the cloud firewall: ssh -L 3000:127.0.0.1:8080 ...
+http://127.0.0.1:8080 {
+	encode zstd gzip
+	import weekly_review_routes
 }

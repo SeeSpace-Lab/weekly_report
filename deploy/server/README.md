@@ -5,6 +5,7 @@ The production-like review deployment lives entirely under
 
 - WeRSS: `127.0.0.1:8001`
 - Review site: `127.0.0.1:3000`
+- Tunnel-ready authenticated entry: `127.0.0.1:8080`
 - Public HTTPS entry: `https://114-111-22-106.nip.io`
 - `/feed/*` requires a bearer token.
 - The review site requires HTTP Basic authentication.
@@ -35,6 +36,16 @@ authentication as the review site. Approval runs the evidence quality gate,
 marks the issue approved, rebuilds the private site and pushes only
 allowlisted generated report files with a repository-scoped GitHub deploy
 key. It never triggers the Pages workflow.
+
+Until the cloud security group opens ports 80 and 443, open the complete
+authenticated review site (including the approval API) through an SSH tunnel:
+
+```bash
+ssh -p 10023 -L 3010:127.0.0.1:8080 chenwenjin@114.111.22.106
+```
+
+Then visit `http://127.0.0.1:3010`. Port 8080 is bound to server loopback and
+is not directly exposed to the Internet.
 
 ## Compliance audit
 

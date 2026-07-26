@@ -7,7 +7,7 @@ CURRENT="$CODE_ROOT/weekly_report"
 STAGED="$CODE_ROOT/weekly_report-new"
 BACKUP="$CODE_ROOT/weekly_report-backup-20260726"
 SERVICE_DIR="$ROOT/services/weekly-report"
-EXPECTED_COMMIT="${EXPECTED_COMMIT:-acd1583f0f19f4dff26c57c16d57ef12eddd83b4}"
+EXPECTED_COMMIT="${EXPECTED_COMMIT:?EXPECTED_COMMIT must be set}"
 
 for path in "$CURRENT" "$STAGED" "$BACKUP" "$SERVICE_DIR"; do
   resolved="$(realpath -m "$path")"
