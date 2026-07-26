@@ -135,6 +135,12 @@ $env:WEEKLY_FETCH_FULLTEXT = "1"
 服务器密钥保存在 `/data1/chenwenjin/services/weekly-report/runtime.env`，权限必须为 `0600`；
 不要把密钥发到聊天、写入仓库或放进网页环境变量。
 
+通过隐藏输入安全配置服务器密钥：
+
+```powershell
+ssh -t -p 10023 chenwenjin@114.111.22.106 "/data1/chenwenjin/code/weekly_report/deploy/server/configure-api-key.sh"
+```
+
 本地 WeRSS 已按 `config/sources.yaml` 中的真实 Feed ID 对接。启动容器并完成公众号平台授权后：
 
 ```powershell

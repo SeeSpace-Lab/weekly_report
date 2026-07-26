@@ -16,6 +16,8 @@ The weekly pipeline runtime file is
 `/data1/chenwenjin/services/weekly-report/runtime.env`, also with mode `0600`.
 It provides `WEEKLY_LLM_API_KEY`, `WEEKLY_LLM_MODEL`,
 `WEEKLY_LLM_BASE_URL` and `WEEKLY_FETCH_FULLTEXT`.
+Use `deploy/server/configure-api-key.sh` from an interactive SSH session so
+the API key is entered without terminal echo or shell-history exposure.
 
 The user-level systemd units keep WeRSS, the review site and Caddy running.
 `weekly-report.timer` generates a new report every Monday at 09:00
