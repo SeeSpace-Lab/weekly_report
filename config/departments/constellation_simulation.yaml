@@ -1,0 +1,24 @@
+department_id: constellation_simulation
+name: 星座智算仿真平台
+version: "0.1-placeholder"
+enabled: false
+status: scope_pending
+
+mission: >-
+  预留面向星座智算仿真平台的独立周报入口。待获得部门项目资料后，
+  再确定仿真对象、系统层级、核心指标、固定来源和选稿规则。
+
+shared_evidence:
+  - papers
+  - frameworks
+  - benchmarks
+  - datasets
+  - review_articles
+
+activation_requirements:
+  - department_mission
+  - core_topics
+  - exclusion_boundary
+  - venue_and_source_pool
+  - project_adjacent_topics
+

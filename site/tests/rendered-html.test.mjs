@@ -23,30 +23,57 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the OrbitInfer weekly report", async () => {
-  const response = await render();
+test("server-renders the research portal", async () => {
+  const response = await render("/");
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>OrbitInfer Weekly Intelligence<\/title>/i);
+  assert.match(html, /<title>观宇芯算研发部周报<\/title>/i);
+  assert.match(html, /按部门进入周报/);
   assert.match(html, /星载大模型/);
-  assert.match(html, /本周趋势雷达/);
+  assert.match(html, /星座智算/);
   assert.match(html, /2026-W30/);
-  assert.match(html, /20<\/strong><span>精选条目/);
+  assert.match(html, /顶会与重要论文库/);
   assert.match(html, /og:image/);
+});
+
+test("server-renders the OrbitInfer department report", async () => {
+  const response = await render("/departments/orbitinfer");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /本周趋势雷达/);
+  assert.match(html, /20<\/strong><span>精选条目/);
   assert.match(html, /查看一手来源/);
   assert.match(html, /一句话读懂/);
   assert.match(html, /<dt>问题<\/dt>/);
   assert.doesNotMatch(html, /Your site is taking shape|Building your site/);
 });
 
-test("ships structured report data and interaction controls", async () => {
-  const [page, report] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+test("renders the library, source pool and second department", async () => {
+  const [library, sources, department] = await Promise.all([
+    render("/library"),
+    render("/sources"),
+    render("/departments/constellation-simulation"),
+  ]);
+  for (const response of [library, sources, department]) {
+    assert.equal(response.status, 200);
+  }
+  assert.match(await library.text(), /Mooncake/);
+  assert.match(await sources.text(), /PaperWeekly/);
+  assert.match(await department.text(), /范围待确认/);
+});
+
+test("ships structured report, library and interaction controls", async () => {
+  const [page, report, library, sources] = await Promise.all([
+    readFile(new URL("../app/departments/orbitinfer/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/report-data.json", import.meta.url), "utf8"),
+    readFile(new URL("../app/library-data.json", import.meta.url), "utf8"),
+    readFile(new URL("../app/source-data.json", import.meta.url), "utf8"),
   ]);
   const payload = JSON.parse(report);
+  const libraryPayload = JSON.parse(library);
+  const sourcePayload = JSON.parse(sources);
 
   assert.equal(payload.issue.isoWeek, "2026-W30");
   assert.equal(payload.issue.itemCount, 20);
@@ -61,4 +88,24 @@ test("ships structured report data and interaction controls", async () => {
   assert.match(page, /setActiveSection/);
   assert.match(page, /setQuery/);
   assert.match(page, /target="_blank"/);
+  assert.ok(libraryPayload.papers.length >= 8);
+  assert.equal(sourcePayload.accounts.length, 10);
+});
+
+test("exports a GitHub Pages-compatible static snapshot", async () => {
+  const [home, orbitinfer, library, sources] = await Promise.all([
+    readFile(new URL("../out/index.html", import.meta.url), "utf8"),
+    readFile(
+      new URL("../out/departments/orbitinfer/index.html", import.meta.url),
+      "utf8",
+    ),
+    readFile(new URL("../out/library/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../out/sources/index.html", import.meta.url), "utf8"),
+  ]);
+  assert.match(home, /\/weekly_report\/assets\//);
+  assert.match(home, /href="\/weekly_report\/departments\/orbitinfer"/);
+  assert.doesNotMatch(home, /weekly_report\/weekly_report/);
+  assert.match(orbitinfer, /本周趋势雷达/);
+  assert.match(library, /固定顶会覆盖/);
+  assert.match(sources, /公众号负责发现和解释/);
 });

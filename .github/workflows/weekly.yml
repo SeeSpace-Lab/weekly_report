@@ -57,6 +57,9 @@ jobs:
         run: |
           git config user.name "weekly-intel-bot"
           git config user.email "weekly-intel-bot@users.noreply.github.com"
-          git add outputs runs site/app/report-data.json
+          git add outputs runs \
+            site/app/report-data.json \
+            site/app/library-data.json \
+            site/app/source-data.json
           git diff --cached --quiet || git commit -m "chore: generate weekly intelligence report"
           git push

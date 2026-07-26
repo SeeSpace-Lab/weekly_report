@@ -1,0 +1,320 @@
+{
+  "departmentId": "orbitinfer",
+  "version": "0.1",
+  "policy": {
+    "rolling_years": 2,
+    "famous_exceptions_allowed": true,
+    "official_venue_source_required": true,
+    "interpretation_is_attachment": true
+  },
+  "venues": [
+    {
+      "id": "aaai",
+      "name": "AAAI",
+      "category": "ai",
+      "coverage": "fixed"
+    },
+    {
+      "id": "hpca",
+      "name": "HPCA",
+      "category": "architecture",
+      "coverage": "fixed"
+    },
+    {
+      "id": "asplos",
+      "name": "ASPLOS",
+      "category": "systems_architecture",
+      "coverage": "fixed"
+    },
+    {
+      "id": "eurosys",
+      "name": "EuroSys",
+      "category": "systems",
+      "coverage": "fixed"
+    },
+    {
+      "id": "iclr",
+      "name": "ICLR",
+      "category": "ai",
+      "coverage": "fixed"
+    },
+    {
+      "id": "mlsys",
+      "name": "MLSys",
+      "category": "systems_ml",
+      "coverage": "fixed"
+    },
+    {
+      "id": "isca",
+      "name": "ISCA",
+      "category": "architecture",
+      "coverage": "fixed"
+    },
+    {
+      "id": "osdi",
+      "name": "OSDI",
+      "category": "systems",
+      "coverage": "fixed"
+    },
+    {
+      "id": "icml",
+      "name": "ICML",
+      "category": "ai",
+      "coverage": "fixed"
+    },
+    {
+      "id": "neurips",
+      "name": "NeurIPS",
+      "category": "ai",
+      "coverage": "fixed"
+    },
+    {
+      "id": "sosp",
+      "name": "SOSP",
+      "category": "systems",
+      "coverage": "fixed"
+    },
+    {
+      "id": "micro",
+      "name": "MICRO",
+      "category": "architecture",
+      "coverage": "fixed"
+    },
+    {
+      "id": "nsdi",
+      "name": "NSDI",
+      "category": "networking_systems",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "sigcomm",
+      "name": "SIGCOMM",
+      "category": "networking",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "sc",
+      "name": "SC",
+      "category": "hpc",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "ppopp",
+      "name": "PPoPP",
+      "category": "parallel_systems",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "rtss",
+      "name": "RTSS",
+      "category": "realtime",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "rtas",
+      "name": "RTAS",
+      "category": "realtime",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "ecrts",
+      "name": "ECRTS",
+      "category": "realtime",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "mobisys",
+      "name": "MobiSys",
+      "category": "mobile_edge",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "sensys",
+      "name": "SenSys",
+      "category": "embedded_edge",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "ipsn",
+      "name": "IPSN",
+      "category": "embedded_edge",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "fast",
+      "name": "FAST",
+      "category": "storage",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "dac",
+      "name": "DAC",
+      "category": "design_automation",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "date",
+      "name": "DATE",
+      "category": "design_automation",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "iccad",
+      "name": "ICCAD",
+      "category": "design_automation",
+      "coverage": "supplemental"
+    },
+    {
+      "id": "islped",
+      "name": "ISLPED",
+      "category": "low_power",
+      "coverage": "supplemental"
+    }
+  ],
+  "papers": [
+    {
+      "id": "vllm_sosp23",
+      "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+      "titleZh": "vLLM：用 PagedAttention 重构大模型推理的显存管理",
+      "venue": "SOSP 2023",
+      "year": 2023,
+      "topic": "inference_runtime",
+      "status": "顶会论文 · 领域奠基",
+      "url": "https://dl.acm.org/doi/10.1145/3600006.3613165",
+      "codeUrl": "https://github.com/vllm-project/vllm",
+      "oneSentenceZh": "把 KV Cache 切成可按需映射的块，减少显存碎片和重复占用，成为现代 LLM Serving 的基础内存抽象。",
+      "whyItMattersZh": "后续连续批处理、调度和 KV Cache 分层工作大多以它为系统基线，虽然超出两年窗口，仍作为著名论文保留。",
+      "famousException": true,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "sarathi_serve_osdi24",
+      "title": "Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve",
+      "titleZh": "Sarathi-Serve：用分块 Prefill 缓和吞吐与时延冲突",
+      "venue": "OSDI 2024",
+      "year": 2024,
+      "topic": "inference_scheduling",
+      "status": "顶会论文",
+      "url": "https://www.usenix.org/conference/osdi24/presentation/agrawal",
+      "codeUrl": "https://github.com/microsoft/sarathi-serve",
+      "oneSentenceZh": "将长 Prefill 切块并与 Decode 组成更均匀的批次，在不长时间阻塞解码的前提下提高 GPU 利用率。",
+      "whyItMattersZh": "它直接对应动态负载下的推理调度，是分析功率预算变化时如何调整批次和阶段执行的重要基线。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "infinigen_osdi24",
+      "title": "InfiniGen: Efficient Generative Inference of Large Language Models with Dynamic KV Cache Management",
+      "titleZh": "InfiniGen：只预取下一步真正需要的 KV Cache",
+      "venue": "OSDI 2024",
+      "year": 2024,
+      "topic": "kv_cache",
+      "status": "顶会论文",
+      "url": "https://www.usenix.org/conference/osdi24/presentation/lee",
+      "codeUrl": null,
+      "oneSentenceZh": "通过轻量预演预测下一层需要关注的 token，只从主机侧预取关键 KV 条目，降低卸载式推理的数据搬运。",
+      "whyItMattersZh": "对存储和带宽受限平台尤其有参考价值，核心问题是以少量额外计算换取更低的 KV 传输压力。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "llumnix_osdi24",
+      "title": "Llumnix: Dynamic Scheduling for Large Language Model Serving",
+      "titleZh": "Llumnix：通过请求活迁移实现动态推理调度",
+      "venue": "OSDI 2024",
+      "year": 2024,
+      "topic": "inference_scheduling",
+      "status": "顶会论文",
+      "url": "https://www.usenix.org/conference/osdi24/presentation/sun-biao",
+      "codeUrl": "https://github.com/AlibabaPAI/llumnix",
+      "oneSentenceZh": "像操作系统迁移进程一样迁移请求及其 KV 状态，以持续处理负载不均、显存碎片、优先级和扩缩容。",
+      "whyItMattersZh": "提供了运行时自适应调度的完整系统范式，可映射到动态功率预算下的实例迁移和服务等级控制。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "distserve_osdi24",
+      "title": "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving",
+      "titleZh": "DistServe：分离 Prefill 与 Decode 的 Goodput 优化服务",
+      "venue": "OSDI 2024",
+      "year": 2024,
+      "topic": "distributed_inference",
+      "status": "顶会论文",
+      "url": "https://www.usenix.org/conference/osdi24/presentation/zhong-yinmin",
+      "codeUrl": "https://github.com/LLMServe/DistServe",
+      "oneSentenceZh": "把 Prefill 和 Decode 放到不同 GPU，并围绕 TTFT、TPOT 约束分别配置并行策略和资源。",
+      "whyItMattersZh": "是解耦式推理和阶段级资源编排的代表工作，可用于比较星载异构算力或动态功率分区方案。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "serverlessllm_osdi24",
+      "title": "ServerlessLLM: Low-Latency Serverless Inference for Large Language Models",
+      "titleZh": "ServerlessLLM：面向低冷启动时延的多级模型加载与迁移",
+      "venue": "OSDI 2024",
+      "year": 2024,
+      "topic": "storage_and_migration",
+      "status": "顶会论文",
+      "url": "https://www.usenix.org/conference/osdi24/presentation/fu",
+      "codeUrl": "https://github.com/ServerlessLLM/ServerlessLLM",
+      "oneSentenceZh": "利用 GPU 邻近存储保存检查点，结合加载优化格式、分层加载和活迁移降低大模型实例启动时延。",
+      "whyItMattersZh": "连接了分层存储、模型迁移和调度，对存储层次复杂且需要快速切换任务的受限平台具有借鉴意义。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "punica_mlsys24",
+      "title": "Punica: Multi-Tenant LoRA Serving",
+      "titleZh": "Punica：共享基础模型的多租户 LoRA 推理服务",
+      "venue": "MLSys 2024",
+      "year": 2024,
+      "topic": "inference_runtime",
+      "status": "顶会论文",
+      "url": "https://proceedings.mlsys.org/paper_files/paper/2024/hash/054de805fcceb78a201f5e9d53c85908-Abstract-Conference.html",
+      "codeUrl": "https://github.com/punica-ai/punica",
+      "oneSentenceZh": "通过面向多适配器批处理的 GPU Kernel 和调度器，让多个 LoRA 租户共享同一份基础模型权重。",
+      "whyItMattersZh": "展示了细粒度模型变体共享与请求编排方式，可支持多任务载荷在有限显存中的快速切换。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    },
+    {
+      "id": "mooncake_fast25",
+      "title": "Mooncake: Trading More Storage for Less Computation — A KVCache-centric Architecture for Serving LLM Chatbot",
+      "titleZh": "Mooncake：以分布式 KV Cache 换取更少重复计算",
+      "venue": "FAST 2025",
+      "year": 2025,
+      "topic": "kv_cache",
+      "status": "Best Paper",
+      "url": "https://www.usenix.org/conference/fast25/presentation/qin",
+      "codeUrl": "https://github.com/kvcache-ai/Mooncake",
+      "oneSentenceZh": "围绕全局分布式 KV Cache 组织 Prefill/Decode 分离架构，利用 CPU、DRAM、SSD 和网络减少重复计算。",
+      "whyItMattersZh": "把 KV Cache 提升为系统级资源，适合用于思考存储、通信、功耗和计算之间的跨层权衡。",
+      "famousException": false,
+      "latestUpdatedAt": null,
+      "versionCount": 0,
+      "latestChange": null,
+      "interpretations": []
+    }
+  ]
+}

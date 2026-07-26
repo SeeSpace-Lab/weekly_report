@@ -44,6 +44,110 @@ main { min-height: 100vh; overflow: hidden; }
 .brand small { margin-top: 3px; color: var(--muted); font: 10px/1 ui-monospace, monospace; letter-spacing: .1em; }
 .issueStatus { display: flex; align-items: center; gap: 9px; font-size: 12px; letter-spacing: .08em; }
 .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 5px rgba(255,107,53,.14); }
+.mutedPulse { background: var(--muted); box-shadow: 0 0 0 5px rgba(119,120,111,.12); }
+.portalNav { display: flex; align-items: center; gap: 22px; margin-left: auto; margin-right: 32px; }
+.portalNav a { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-decoration: none; }
+.portalNav a:hover { color: var(--orange); }
+
+.portalHero, .libraryHero, .sourcesHero, .placeholderHero {
+  padding: 90px 5vw 70px;
+  color: var(--paper);
+  background:
+    radial-gradient(circle at 80% 20%, rgba(200,255,57,.16), transparent 24%),
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(12.5% - 1px), rgba(255,255,255,.05) calc(12.5% - 1px), rgba(255,255,255,.05) 12.5%),
+    var(--ink);
+}
+.portalHero h1, .libraryHero h1, .sourcesHero h1, .placeholderHero h1 {
+  margin: 36px 0 28px; max-width: 1050px;
+  font-size: clamp(58px, 8vw, 116px); line-height: .92;
+  letter-spacing: -.06em;
+}
+.portalHero h1 em, .libraryHero h1 em, .sourcesHero h1 em, .placeholderHero h1 em {
+  color: var(--signal); font-style: normal;
+}
+.portalHero > p:not(.kicker), .libraryHero > p:not(.kicker),
+.sourcesHero > p:not(.kicker), .placeholderHero > p:not(.kicker) {
+  max-width: 720px; color: rgba(242,239,229,.66); font-size: 16px; line-height: 1.8;
+}
+.portalMetrics {
+  margin-top: 64px; display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(255,255,255,.18);
+}
+.portalMetrics div { padding: 24px 20px 4px 0; border-right: 1px solid rgba(255,255,255,.18); }
+.portalMetrics strong, .portalMetrics span { display: block; }
+.portalMetrics strong { color: var(--signal); font: 500 34px/1 ui-monospace, monospace; }
+.portalMetrics span { margin-top: 9px; color: rgba(242,239,229,.5); font-size: 11px; letter-spacing: .12em; }
+
+.departmentDirectory { padding: 82px 5vw 92px; }
+.directoryIntro { display: grid; grid-template-columns: 180px 1fr 1fr; align-items: end; gap: 28px; margin-bottom: 36px; }
+.directoryIntro > p:last-child { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+.departmentCards { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.departmentCard { min-height: 520px; padding: 38px; background: var(--paper); text-decoration: none; display: flex; flex-direction: column; transition: background .2s ease; }
+.departmentCard:hover { background: #ebe7db; }
+.activeDepartment { box-shadow: inset 5px 0 0 var(--signal); }
+.pendingDepartment { box-shadow: inset 5px 0 0 var(--paper-2); }
+.departmentNumber { color: var(--orange); font: 11px/1 ui-monospace, monospace; }
+.departmentCard .statusTag { margin-top: 34px; }
+.departmentCard h3 { margin: 34px 0 20px; font-size: clamp(36px, 5vw, 67px); line-height: .96; letter-spacing: -.055em; }
+.departmentCard > p { max-width: 560px; color: var(--muted); font-size: 13px; line-height: 1.75; }
+.departmentCard dl { display: grid; grid-template-columns: repeat(2,1fr); margin: 30px 0 0; padding-top: 20px; border-top: 1px solid var(--line); }
+.departmentCard dt { color: var(--orange); font: 9px/1 ui-monospace, monospace; }
+.departmentCard dd { margin: 8px 0 0; font-size: 12px; }
+.enterLink { margin-top: auto; font-size: 12px; font-weight: 800; letter-spacing: .08em; }
+
+.portalResources { display: grid; grid-template-columns: repeat(2,1fr); background: var(--ink); color: var(--paper); }
+.portalResources a { min-height: 350px; padding: 55px 5vw; border-right: 1px solid rgba(255,255,255,.14); text-decoration: none; }
+.portalResources a:hover h2 { color: var(--signal); }
+.portalResources span { color: var(--orange); font: 10px/1 ui-monospace, monospace; letter-spacing: .14em; }
+.portalResources h2 { margin-top: 80px; font-size: clamp(31px,4vw,55px); transition: color .2s ease; }
+.portalResources p { max-width: 540px; color: rgba(242,239,229,.54); font-size: 13px; line-height: 1.7; }
+
+.placeholderHero { min-height: 590px; }
+.scopeChecklist { display: grid; grid-template-columns: repeat(2,1fr); padding: 72px 5vw 100px; gap: 1px; background: var(--line); }
+.scopeChecklist > div { padding: 42px; background: var(--paper); }
+.scopeChecklist span { color: var(--orange); font: 10px/1 ui-monospace, monospace; letter-spacing: .14em; }
+.scopeChecklist h2 { margin-top: 24px; }
+.scopeChecklist ul { margin: 34px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+.scopeChecklist li { padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+
+.libraryControls { position: sticky; top: 82px; z-index: 10; display: flex; justify-content: space-between; gap: 24px; padding: 16px 5vw; background: rgba(242,239,229,.96); border-bottom: 1px solid var(--line); }
+.venueCoverage { display: grid; grid-template-columns: 280px 1fr; gap: 32px; padding: 54px 5vw; border-bottom: 1px solid var(--line); }
+.venueCoverage h2 { font-size: 38px; }
+.venueChips { display: flex; flex-wrap: wrap; gap: 8px; align-content: start; }
+.venueChips span { padding: 9px 11px; border: 1px solid var(--line); color: var(--muted); font: 10px/1 ui-monospace, monospace; }
+.venueChips .fixedVenue { background: var(--ink); color: var(--signal); border-color: var(--ink); }
+.paperLibraryGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; padding: 0 5vw 100px; background: var(--line); }
+.libraryCard { padding: 38px; background: var(--paper); min-height: 570px; display: flex; flex-direction: column; }
+.libraryMeta { display: flex; gap: 14px; align-items: center; color: var(--muted); font: 9px/1 ui-monospace, monospace; letter-spacing: .08em; }
+.libraryMeta > span:first-child { color: var(--orange); }
+.libraryMeta strong { padding: 6px 8px; background: var(--ink); color: var(--signal); }
+.libraryCard h2 { margin-top: 30px; font-size: clamp(28px,3vw,43px); line-height: 1.08; }
+.libraryCard h2 a { text-decoration: none; }
+.libraryCard h2 a:hover { text-decoration: underline; text-decoration-color: var(--orange); text-underline-offset: 6px; }
+.librarySignals { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+.librarySignals span { padding: 6px 8px; background: var(--paper-2); font: 9px/1 ui-monospace, monospace; }
+.interpretations { margin-top: 20px; padding: 14px; border-left: 3px solid var(--signal); background: rgba(200,255,57,.12); }
+.interpretations b, .interpretations a { display: block; }
+.interpretations b { margin-bottom: 8px; color: var(--muted); font: 9px/1 ui-monospace, monospace; letter-spacing: .1em; }
+.interpretations a { padding: 5px 0; font-size: 11px; text-decoration: none; }
+.libraryLinks { display: flex; gap: 20px; margin-top: auto; padding-top: 26px; }
+.libraryLinks a { font-size: 11px; font-weight: 800; text-decoration: none; letter-spacing: .06em; }
+
+.sourceGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; padding: 0 5vw 100px; background: var(--line); }
+.sourceCard { padding: 34px; background: var(--paper); }
+.sourceHeader { display: grid; grid-template-columns: 32px 1fr auto; align-items: start; gap: 14px; }
+.sourceHeader > span { color: var(--orange); font: 10px/1.4 ui-monospace, monospace; }
+.sourceHeader h2 { font-size: 32px; }
+.sourceHeader p { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+.health { padding: 7px 9px; background: var(--paper-2); font: 9px/1 ui-monospace, monospace; }
+.health-ok { background: var(--signal); }
+.health-auth_failed, .health-empty_feed { background: rgba(255,107,53,.18); color: #a33009; }
+.sourceStats { display: flex; gap: 14px; margin-top: 22px; padding: 14px 0; border-block: 1px solid var(--line); color: var(--muted); font: 9px/1 ui-monospace, monospace; }
+.articleList a { display: grid; grid-template-columns: 58px 1fr 20px; gap: 10px; padding: 13px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+.articleList a span { color: var(--muted); font: 9px/1.5 ui-monospace, monospace; }
+.articleList a strong { font-size: 12px; line-height: 1.55; }
+.articleList a i { color: var(--orange); font-style: normal; }
+.noArticles { color: var(--muted); font-size: 12px; padding: 24px 0; }
 
 .hero {
   min-height: 620px;
@@ -126,6 +230,12 @@ footer > div { display: flex; gap: 16px; align-items: center; }
 footer p { margin: 0; max-width: 600px; color: rgba(242,239,229,.58); font-size: 11px; line-height: 1.6; }
 
 @media (max-width: 850px) {
+  .portalNav { display: none; }
+  .directoryIntro { grid-template-columns: 1fr; }
+  .departmentCards, .portalResources, .scopeChecklist, .paperLibraryGrid, .sourceGrid { grid-template-columns: 1fr; }
+  .portalMetrics { grid-template-columns: repeat(2, 1fr); }
+  .libraryControls { align-items: stretch; flex-direction: column; }
+  .venueCoverage { grid-template-columns: 1fr; }
   .hero { min-height: auto; padding-top: 56px; }
   .hero::after { width: 260px; height: 260px; right: -120px; }
   .metrics { grid-template-columns: repeat(2, 1fr); }
@@ -153,6 +263,10 @@ footer p { margin: 0; max-width: 600px; color: rgba(242,239,229,.58); font-size:
   .sectionHeading { grid-template-columns: 32px 1fr; }
   .sectionHeading small { display: none; }
   .intelCard { padding: 26px 4px; }
+  .portalHero, .libraryHero, .sourcesHero, .placeholderHero { padding-inline: 22px; }
+  .portalHero h1, .libraryHero h1, .sourcesHero h1, .placeholderHero h1 { font-size: 52px; }
+  .departmentDirectory, .paperLibraryGrid, .sourceGrid, .scopeChecklist { padding-inline: 22px; }
+  .departmentCard, .libraryCard, .sourceCard, .scopeChecklist > div { padding: 26px 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

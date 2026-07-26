@@ -1,37 +1,25 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import "./globals.css";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ??
-    requestHeaders.get("host") ??
-    "localhost:3000";
-  const protocol =
-    requestHeaders.get("x-forwarded-proto") ??
-    (host.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host}`;
-  const title = "OrbitInfer Weekly Intelligence";
-  const description = "星载大模型推理引擎部门周报与研究雷达";
+const title = "观宇芯算研发部周报";
+const description = "面向研发部门的自动化技术情报、论文库与公众号研究雷达";
 
-  return {
+export const metadata: Metadata = {
+  title,
+  description,
+  openGraph: {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      type: "website",
-      images: [{ url: `${origin}/og.png`, width: 1536, height: 1024 }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${origin}/og.png`],
-    },
-  };
-}
+    type: "website",
+    images: [{ url: "/og.png", width: 1536, height: 1024 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og.png"],
+  },
+};
 
 export default function RootLayout({
   children,

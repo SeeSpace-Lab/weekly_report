@@ -24,3 +24,17 @@ authenticated `/feed/*` route.
 The repository GitHub Action is manual-only during development. The
 server timer updates the private review site first; publishing to GitHub
 Pages is a separate, reviewer-approved step.
+
+## Compliance audit
+
+All project code, Conda environments, runtime data and logs are under
+`/data1/chenwenjin`. Both project environments were cloned from
+`tool-base`; no global Python or system package set was modified.
+
+The only persistent entries outside `/data1/chenwenjin` are user-owned
+systemd symlinks under `/home/chenwenjin/.config/systemd/user`. The
+deployment also enabled linger for `chenwenjin` and assigned
+`cap_net_bind_service` to the Caddy binary stored under the allocated
+project directory. These operations provide user-service persistence and
+low-port binding; they do not modify another user's files or global
+dependencies.

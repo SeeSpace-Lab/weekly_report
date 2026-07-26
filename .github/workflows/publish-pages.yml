@@ -1,0 +1,78 @@
+name: Publish approved report to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "输入 publish 确认发布当前 approved 周报"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: ${{ inputs.confirm == 'publish' }}
+    runs-on: ubuntu-latest
+    outputs:
+      issue: ${{ steps.issue.outputs.issue }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: issue
+        name: Verify researcher approval
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const report = require("./site/app/report-data.json");
+          if (report.issue.status !== "approved") {
+            throw new Error(`Refusing publication: issue status is ${report.issue.status}`);
+          }
+          const fs = require("node:fs");
+          fs.appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `issue=${report.issue.isoWeek}\n`,
+          );
+          NODE
+
+  build:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Build static review snapshot
+        working-directory: site
+        run: |
+          npm ci
+          npm run export:pages
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/out
+
+  deploy:
+    needs: [verify, build]
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy approved snapshot
+        id: deployment
+        uses: actions/deploy-pages@v4

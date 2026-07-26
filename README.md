@@ -1,6 +1,6 @@
-# OrbitInfer Weekly Intelligence
+# 观宇芯算研发部周报
 
-面向“星载大模型推理引擎”研究部门的自动化论文与技术情报周报流水线。系统按固定来源池采集近七天更新，统一归一化和去重，完成版本差异、部门相关性、趋势聚类、选稿、精读、审阅、Markdown 渲染及网页数据导出。
+面向研究部门的自动化论文与技术情报周报流水线。当前完整服务“星载大模型推理引擎”，并为“星座智算仿真平台”保留独立范围和页面入口。系统按固定来源池采集近七天更新，统一归一化和去重，完成版本差异、部门相关性、趋势聚类、选稿、精读、审阅、Markdown 渲染及网页数据导出。
 
 ## 已实现流程
 
@@ -17,6 +17,14 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
   -> 人工审阅、批准、发布状态
 ```
 
+网页入口：
+
+- `/`：观宇芯算研发部周报总览；
+- `/departments/orbitinfer`：星载大模型推理引擎部门周报；
+- `/departments/constellation-simulation`：星座智算仿真平台范围占位；
+- `/library`：近两年顶会与重要论文固定库；
+- `/sources`：十个公众号的采集健康状态和最新文章。
+
 主要特性：
 
 - SQLite 保存来源、采集运行、原始记录、研究对象、版本、证据、评估、选稿和审阅记录；
@@ -25,7 +33,8 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 - 公众号只使用配置中的固定订阅池；区分“本周无更新”、空 Feed、鉴权失败、限流、网络异常和上游错误；
 - 精读默认使用确定性后端；配置兼容接口后生成中文题名、一句话摘要、问题、方法、结果和证据等结构化字段；
 - `run-weekly` 同时生成周报、运行审计和 `site/app/report-data.json`；
-- GitHub Actions 每周一北京时间 09:00 自动运行，并验证网页构建。
+- 服务器每周一北京时间 09:00 自动生成私域审核版本；
+- GitHub Pages 只接受状态为 `approved` 的快照，并且只能手动触发。
 
 ## 安装
 
@@ -40,6 +49,21 @@ python -m venv .venv
 npm.cmd --prefix site ci
 npm.cmd --prefix site run build
 ```
+
+## 私域审核与 GitHub Pages
+
+服务器每周任务只更新私域审核站，不自动公开。研究员完成逐条审阅并将整期状态设为
+`approved` 后，重新导出网页数据并把审核快照提交到仓库。随后在 GitHub Actions 中手动运行
+`Publish approved report to GitHub Pages`，确认字段输入 `publish`。工作流生成纯静态快照并部署；
+本仓库不会自动执行这一步。
+
+本地验证静态 Pages 产物：
+
+```powershell
+npm.cmd --prefix site run export:pages
+```
+
+产物位于 `site/out`，默认使用 `/weekly_report` 作为 GitHub Pages base path。
 
 ## 运行
 

@@ -141,6 +141,19 @@ class WeeklyPipelineTest(unittest.TestCase):
                     connection, result.issue_id, site_data
                 )
             payload = json.loads(site_data.read_text(encoding="utf-8"))
+            library_payload = json.loads(
+                site_data.with_name("library-data.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            source_payload = json.loads(
+                site_data.with_name("source-data.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertGreaterEqual(len(library_payload["papers"]), 8)
+            self.assertGreaterEqual(len(library_payload["venues"]), 20)
+            self.assertEqual(source_payload["accounts"], [])
             deep_reads = [
                 item["deepRead"]
                 for section in payload["sections"]
