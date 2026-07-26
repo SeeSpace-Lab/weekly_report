@@ -1,0 +1,8 @@
+[Unit]
+Description=Generate the OrbitInfer weekly intelligence report
+After=network-online.target we-mp-rss.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/data1/chenwenjin/code/weekly_report/deploy/server/run-weekly.sh

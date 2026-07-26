@@ -1,0 +1,13 @@
+[Unit]
+Description=WeRSS WeChat feed service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/data1/chenwenjin/code/weekly_report/deploy/server/start-werss.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

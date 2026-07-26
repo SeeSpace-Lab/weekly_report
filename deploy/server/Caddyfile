@@ -1,0 +1,28 @@
+114-111-22-106.nip.io {
+	encode zstd gzip
+
+	@authorized_feed {
+		path /feed/*
+		header Authorization "Bearer {$WECHAT_FEED_AUTH_TOKEN}"
+	}
+	handle @authorized_feed {
+		reverse_proxy 127.0.0.1:8001
+	}
+	handle /feed/* {
+		respond "Unauthorized" 401
+	}
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	handle {
+		basic_auth {
+			reviewer {$WEEKLY_REVIEW_PASSWORD_HASH}
+		}
+		reverse_proxy 127.0.0.1:3000
+	}
+
+	log {
+		output file /data1/chenwenjin/log/caddy-access.log
+	}
+}

@@ -1,0 +1,13 @@
+[Unit]
+Description=OrbitInfer private weekly review site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/data1/chenwenjin/code/weekly_report/deploy/server/start-weekly-site.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

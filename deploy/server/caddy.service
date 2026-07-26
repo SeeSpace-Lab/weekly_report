@@ -1,0 +1,13 @@
+[Unit]
+Description=OrbitInfer HTTPS gateway
+After=network-online.target we-mp-rss.service weekly-site.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/data1/chenwenjin/code/weekly_report/deploy/server/start-caddy.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
