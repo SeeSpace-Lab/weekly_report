@@ -5,12 +5,40 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from weekly_intel.codex_handoff import CodexWeeklyHandoff
+from weekly_intel.codex_handoff import (
+    CodexWeeklyHandoff,
+    reserve_wechat_candidates,
+)
 from weekly_intel.db import Database
 from weekly_intel.review import ReviewService
 
 
 class CodexWeeklyHandoffTest(unittest.TestCase):
+    def test_candidate_pool_reserves_eight_wechat_articles(self) -> None:
+        candidates = [
+            {
+                "itemId": f"paper-{index}",
+                "isWechat": False,
+                "updatedAt": "",
+                "ruleAssessment": {"score": 1 - index / 100},
+            }
+            for index in range(30)
+        ] + [
+            {
+                "itemId": f"wechat-{index}",
+                "isWechat": True,
+                "updatedAt": "",
+                "ruleAssessment": {"score": 0.1 - index / 100},
+            }
+            for index in range(12)
+        ]
+        selected = reserve_wechat_candidates(candidates, 30, 8)
+        self.assertEqual(len(selected), 30)
+        self.assertEqual(
+            sum(1 for item in selected if item["isWechat"]),
+            8,
+        )
+
     def test_exports_shortlist_and_imports_verified_cards(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(__file__).parents[1]

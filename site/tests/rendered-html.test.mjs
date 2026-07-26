@@ -49,6 +49,8 @@ test("server-renders the OrbitInfer department report", async () => {
   assert.match(html, /class="oneSentence"/);
   assert.match(html, /<dt>问题<\/dt>/);
   assert.match(html, /class="translatedTitle">/);
+  assert.match(html, /C²KV/);
+  assert.doesNotMatch(html, /C\\$\\^2\\$KV/);
   assert.doesNotMatch(html, /顶会动态/);
   assert.doesNotMatch(html, /论文库回看/);
   assert.doesNotMatch(html, /Your site is taking shape|Building your site/);

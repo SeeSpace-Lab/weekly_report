@@ -3,6 +3,8 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
+from .utils import display_title
+
 
 SECTION_TITLES = {
     "must_read": "本周必读",
@@ -107,7 +109,9 @@ class MarkdownRenderAgent:
                 summary = summary[:limit].rstrip() + "……"
             lines.extend(
                 [
-                    f"### {row['position']}. [{row['canonical_title']}]({row['canonical_url']})",
+                    f"### {row['position']}. "
+                    f"[{display_title(row['canonical_title'])}]"
+                    f"({row['canonical_url']})",
                     "",
                     f"- 推荐理由：{row['selection_reason']}",
                     f"- 部门意义：{row['department_implication'] or '待补充'}",

@@ -101,6 +101,7 @@ weekly_output:
   target_read_minutes: 30
   max_items: 8
   max_wechat_items: 3
+  wechat_candidate_reserve: 8
   must_read_min: 3
   must_read_max: 5
   deep_read_min: 8

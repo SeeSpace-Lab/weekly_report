@@ -25,8 +25,11 @@ Never request, read, configure, or call an external model API key.
    .\.venv\Scripts\weekly-intel.exe export-codex-brief
    ```
 
-5. Read `runs/codex/current-brief.json`. Treat its scores as a shortlist, not
-   the editorial decision.
+5. Read `runs/codex/current-brief.json`. The exporter must reserve eight
+   fixed-pool WeChat candidates whenever at least eight are available in the
+   collection window. Review all eight, but do not force any of them into the
+   report. Treat scores and the reserved pool as a shortlist, not the editorial
+   decision.
 6. Inspect the newest `runs/*.json` collection audit. If OpenReview reports
    `challenge_required`, do not retry the challenge in a loop. Continue with
    arXiv and Crossref candidates, and verify any claimed top-venue status

@@ -5,7 +5,7 @@ import sqlite3
 from pathlib import Path
 
 from .config import load_yaml
-from .utils import normalize_title
+from .utils import display_title, normalize_title
 
 
 class SiteDataExportAgent:
@@ -85,7 +85,7 @@ class SiteDataExportAgent:
                     "position": row["position"],
                     "role": row["content_role"],
                     "itemType": row["item_type"],
-                    "title": row["canonical_title"],
+                    "title": display_title(row["canonical_title"]),
                     "url": row["canonical_url"],
                     "reason": row["selection_reason"],
                     "summary": row["display_summary"],
@@ -219,7 +219,7 @@ class SiteDataExportAgent:
                 ):
                     interpretations.append(
                         {
-                            "title": row["canonical_title"],
+                            "title": display_title(row["canonical_title"]),
                             "url": row["canonical_url"],
                             "sourceId": row["source_id"],
                             "publishedAt": row["first_published_at"],
@@ -241,7 +241,7 @@ class SiteDataExportAgent:
             papers.append(
                 {
                     "id": item["id"],
-                    "title": title,
+                    "title": display_title(title),
                     "titleZh": item["title_zh"],
                     "venue": item["venue"],
                     "year": item["year"],
@@ -335,8 +335,10 @@ class SiteDataExportAgent:
             papers.append(
                 {
                     "id": row["item_id"],
-                    "title": row["canonical_title"],
-                    "titleZh": row["title_zh"] or row["canonical_title"],
+                    "title": display_title(row["canonical_title"]),
+                    "titleZh": row["title_zh"] or display_title(
+                        row["canonical_title"]
+                    ),
                     "venue": row["publication_status"] or "顶会论文",
                     "year": int(str(row["first_published_at"])[:4]),
                     "topic": topic,
@@ -451,7 +453,7 @@ class SiteDataExportAgent:
                     "inWindow": int(stats.get("in_window", 0)),
                     "articles": [
                         {
-                            "title": article["canonical_title"],
+                            "title": display_title(article["canonical_title"]),
                             "url": article["canonical_url"],
                             "summary": article["abstract_or_summary"],
                             "publishedAt": article["first_published_at"],

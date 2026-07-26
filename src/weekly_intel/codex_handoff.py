@@ -16,6 +16,41 @@ SCHEMA_VERSION = 1
 CODEX_MODEL_VERSION = "codex-scheduled-task-v1"
 
 
+def reserve_wechat_candidates(
+    candidates: list[dict[str, Any]],
+    limit: int,
+    reserve: int,
+) -> list[dict[str, Any]]:
+    reserve = min(limit, max(0, reserve))
+    wechat_candidates = [
+        item for item in candidates if item["isWechat"]
+    ]
+    other_candidates = [
+        item for item in candidates if not item["isWechat"]
+    ]
+    selected = (
+        wechat_candidates[:reserve]
+        + other_candidates[
+            : max(0, limit - min(reserve, len(wechat_candidates)))
+        ]
+    )
+    selected_ids = {item["itemId"] for item in selected}
+    for item in candidates:
+        if len(selected) >= limit:
+            break
+        if item["itemId"] not in selected_ids:
+            selected.append(item)
+            selected_ids.add(item["itemId"])
+    selected.sort(
+        key=lambda item: (
+            item["ruleAssessment"]["score"],
+            item["updatedAt"] or "",
+        ),
+        reverse=True,
+    )
+    return selected[:limit]
+
+
 def _json_list(value: object, field: str, *, required: bool = False) -> list[str]:
     if not isinstance(value, list):
         raise ValueError(f"{field} must be an array")
@@ -61,6 +96,15 @@ class CodexWeeklyHandoff:
                    r.canonical_title, r.abstract_or_summary,
                    r.canonical_url, r.authors_json,
                    r.first_published_at, r.latest_updated_at,
+                   EXISTS(
+                       SELECT 1
+                       FROM item_versions wv
+                       JOIN raw_documents wd
+                         ON wd.raw_document_id=wv.raw_document_id
+                       WHERE wv.item_id=r.item_id
+                         AND wd.canonical_url LIKE
+                           'https://mp.weixin.qq.com/%'
+                   ) AS is_wechat,
                    COALESCE(
                        (
                            SELECT pc.content_text
@@ -126,6 +170,7 @@ class CodexWeeklyHandoff:
                     "sourceStatus": row["source_status"],
                     "publishedAt": row["first_published_at"],
                     "updatedAt": row["latest_updated_at"],
+                    "isWechat": bool(row["is_wechat"]),
                     "topicTags": json.loads(row["topic_tags_json"] or "[]"),
                     "ruleAssessment": {
                         "score": round(score, 4),
@@ -145,6 +190,20 @@ class CodexWeeklyHandoff:
             ),
             reverse=True,
         )
+        reserve = min(
+            limit,
+            int(
+                self.department.get("weekly_output", {}).get(
+                    "wechat_candidate_reserve", 8
+                )
+            ),
+        )
+        selected_candidates = reserve_wechat_candidates(
+            candidates,
+            limit,
+            reserve,
+        )
+
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(
             json.dumps(
@@ -166,7 +225,7 @@ class CodexWeeklyHandoff:
                         "公众号解读只能作为辅助，事实必须回到论文、官网或仓库核验。",
                         "方法、结果和证据不得根据标题臆测；证据不足时降低置信度并写明局限。",
                     ],
-                    "candidates": candidates[:limit],
+                    "candidates": selected_candidates[:limit],
                 },
                 ensure_ascii=False,
                 indent=2,

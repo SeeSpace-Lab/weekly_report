@@ -27,3 +27,13 @@ def sha256_text(value: str) -> str:
 def normalize_title(value: str) -> str:
     text = unicodedata.normalize("NFKC", value).casefold()
     return re.sub(r"\W+", " ", text, flags=re.UNICODE).strip()
+
+
+def display_title(value: str) -> str:
+    """Convert small inline LaTeX superscripts into readable Unicode titles."""
+    superscripts = str.maketrans("0123456789+-", "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻")
+
+    def replace(match: re.Match[str]) -> str:
+        return match.group(1).translate(superscripts)
+
+    return re.sub(r"\$\^\{?([0-9+-]+)\}?\$", replace, value)
