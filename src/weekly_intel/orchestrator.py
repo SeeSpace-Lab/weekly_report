@@ -106,12 +106,12 @@ class WeeklyOrchestrator:
                     connection, weekly.issue_id, site_data_path
                 )
         collection = tuple(self._batch_summary(batch) for batch in batches)
-        failed = [
+        unhealthy = [
             item
             for item in collection
-            if item["status"] in {"blocked", "error"}
+            if item["status"] in {"partial", "blocked", "error"}
         ]
-        status = "degraded" if failed else "ok"
+        status = "degraded" if unhealthy else "ok"
         audit_directory.mkdir(parents=True, exist_ok=True)
         audit_path = audit_directory / (
             end.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + ".json"

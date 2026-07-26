@@ -3,8 +3,8 @@
     "id": "d3d27fa1-bc7d-42f6-b0c1-62f19c2a6561",
     "title": "星载大模型推理引擎周报 · 2026-W30",
     "isoWeek": "2026-W30",
-    "windowStart": "2026-07-17T19:28:10.730366+00:00",
-    "windowEnd": "2026-07-24T19:28:10.730366+00:00",
+    "windowStart": "2026-07-19T05:18:54.490814+00:00",
+    "windowEnd": "2026-07-26T05:18:54.490814+00:00",
     "status": "draft",
     "targetReadMinutes": 30,
     "estimatedReadMinutes": 21.0,
@@ -12,8 +12,8 @@
   },
   "trends": [
     "本周有4项相关进展，集中在LLM/VLM/MoE推理引擎。",
-    "本周有3项相关进展，集中在边缘、端侧与实时大模型。",
-    "本周有4项相关进展，集中在KV Cache与分层存储。",
+    "本周有4项相关进展，集中在边缘、端侧与实时大模型。",
+    "本周有3项相关进展，集中在KV Cache与分层存储。",
     "本周有12项相关进展，集中在other。",
     "本周有1项相关进展，集中在推理调度与资源编排。"
   ],
@@ -28,26 +28,30 @@
           "title": "kvcache-ai/ktransformers",
           "url": "https://github.com/kvcache-ai/ktransformers/releases/tag/v0.6.4",
           "reason": "综合评分 0.75；涉及inference_runtime、scheduling、quantization；属于官方框架、Benchmark或数据集更新。",
-          "summary": "自动摘要：# KTransformers v0.6.4: High-Performance End-to-End Full-Parameter and LoRA Fine-Tuning KTransformers v0.6.4 is a major upgrade to the KT fine-tuning path for large sparse MoE models. This release extends KT SFT from end-to-end **Full-Parameter Fine-Tuning** to **LoRA**, while improving BF16 CPU-GPU heterogeneous training throughput and memory efficiency across host RAM and GPU VRAM. ## 🚀 Core Highlights - **End-to-end Full-Parameter and LoRA SFT**: train large sparse MoE models with Full Fine-T\n\n主要贡献：工作围绕“kvcache-ai/ktransformers”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** 推理调度、KV Cache 管理、MoE 专家调度相关研究\n\n**一句话读懂：这项工作聚焦推理调度、KV Cache 管理、MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进推理调度、KV Cache 管理、MoE 专家调度，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“kvcache-ai/ktransformers”研究推理调度、KV Cache 管理、MoE 专家调度，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及inference_runtime、scheduling、quantization；属于官方框架、Benchmark或数据集更新。",
           "readMinutes": 1.5,
           "publishedAt": "2026-07-23T14:32:53+00:00",
           "updatedAt": "2026-07-23T14:32:53+00:00",
-          "status": "Official release: v0.6.4"
-        },
-        {
-          "position": 2,
-          "role": "deep_read",
-          "itemType": "dataset",
-          "title": "wangqiyuan2026/kvcache-bench-results",
-          "url": "https://huggingface.co/datasets/wangqiyuan2026/kvcache-bench-results",
-          "reason": "综合评分 0.59；涉及kv_storage；属于官方框架、Benchmark或数据集更新。",
-          "summary": "自动摘要：Tags: language:en, language:zh, license:cc-by-4.0, size_categories:n<1K, format:json, modality:text, library:datasets, library:pandas, library:polars, library:mlcroissant, region:us, kv-cache, llm-inference, storage, benchmark, vllm, lmcache, rocm\n\n主要贡献：工作围绕“wangqiyuan2026/kvcache-bench-results”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
-          "implication": "涉及kv_storage；属于官方框架、Benchmark或数据集更新。",
-          "readMinutes": 1.5,
-          "publishedAt": "2026-07-18T15:11:32+00:00",
-          "updatedAt": "2026-07-18T16:50:48+00:00",
-          "status": "Official dataset update: c79f5205b466b81ab74b45dff3dbc1e59667175a"
+          "status": "Official release: v0.6.4",
+          "deepRead": {
+            "titleZh": "推理调度、KV Cache 管理、MoE 专家调度相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦推理调度、KV Cache 管理、MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进推理调度、KV Cache 管理、MoE 专家调度，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“kvcache-ai/ktransformers”研究推理调度、KV Cache 管理、MoE 专家调度，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         }
       ]
     },
@@ -61,12 +65,30 @@
           "title": "Efficient Multi-round LLM Inference over Disaggregated Serving",
           "url": "https://arxiv.org/abs/2602.14516",
           "reason": "综合评分 0.65；涉及inference_runtime、edge_realtime、scheduling；当前为arXiv v2重要修订候选。",
-          "summary": "自动摘要：With the rapid evolution of Large Language Models (LLMs), multi-round workflows, such as autonomous agents and iterative retrieval, have become increasingly prevalent. However, this raises hurdles for serving LLMs under prefill-decode (PD) disaggregation, a widely adopted paradigm that separates the compute-bound prefill phase and memory-bound decode phase onto individual resources. Specifically, existing systems overlook the interleaved prefill-decode workload pattern in multi-round inference, \n\n主要贡献：工作围绕“Efficient Multi-round LLM Inference over Disaggregated Serving”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** 推理调度、分布式推理相关研究\n\n**一句话读懂：这项工作聚焦推理调度、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进推理调度、分布式推理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“Efficient Multi-round LLM Inference over Disaggregated Serving”研究推理调度、分布式推理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及inference_runtime、edge_realtime、scheduling；当前为arXiv v2重要修订候选。",
           "readMinutes": 2.0,
           "publishedAt": "2026-02-16T07:07:30+00:00",
           "updatedAt": "2026-07-21T08:53:51+00:00",
-          "status": null
+          "status": null,
+          "deepRead": {
+            "titleZh": "推理调度、分布式推理相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦推理调度、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进推理调度、分布式推理，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“Efficient Multi-round LLM Inference over Disaggregated Serving”研究推理调度、分布式推理，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         },
         {
           "position": 2,
@@ -75,12 +97,30 @@
           "title": "FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention",
           "url": "https://arxiv.org/abs/2606.09079",
           "reason": "综合评分 0.62；涉及inference_runtime、kv_storage、power_aware；当前为arXiv v3重要修订候选。",
-          "summary": "自动摘要：Conventional LLMs keep the full KV cache loaded during decoding, causing a severe GPU memory bottleneck for ultra-long context serving. In this report, we propose \\textbf{Lookahead Sparse Attention (LSA)}, a novel inference paradigm powered by a Neural Memory Indexer built upon the DeepSeek-V4 architecture. Rather than passively attending to all historical tokens, LSA proactively predicts future context demands and preserves only the query-critical KV chunks in the GPU memory. Crucially, we inst\n\n主要贡献：工作围绕“FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** 动态功耗与热约束、KV Cache 管理、分布式推理相关研究\n\n**一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进动态功耗与热约束、KV Cache 管理、分布式推理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention”研究动态功耗与热约束、KV Cache 管理、分布式推理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及inference_runtime、kv_storage、power_aware；当前为arXiv v3重要修订候选。",
           "readMinutes": 2.0,
           "publishedAt": "2026-06-08T06:25:54+00:00",
           "updatedAt": "2026-07-20T13:38:48+00:00",
-          "status": null
+          "status": null,
+          "deepRead": {
+            "titleZh": "动态功耗与热约束、KV Cache 管理、分布式推理相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进动态功耗与热约束、KV Cache 管理、分布式推理，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention”研究动态功耗与热约束、KV Cache 管理、分布式推理，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         },
         {
           "position": 3,
@@ -89,12 +129,30 @@
           "title": "Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning",
           "url": "https://arxiv.org/abs/2607.18722",
           "reason": "综合评分 0.58；涉及inference_runtime、moe_runtime；当前为arXiv v2重要修订候选。",
-          "summary": "自动摘要：Asynchronous reinforcement learning improves throughput by decoupling rollout generation from optimization, but staleness is an inevitable byproduct compounded by policy lag, engine delays, and mixture-of-experts routing. From a trust-region perspective, this mismatch is critical: training-inference divergence governs approximation error in finite-horizon bounds, whereas PPO clipping only gates sampled outward updates, acting as a sampled surrogate rather than a full-policy constraint. As a resu\n\n主要贡献：工作围绕“Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** MoE 专家调度相关研究\n\n**一句话读懂：这项工作聚焦MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进MoE 专家调度，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning”研究MoE 专家调度，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及inference_runtime、moe_runtime；当前为arXiv v2重要修订候选。",
           "readMinutes": 2.0,
           "publishedAt": "2026-07-21T05:27:50+00:00",
           "updatedAt": "2026-07-22T14:40:14+00:00",
-          "status": null
+          "status": null,
+          "deepRead": {
+            "titleZh": "MoE 专家调度相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进MoE 专家调度，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning”研究MoE 专家调度，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         }
       ]
     },
@@ -108,12 +166,30 @@
           "title": "Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference",
           "url": "https://arxiv.org/abs/2602.04595",
           "reason": "综合评分 0.63；涉及kv_storage、edge_realtime、power_aware；当前为arXiv v3重要修订候选。",
-          "summary": "自动摘要：Large Language Models (LLMs) incur substantial memory and computation costs. Prior works reduce FP-INT arithmetic overhead by converting linear-layer activations to block floating point (BFP), but retain FP activations in attention layers due to accuracy concerns. We propose Harmonia, an algorithm-hardware co-design framework that enables BFP representation and computation across both linear and attention layers. Harmonia first explores BFP configurations to balance model accuracy and activation\n\n主要贡献：工作围绕“Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** 动态功耗与热约束、KV Cache 管理相关研究\n\n**一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及kv_storage、edge_realtime、power_aware；当前为arXiv v3重要修订候选。",
           "readMinutes": 2.0,
           "publishedAt": "2026-02-04T14:22:08+00:00",
           "updatedAt": "2026-07-22T11:57:18+00:00",
-          "status": null
+          "status": null,
+          "deepRead": {
+            "titleZh": "动态功耗与热约束、KV Cache 管理相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         },
         {
           "position": 2,
@@ -122,12 +198,30 @@
           "title": "SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training",
           "url": "https://arxiv.org/abs/2603.06642",
           "reason": "综合评分 0.58；涉及kv_storage；当前为arXiv v2重要修订候选。",
-          "summary": "自动摘要：Test-Time Training (TTT) language models replace the KV-cache with fast weights updated during inference, achieving O(1) memory but suffering catastrophic failure on exact-recall tasks. Version 1 of this work proposed SR-TTT, which routes high-surprisal tokens to a sparse exact-attention Residual Cache, and reported large Needle-in-a-Haystack gains. We show those gains were evaluation artifacts: the loss and metric read logits at the answer positions rather than one position earlier, training bo\n\n主要贡献：工作围绕“SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** KV Cache 管理相关研究\n\n**一句话读懂：这项工作聚焦KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进KV Cache 管理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training”研究KV Cache 管理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及kv_storage；当前为arXiv v2重要修订候选。",
           "readMinutes": 2.0,
           "publishedAt": "2026-02-26T01:54:24+00:00",
           "updatedAt": "2026-07-22T21:06:43+00:00",
-          "status": null
+          "status": null,
+          "deepRead": {
+            "titleZh": "KV Cache 管理相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进KV Cache 管理，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training”研究KV Cache 管理，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         }
       ]
     },
@@ -141,12 +235,62 @@
           "title": "CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms",
           "url": "https://arxiv.org/abs/2605.23348",
           "reason": "综合评分 0.62；涉及power_aware、edge_realtime、inference_runtime；当前为arXiv v2重要修订候选。",
-          "summary": "自动摘要：AI power demand is growing at an unprecedented rate while power grids are often ailing and struggle to keep up. Grid expansion comes with high capital expenditure and long-distance transmission losses, yet there is abundant renewable energy at the source, just not matched to demand. This paper proposes a complementary AI infrastructure deployment model, AI Greeninferencing, that brings modular AI compute to renewable energy sources, focusing on wind, allowing AI footprint expansion, generating l\n\n主要贡献：工作围绕“CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms”提出了与部门方向相关的方法或系统。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "summary": "**中文题名：** 动态功耗与热约束、KV Cache 管理相关研究\n\n**一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
           "implication": "涉及power_aware、edge_realtime、inference_runtime；当前为arXiv v2重要修订候选。",
           "readMinutes": 2.0,
           "publishedAt": "2026-05-22T08:08:47+00:00",
           "updatedAt": "2026-07-21T12:51:29+00:00",
-          "status": null
+          "status": null,
+          "deepRead": {
+            "titleZh": "动态功耗与热约束、KV Cache 管理相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
+        },
+        {
+          "position": 2,
+          "role": "deep_read",
+          "itemType": "review_article",
+          "title": "让VLA真正跑上机器人：北大团队开源Jetson-PI，Jetson Orin控制频率提升8.66倍",
+          "url": "https://mp.weixin.qq.com/s/ugr2S_Vuf1x9jpHA6IEDzw",
+          "reason": "综合评分 0.53；涉及power_aware、edge_realtime；来自固定订阅池的权威综述或论文解读。",
+          "summary": "**中文题名：** 受限资源下的大模型推理相关研究\n\n**一句话读懂：这项工作聚焦受限资源下的大模型推理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进受限资源下的大模型推理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“让VLA真正跑上机器人：北大团队开源Jetson-PI，Jetson Orin控制频率提升8.66倍”研究受限资源下的大模型推理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+          "implication": "涉及power_aware、edge_realtime；来自固定订阅池的权威综述或论文解读。",
+          "readMinutes": 1.5,
+          "publishedAt": "2026-07-24T22:43:21+00:00",
+          "updatedAt": "2026-07-24T22:43:21+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "受限资源下的大模型推理相关研究",
+            "oneSentenceZh": "一句话读懂：这项工作聚焦受限资源下的大模型推理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+            "problemZh": "研究问题：如何改进受限资源下的大模型推理，并满足推理系统约束。",
+            "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+            "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+            "contributions": [
+              "工作围绕“让VLA真正跑上机器人：北大团队开源Jetson-PI，Jetson Orin控制频率提升8.66倍”研究受限资源下的大模型推理，具体贡献需结合原文核验。"
+            ],
+            "evidence": [
+              "当前证据来自论文摘要或官方项目说明。"
+            ],
+            "limitations": [
+              "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+            ],
+            "confidence": 0.55,
+            "modelVersion": "deterministic-deep-read-v2"
+          }
         }
       ]
     },
@@ -165,7 +309,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T19:05:38.655136+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 2,
@@ -179,7 +324,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T19:05:38.655136+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 3,
@@ -193,7 +339,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T19:05:38.655136+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 4,
@@ -207,7 +354,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 5,
@@ -221,7 +369,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 6,
@@ -235,7 +384,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 7,
@@ -249,7 +399,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 8,
@@ -263,7 +414,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 9,
@@ -277,7 +429,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 10,
@@ -291,7 +444,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 11,
@@ -305,7 +459,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         },
         {
           "position": 12,
@@ -319,7 +474,8 @@
           "readMinutes": 0.5,
           "publishedAt": null,
           "updatedAt": "2026-07-24T18:46:56.283490+00:00",
-          "status": null
+          "status": null,
+          "deepRead": null
         }
       ]
     }

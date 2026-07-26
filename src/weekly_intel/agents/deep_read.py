@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sqlite3
 import uuid
+import json
 
 from ..analysis_backend import AnalysisBackend
 from ..utils import isoformat, utc_now
@@ -71,7 +72,11 @@ class PaperDeepReadAgent:
             evidence_text = "；".join(result.evidence)
             limitation_text = "；".join(result.limitations)
             display = (
-                f"{result.summary_zh}\n\n"
+                f"**中文题名：** {result.title_zh}\n\n"
+                f"**{result.summary_zh}**\n\n"
+                f"{result.problem_zh}\n\n"
+                f"{result.method_zh}\n\n"
+                f"{result.result_zh}\n\n"
                 f"主要贡献：{contribution_text}\n\n"
                 f"证据：{evidence_text}\n\n"
                 f"局限：{limitation_text}"
@@ -86,6 +91,45 @@ class PaperDeepReadAgent:
                     display,
                     result.department_implication,
                     row["selection_id"],
+                ),
+            )
+            connection.execute(
+                """
+                INSERT INTO deep_read_cards (
+                    selection_id, title_zh, one_sentence_zh, problem_zh,
+                    method_zh, result_zh, contributions_json, evidence_json,
+                    limitations_json, department_implication, confidence,
+                    model_version, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(selection_id) DO UPDATE SET
+                    title_zh=excluded.title_zh,
+                    one_sentence_zh=excluded.one_sentence_zh,
+                    problem_zh=excluded.problem_zh,
+                    method_zh=excluded.method_zh,
+                    result_zh=excluded.result_zh,
+                    contributions_json=excluded.contributions_json,
+                    evidence_json=excluded.evidence_json,
+                    limitations_json=excluded.limitations_json,
+                    department_implication=excluded.department_implication,
+                    confidence=excluded.confidence,
+                    model_version=excluded.model_version,
+                    updated_at=excluded.updated_at
+                """,
+                (
+                    row["selection_id"],
+                    result.title_zh,
+                    result.summary_zh,
+                    result.problem_zh,
+                    result.method_zh,
+                    result.result_zh,
+                    json.dumps(result.contributions, ensure_ascii=False),
+                    json.dumps(result.evidence, ensure_ascii=False),
+                    json.dumps(result.limitations, ensure_ascii=False),
+                    result.department_implication,
+                    result.confidence,
+                    result.model_version,
+                    now,
+                    now,
                 ),
             )
             if row["raw_document_id"]:

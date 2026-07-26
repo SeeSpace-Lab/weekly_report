@@ -21,9 +21,9 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 
 - SQLite 保存来源、采集运行、原始记录、研究对象、版本、证据、评估、选稿和审阅记录；
 - 同一来源与内容哈希幂等写入，arXiv、DOI、OpenReview 等标识用于跨来源合并；
-- 单个外部来源失败时保留其他结果，并在审计记录中标为 `degraded`；
-- 公众号只使用配置中的固定订阅池；未配置 Feed 时明确返回 `blocked`；
-- 精读默认使用确定性后端；配置兼容接口后使用模型输出经结构校验的 JSON；
+- 单个外部来源失败或返回异常空 Feed 时保留其他结果，并在审计记录中标为 `degraded`；
+- 公众号只使用配置中的固定订阅池；区分“本周无更新”、空 Feed、鉴权失败、限流、网络异常和上游错误；
+- 精读默认使用确定性后端；配置兼容接口后生成中文题名、一句话摘要、问题、方法、结果和证据等结构化字段；
 - `run-weekly` 同时生成周报、运行审计和 `site/app/report-data.json`；
 - GitHub Actions 每周一北京时间 09:00 自动运行，并验证网页构建。
 
@@ -95,7 +95,15 @@ $env:WECHAT_FEED_BASE_URL = "http://127.0.0.1:8001/feed"
 .\.venv\Scripts\weekly-intel.exe collect-wechat --days 7
 ```
 
-GitHub Actions 无法访问开发机的 `127.0.0.1`。正式自动运行前，需要把 WeRSS 部署到可由 Actions 访问的受控地址，再把该地址配置为仓库变量 `WECHAT_FEED_BASE_URL`。
+若 Feed 服务经反向代理启用了令牌鉴权：
+
+```powershell
+$env:WECHAT_FEED_AUTH_TOKEN = "<token>"
+```
+
+也可在单个来源配置 `auth_token_env`、`auth_header_name` 和 `auth_scheme`。密钥仅从环境变量读取，不写入采集审计或仓库。
+
+GitHub Actions 无法访问开发机的 `127.0.0.1`。正式自动运行前，需要把 WeRSS 部署到可由 Actions 访问的受控 HTTPS 地址，将地址配置为仓库变量 `WECHAT_FEED_BASE_URL`，将访问令牌配置为仓库密钥 `WECHAT_FEED_AUTH_TOKEN`。本地 Docker 只作为开发和故障排查环境，云端服务稳定后无需为每周任务保持本机开机。
 
 其他可选凭据：
 
@@ -103,6 +111,7 @@ GitHub Actions 无法访问开发机的 `127.0.0.1`。正式自动运行前，�
 - `GITHUB_TOKEN`
 - `HF_TOKEN`
 - `WECHAT_FEED_BASE_URL` 或各公众号配置对应的 Feed 环境变量
+- `WECHAT_FEED_AUTH_TOKEN`（云端 Feed 开启鉴权时）
 
 ## 测试
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 import uuid
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -20,6 +21,7 @@ from weekly_intel.repository import Repository
 from weekly_intel.review import ReviewService
 from weekly_intel.utils import json_dumps, sha256_text
 from weekly_intel.weekly import WeeklyPipelineService
+from weekly_intel.site_export import SiteDataExportAgent
 
 
 class WeeklyPipelineTest(unittest.TestCase):
@@ -116,6 +118,8 @@ class WeeklyPipelineTest(unittest.TestCase):
             self.assertIn("# 星载大模型推理引擎周报", content)
             self.assertIn("## 本周趋势", content)
             self.assertIn("Power-Aware Scheduling", content)
+            self.assertIn("一句话读懂", content)
+            self.assertIn("研究问题", content)
             self.assertIn("主要贡献", content)
             with database.session() as connection:
                 issue = connection.execute(
@@ -124,9 +128,27 @@ class WeeklyPipelineTest(unittest.TestCase):
                 assessments = connection.execute(
                     "SELECT COUNT(*) FROM department_assessments"
                 ).fetchone()[0]
+                deep_read_cards = connection.execute(
+                    "SELECT COUNT(*) FROM deep_read_cards"
+                ).fetchone()[0]
             self.assertEqual(issue["status"], "draft")
             self.assertEqual(assessments, 4)
+            self.assertGreaterEqual(deep_read_cards, 3)
             self.assertEqual(Path(issue["output_markdown_url"]), output.resolve())
+            site_data = Path(temp_dir) / "report-data.json"
+            with database.transaction() as connection:
+                SiteDataExportAgent().export(
+                    connection, result.issue_id, site_data
+                )
+            payload = json.loads(site_data.read_text(encoding="utf-8"))
+            deep_reads = [
+                item["deepRead"]
+                for section in payload["sections"]
+                for item in section["items"]
+                if item["deepRead"]
+            ]
+            self.assertGreaterEqual(len(deep_reads), 3)
+            self.assertIn("问题", deep_reads[0]["problemZh"])
 
             review_service = ReviewService(database)
             with database.session() as connection:

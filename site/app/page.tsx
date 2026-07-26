@@ -1,7 +1,42 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import report from "./report-data.json";
+import reportData from "./report-data.json";
+
+type DeepRead = {
+  titleZh: string;
+  oneSentenceZh: string;
+  problemZh: string;
+  methodZh: string;
+  resultZh: string;
+  contributions: string[];
+  evidence: string[];
+  limitations: string[];
+  confidence: number;
+  modelVersion: string;
+};
+
+type ReportItem = {
+  position: number;
+  role: string;
+  itemType: string;
+  title: string;
+  url: string | null;
+  reason: string;
+  summary: string | null;
+  implication: string | null;
+  readMinutes: number;
+  publishedAt: string | null;
+  updatedAt: string | null;
+  status: string | null;
+  deepRead?: DeepRead | null;
+};
+
+type Report = Omit<typeof reportData, "sections"> & {
+  sections: Array<{ id: string; items: ReportItem[] }>;
+};
+
+const report = reportData as Report;
 
 const sectionNames: Record<string, string> = {
   must_read: "本周必读",
@@ -49,7 +84,9 @@ export default function Home() {
         ...section,
         items: section.items.filter((item) => {
           if (!normalized) return true;
-          return `${item.title} ${item.reason} ${item.summary ?? ""}`
+          return `${item.title} ${item.reason} ${item.summary ?? ""} ${
+            item.deepRead?.titleZh ?? ""
+          } ${item.deepRead?.oneSentenceZh ?? ""}`
             .toLocaleLowerCase()
             .includes(normalized);
         }),
@@ -167,6 +204,7 @@ export default function Home() {
               <div className="cardGrid">
                 {section.items.map((item) => {
                   const summary = plainSummary(item.summary);
+                  const deepRead = item.deepRead;
                   return (
                     <article className="intelCard" key={`${section.id}-${item.position}`}>
                       <div className="cardMeta">
@@ -178,13 +216,36 @@ export default function Home() {
                       </div>
                       <h3>
                         <a href={item.url ?? "#"} target="_blank" rel="noreferrer">
-                          {item.title}
+                          {deepRead?.titleZh || item.title}
                         </a>
                       </h3>
+                      {deepRead?.titleZh && (
+                        <p className="originalTitle">{item.title}</p>
+                      )}
                       {item.status && <p className="statusTag">{item.status}</p>}
-                      <p className="summary">
-                        {summary.length > 560 ? `${summary.slice(0, 560)}…` : summary}
-                      </p>
+                      {deepRead ? (
+                        <div className="deepRead">
+                          <p className="oneSentence">{deepRead.oneSentenceZh}</p>
+                          <dl>
+                            <div>
+                              <dt>问题</dt>
+                              <dd>{deepRead.problemZh}</dd>
+                            </div>
+                            <div>
+                              <dt>方法</dt>
+                              <dd>{deepRead.methodZh}</dd>
+                            </div>
+                            <div>
+                              <dt>结果</dt>
+                              <dd>{deepRead.resultZh}</dd>
+                            </div>
+                          </dl>
+                        </div>
+                      ) : (
+                        <p className="summary">
+                          {summary.length > 560 ? `${summary.slice(0, 560)}…` : summary}
+                        </p>
+                      )}
                       <div className="implication">
                         <span>部门意义</span>
                         <p>{item.implication}</p>

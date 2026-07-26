@@ -272,6 +272,24 @@ CREATE TABLE IF NOT EXISTS weekly_selections (
     UNIQUE (issue_id, item_id)
 );
 
+CREATE TABLE IF NOT EXISTS deep_read_cards (
+    selection_id TEXT PRIMARY KEY
+        REFERENCES weekly_selections(selection_id) ON DELETE CASCADE,
+    title_zh TEXT NOT NULL,
+    one_sentence_zh TEXT NOT NULL,
+    problem_zh TEXT NOT NULL,
+    method_zh TEXT NOT NULL,
+    result_zh TEXT NOT NULL,
+    contributions_json TEXT NOT NULL,
+    evidence_json TEXT NOT NULL,
+    limitations_json TEXT NOT NULL,
+    department_implication TEXT NOT NULL,
+    confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 1),
+    model_version TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS editorial_reviews (
     review_id TEXT PRIMARY KEY,
     issue_id TEXT NOT NULL REFERENCES weekly_issues(issue_id) ON DELETE CASCADE,

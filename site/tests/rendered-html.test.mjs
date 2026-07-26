@@ -36,6 +36,8 @@ test("server-renders the OrbitInfer weekly report", async () => {
   assert.match(html, /20<\/strong><span>精选条目/);
   assert.match(html, /og:image/);
   assert.match(html, /查看一手来源/);
+  assert.match(html, /一句话读懂/);
+  assert.match(html, /<dt>问题<\/dt>/);
   assert.doesNotMatch(html, /Your site is taking shape|Building your site/);
 });
 
@@ -50,6 +52,11 @@ test("ships structured report data and interaction controls", async () => {
   assert.equal(payload.issue.itemCount, 20);
   assert.ok(payload.sections.length >= 5);
   assert.ok(payload.sections.every((section) => Array.isArray(section.items)));
+  assert.ok(
+    payload.sections.some((section) =>
+      section.items.some((item) => item.deepRead?.problemZh),
+    ),
+  );
   assert.match(page, /useState/);
   assert.match(page, /setActiveSection/);
   assert.match(page, /setQuery/);

@@ -21,6 +21,10 @@ class SiteDataExportAgent:
             SELECT s.selection_id, s.section, s.position, s.content_role,
                    s.selection_reason, s.display_summary,
                    s.department_implication, s.estimated_read_minutes,
+                   c.title_zh, c.one_sentence_zh, c.problem_zh,
+                   c.method_zh, c.result_zh, c.contributions_json,
+                   c.evidence_json, c.limitations_json, c.confidence,
+                   c.model_version,
                    r.item_type, r.canonical_title, r.canonical_url,
                    r.first_published_at, r.latest_updated_at,
                    (
@@ -42,6 +46,7 @@ class SiteDataExportAgent:
                    ) AS review_decision
             FROM weekly_selections s
             JOIN research_items r ON r.item_id=s.item_id
+            LEFT JOIN deep_read_cards c ON c.selection_id=s.selection_id
             WHERE s.issue_id=?
             ORDER BY s.section, s.position
             """,
@@ -54,6 +59,24 @@ class SiteDataExportAgent:
         ]
         sections: dict[str, list[dict[str, object]]] = {}
         for row in visible:
+            deep_read = None
+            if row["one_sentence_zh"]:
+                deep_read = {
+                    "titleZh": row["title_zh"],
+                    "oneSentenceZh": row["one_sentence_zh"],
+                    "problemZh": row["problem_zh"],
+                    "methodZh": row["method_zh"],
+                    "resultZh": row["result_zh"],
+                    "contributions": json.loads(
+                        row["contributions_json"] or "[]"
+                    ),
+                    "evidence": json.loads(row["evidence_json"] or "[]"),
+                    "limitations": json.loads(
+                        row["limitations_json"] or "[]"
+                    ),
+                    "confidence": row["confidence"],
+                    "modelVersion": row["model_version"],
+                }
             sections.setdefault(row["section"], []).append(
                 {
                     "position": row["position"],
@@ -68,6 +91,7 @@ class SiteDataExportAgent:
                     "publishedAt": row["first_published_at"],
                     "updatedAt": row["latest_updated_at"],
                     "status": row["publication_status"] or row["release_status"],
+                    "deepRead": deep_read,
                 }
             )
         trends = [

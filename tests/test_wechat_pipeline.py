@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import unittest
+import os
+import urllib.error
 from datetime import datetime, timezone
+from unittest.mock import patch
 
 from weekly_intel.collectors.wechat import WechatPoolCollector
 from weekly_intel.contracts import CollectionWindow, SourceConfig
@@ -25,6 +28,8 @@ RSS = """<?xml version="1.0" encoding="UTF-8"?>
   </channel>
 </rss>
 """.encode()
+
+EMPTY_RSS = b'<?xml version="1.0"?><rss><channel></channel></rss>'
 
 
 class WechatPipelineTest(unittest.TestCase):
@@ -72,6 +77,77 @@ class WechatPipelineTest(unittest.TestCase):
         self.assertEqual(
             batch.errors[0].code, "subscription_not_configured"
         )
+
+    def test_empty_feed_is_not_reported_as_no_update(self) -> None:
+        source = SourceConfig(
+            source_id="wechat_empty",
+            name="Empty",
+            source_type="wechat",
+            connector="WechatPoolCollector",
+            tier="S_Core",
+            options={"feed_url": "https://feeds.example/empty.xml"},
+        )
+        batch = WechatPoolCollector(
+            fetcher=lambda url, headers, timeout: EMPTY_RSS
+        ).collect(source, self.window)
+        self.assertEqual(batch.status.value, "partial")
+        self.assertEqual(batch.stats["health_status"], "empty_feed")
+        self.assertEqual(batch.errors[0].code, "empty_feed")
+
+    def test_authorization_header_uses_environment_secret(self) -> None:
+        captured = {}
+
+        def fetcher(url, headers, timeout):
+            captured.update(headers)
+            return RSS
+
+        source = SourceConfig(
+            source_id="wechat_auth",
+            name="Auth",
+            source_type="wechat",
+            connector="WechatPoolCollector",
+            tier="S_Core",
+            options={
+                "feed_url": "https://feeds.example/auth.xml",
+                "auth_token_env": "TEST_WECHAT_TOKEN",
+            },
+        )
+        with patch.dict(os.environ, {"TEST_WECHAT_TOKEN": "secret-value"}):
+            batch = WechatPoolCollector(fetcher=fetcher).collect(
+                source, self.window
+            )
+        self.assertEqual(batch.status.value, "ok")
+        self.assertEqual(captured["Authorization"], "Bearer secret-value")
+        self.assertNotIn("secret-value", str(batch))
+
+    def test_http_and_network_errors_are_classified(self) -> None:
+        source = SourceConfig(
+            source_id="wechat_error",
+            name="Error",
+            source_type="wechat",
+            connector="WechatPoolCollector",
+            tier="S_Core",
+            options={"feed_url": "https://feeds.example/error.xml"},
+        )
+
+        def unauthorized(url, headers, timeout):
+            raise urllib.error.HTTPError(url, 401, "Unauthorized", {}, None)
+
+        auth_batch = WechatPoolCollector(fetcher=unauthorized).collect(
+            source, self.window
+        )
+        self.assertEqual(auth_batch.status.value, "blocked")
+        self.assertEqual(auth_batch.errors[0].code, "feed_auth_failed")
+        self.assertFalse(auth_batch.errors[0].retryable)
+
+        def network_error(url, headers, timeout):
+            raise urllib.error.URLError("temporary DNS failure")
+
+        network_batch = WechatPoolCollector(fetcher=network_error).collect(
+            source, self.window
+        )
+        self.assertEqual(network_batch.status.value, "error")
+        self.assertEqual(network_batch.errors[0].code, "feed_network_error")
 
 
 if __name__ == "__main__":

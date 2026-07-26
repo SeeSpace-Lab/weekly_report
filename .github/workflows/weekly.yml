@@ -35,6 +35,8 @@ jobs:
           OPENREVIEW_TOKEN: ${{ secrets.OPENREVIEW_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          WECHAT_FEED_BASE_URL: ${{ vars.WECHAT_FEED_BASE_URL }}
+          WECHAT_FEED_AUTH_TOKEN: ${{ secrets.WECHAT_FEED_AUTH_TOKEN }}
           WEEKLY_LLM_API_KEY: ${{ secrets.WEEKLY_LLM_API_KEY }}
           WEEKLY_LLM_BASE_URL: ${{ vars.WEEKLY_LLM_BASE_URL }}
           WEEKLY_LLM_MODEL: ${{ vars.WEEKLY_LLM_MODEL }}

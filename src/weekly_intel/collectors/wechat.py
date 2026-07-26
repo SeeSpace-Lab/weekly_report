@@ -78,6 +78,28 @@ class WechatPoolCollector:
             return f"{base.rstrip('/')}/{account_id}.xml"
         return None
 
+    @staticmethod
+    def _headers(source: SourceConfig) -> dict[str, str]:
+        headers = {
+            "Accept": "application/rss+xml, application/atom+xml, application/xml",
+            "User-Agent": str(
+                source.options.get("user_agent", "weekly-intel/0.1")
+            ),
+        }
+        token_env = str(
+            source.options.get(
+                "auth_token_env", "WECHAT_FEED_AUTH_TOKEN"
+            )
+        )
+        token = os.environ.get(token_env)
+        if token:
+            header_name = str(
+                source.options.get("auth_header_name", "Authorization")
+            )
+            scheme = str(source.options.get("auth_scheme", "Bearer")).strip()
+            headers[header_name] = f"{scheme} {token}".strip()
+        return headers
+
     def parse(
         self,
         payload: bytes,
@@ -170,13 +192,38 @@ class WechatPoolCollector:
                     content_hash=sha256_text(json_dumps(raw)),
                 )
             )
+        feed_entries = len(entries)
+        if documents:
+            status = BatchStatus.OK
+            health_status = "ok"
+            errors = ()
+        elif feed_entries:
+            status = BatchStatus.UNCHANGED
+            health_status = "no_recent_update"
+            errors = ()
+        else:
+            status = BatchStatus.PARTIAL
+            health_status = "empty_feed"
+            errors = (
+                CollectionError(
+                    code="empty_feed",
+                    message="Feed is reachable but contains no entries",
+                    retryable=True,
+                    target=source.source_id,
+                ),
+            )
         return CollectionBatch(
             run_id=run_id,
             source_id=source.source_id,
-            status=BatchStatus.OK if documents else BatchStatus.UNCHANGED,
+            status=status,
             documents=documents,
             next_cursor=isoformat(latest_seen),
-            stats={"feed_entries": len(entries), "in_window": len(documents)},
+            errors=errors,
+            stats={
+                "feed_entries": feed_entries,
+                "in_window": len(documents),
+                "health_status": health_status,
+            },
         )
 
     def collect(
@@ -202,36 +249,76 @@ class WechatPoolCollector:
                         target=source.source_id,
                     ),
                 ),
+                stats={"health_status": "not_configured"},
             )
         try:
             payload = self._fetcher(
                 feed_url,
-                {
-                    "Accept": "application/rss+xml, application/atom+xml, application/xml",
-                    "User-Agent": str(
-                        source.options.get("user_agent", "weekly-intel/0.1")
-                    ),
-                },
+                self._headers(source),
                 float(source.options.get("timeout_seconds", 30)),
             )
             return self.parse(payload, source, window, run_id)
         except urllib.error.HTTPError as error:
+            if error.code in {401, 403}:
+                status = BatchStatus.BLOCKED
+                code = "feed_auth_failed"
+                health_status = "auth_failed"
+                retryable = False
+            elif error.code == 429:
+                status = BatchStatus.PARTIAL
+                code = "feed_rate_limited"
+                health_status = "rate_limited"
+                retryable = True
+            else:
+                status = BatchStatus.ERROR
+                code = "feed_upstream_error"
+                health_status = "upstream_error"
+                retryable = error.code >= 500
             return CollectionBatch(
                 run_id=run_id,
                 source_id=source.source_id,
-                status=(
-                    BatchStatus.BLOCKED
-                    if error.code in {401, 403, 429}
-                    else BatchStatus.ERROR
-                ),
+                status=status,
                 errors=(
                     CollectionError(
-                        code="feed_access_error",
+                        code=code,
                         message=f"Feed HTTP {error.code}",
-                        retryable=True,
-                        target=feed_url,
+                        retryable=retryable,
+                        target=source.source_id,
+                        details={"http_status": error.code},
                     ),
                 ),
+                stats={"health_status": health_status},
+            )
+        except ET.ParseError as error:
+            return CollectionBatch(
+                run_id=run_id,
+                source_id=source.source_id,
+                status=BatchStatus.ERROR,
+                errors=(
+                    CollectionError(
+                        code="invalid_feed",
+                        message=f"Feed XML is invalid: {error}",
+                        retryable=True,
+                        target=source.source_id,
+                    ),
+                ),
+                stats={"health_status": "invalid_feed"},
+            )
+        except (urllib.error.URLError, TimeoutError) as error:
+            reason = getattr(error, "reason", error)
+            return CollectionBatch(
+                run_id=run_id,
+                source_id=source.source_id,
+                status=BatchStatus.ERROR,
+                errors=(
+                    CollectionError(
+                        code="feed_network_error",
+                        message=f"Feed network error: {reason}",
+                        retryable=True,
+                        target=source.source_id,
+                    ),
+                ),
+                stats={"health_status": "network_error"},
             )
         except Exception as error:
             return CollectionBatch(
@@ -240,10 +327,11 @@ class WechatPoolCollector:
                 status=BatchStatus.ERROR,
                 errors=(
                     CollectionError(
-                        code=type(error).__name__,
-                        message=str(error),
+                        code="feed_unexpected_error",
+                        message=f"{type(error).__name__}: {error}",
                         retryable=True,
-                        target=feed_url,
+                        target=source.source_id,
                     ),
                 ),
+                stats={"health_status": "unexpected_error"},
             )
