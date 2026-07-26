@@ -53,10 +53,12 @@ class WeeklyOrchestrator:
         output_path: Path,
         audit_directory: Path,
         site_data_path: Path | None = None,
+        window_start: datetime | None = None,
     ) -> AutomatedRunResult:
         if end.tzinfo is None:
             raise ValueError("end must be timezone-aware")
-        window = CollectionWindow(end - timedelta(days=days), end)
+        start = window_start or end - timedelta(days=days)
+        window = CollectionWindow(start, end)
         service = CollectionService(self.database)
         batches: list[CollectionBatch] = []
         batches.append(

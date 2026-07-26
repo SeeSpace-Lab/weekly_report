@@ -25,6 +25,12 @@ Never request, read, configure, or call an external model API key.
    .\.venv\Scripts\weekly-intel.exe export-codex-brief
    ```
 
+   `run-weekly` defaults to the previous complete Asia/Shanghai calendar week:
+   Monday 00:00 through Sunday 23:59:59, named with that week's ISO number. If
+   it returns `skipped_protected`, the issue is already approved or published;
+   stop the run without exporting a brief or changing any selected content.
+   The command may normalize that issue's date metadata to the closed calendar
+   week, but it must never replace its approved selections.
 5. Read `runs/codex/current-brief.json`. The exporter must reserve eight
    fixed-pool WeChat candidates whenever at least eight are available in the
    collection window. Review all eight, but do not force any of them into the

@@ -2,6 +2,7 @@ department_id: orbitinfer
 name: 星载大模型推理引擎
 version: "0.1"
 enabled: true
+timezone: Asia/Shanghai
 
 mission: >-
   跟踪大模型推理引擎及其在星载、边缘、实时、功耗受限、

@@ -8,11 +8,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .candidates import rank_candidates
+from .calendar_window import previous_complete_week
 from .config import load_sources, load_yaml
 from .contracts import CollectionWindow
 from .db import Database
 from .service import CollectionService
 from .review import ReviewService
+from .render import MarkdownRenderAgent
 from .orchestrator import WeeklyOrchestrator
 from .weekly import WeeklyPipelineService
 from .site_export import SiteDataExportAgent
@@ -147,6 +149,15 @@ def build_parser() -> argparse.ArgumentParser:
 
     run_weekly = subparsers.add_parser("run-weekly")
     run_weekly.add_argument("--days", type=int, default=7)
+    run_weekly.add_argument(
+        "--window-mode",
+        choices=["closed-week", "rolling"],
+        default="closed-week",
+        help=(
+            "closed-week builds the previous local Monday-Sunday period; "
+            "rolling preserves the legacy trailing-N-days behavior"
+        ),
+    )
     run_weekly.add_argument("--iso-week")
     run_weekly.add_argument("--output", type=Path)
     run_weekly.add_argument(
@@ -536,15 +547,88 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "run-weekly":
         database.initialize(args.schema)
         department = load_yaml(args.department)
-        end = datetime.now(timezone.utc)
-        year, week, _ = end.isocalendar()
-        iso_week = args.iso_week or f"{year}-W{week:02d}"
+        now = datetime.now(timezone.utc)
+        if args.window_mode == "closed-week":
+            calendar_window = previous_complete_week(
+                now,
+                str(department.get("timezone", "Asia/Shanghai")),
+            )
+            start = calendar_window.start
+            end = calendar_window.end
+            iso_week = args.iso_week or calendar_window.iso_week
+        else:
+            end = now
+            start = end - timedelta(days=args.days)
+            year, week, _ = end.isocalendar()
+            iso_week = args.iso_week or f"{year}-W{week:02d}"
         output = args.output or (
             _default_root()
             / "outputs"
             / department["department_id"]
             / f"{iso_week}.md"
         )
+        with database.session() as connection:
+            protected_issue = connection.execute(
+                """
+                SELECT issue_id, status, window_start, window_end
+                FROM weekly_issues
+                WHERE department_id = ? AND iso_week = ?
+                  AND status IN ('approved', 'published')
+                """,
+                (department["department_id"], iso_week),
+            ).fetchone()
+        if protected_issue:
+            metadata_updated = False
+            if (
+                args.window_mode == "closed-week"
+                and (
+                    protected_issue["window_start"] != start.isoformat()
+                    or protected_issue["window_end"] != end.isoformat()
+                )
+            ):
+                with database.transaction() as connection:
+                    connection.execute(
+                        """
+                        UPDATE weekly_issues
+                        SET window_start=?, window_end=?
+                        WHERE issue_id=?
+                        """,
+                        (
+                            start.isoformat(),
+                            end.isoformat(),
+                            protected_issue["issue_id"],
+                        ),
+                    )
+                    MarkdownRenderAgent().write(
+                        connection,
+                        protected_issue["issue_id"],
+                        output,
+                    )
+                    if args.site_data is not None:
+                        SiteDataExportAgent().export(
+                            connection,
+                            protected_issue["issue_id"],
+                            args.site_data,
+                        )
+                metadata_updated = True
+            print(
+                json.dumps(
+                    {
+                        "status": "skipped_protected",
+                        "reason": (
+                            f"{iso_week} is already "
+                            f"{protected_issue['status']}"
+                        ),
+                        "issue_id": protected_issue["issue_id"],
+                        "iso_week": iso_week,
+                        "window_start": start.isoformat(),
+                        "window_end": end.isoformat(),
+                        "metadata_updated": metadata_updated,
+                    },
+                    ensure_ascii=False,
+                )
+            )
+            return 0
         result = WeeklyOrchestrator(
             database, args.sources, department
         ).run(
@@ -554,6 +638,7 @@ def main(argv: list[str] | None = None) -> int:
             output,
             args.audit_directory,
             args.site_data,
+            window_start=start,
         )
         print(
             json.dumps(
