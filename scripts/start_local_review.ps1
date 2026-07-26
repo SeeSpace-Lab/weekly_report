@@ -35,7 +35,7 @@ if (-not (Test-LocalPort -Port 3000)) {
     $siteStart = [System.Diagnostics.ProcessStartInfo]::new()
     $siteStart.FileName = $nodeCommand
     $siteStart.Arguments = (
-        "`"$vinextCli`" start --hostname 127.0.0.1 --port 3000"
+        "`"$vinextCli`" dev --hostname 127.0.0.1 --port 3000"
     )
     $siteStart.WorkingDirectory = Join-Path $repoRoot "site"
     $siteStart.UseShellExecute = $true
