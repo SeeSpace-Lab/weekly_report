@@ -9,9 +9,9 @@
       "contentRole": "trend_discovery",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:19.821084+00:00",
+      "checkedAt": "2026-07-26T14:18:50.062470+00:00",
       "feedEntries": 30,
-      "inWindow": 16,
+      "inWindow": 14,
       "articles": [
         {
           "title": "“我一行代码都没读就发布了”，被OpenAI收购后，uv工具创始人开始反思AI编程",
@@ -60,7 +60,7 @@
       "contentRole": "paper_interpretation",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:19.524522+00:00",
+      "checkedAt": "2026-07-26T14:18:47.886323+00:00",
       "feedEntries": 30,
       "inWindow": 9,
       "articles": [
@@ -73,7 +73,7 @@
         {
           "title": "直播预告 | 滑铁卢大学邓云天教授：0.6B何以超越32B？神经编译技术解析",
           "url": "https://mp.weixin.qq.com/s/VwRVxGelKwfKWoZOvMWVFw",
-          "summary": "直播预告 | 滑铁卢大学邓云天教授：0.6B何以超越32B？神经编译技术解析",
+          "summary": "PaperWeekly × 星弧 STARC 科研觉醒 AI前沿讲座 直播主题 ...",
           "publishedAt": "2026-07-23T10:31:35+00:00"
         },
         {
@@ -111,7 +111,7 @@
       "contentRole": "trend_discovery",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:19.248024+00:00",
+      "checkedAt": "2026-07-26T14:18:46.543454+00:00",
       "feedEntries": 30,
       "inWindow": 4,
       "articles": [
@@ -150,7 +150,7 @@
       "contentRole": "trend_discovery",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:19.002821+00:00",
+      "checkedAt": "2026-07-26T14:18:45.835482+00:00",
       "feedEntries": 30,
       "inWindow": 30,
       "articles": [
@@ -201,7 +201,7 @@
       "contentRole": "trend_discovery",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:20.566939+00:00",
+      "checkedAt": "2026-07-26T14:19:07.107252+00:00",
       "feedEntries": 30,
       "inWindow": 30,
       "articles": [
@@ -252,7 +252,7 @@
       "contentRole": "trend_discovery",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:20.879597+00:00",
+      "checkedAt": "2026-07-26T14:19:08.313008+00:00",
       "feedEntries": 25,
       "inWindow": 12,
       "articles": [
@@ -271,7 +271,7 @@
         {
           "title": "美国牧师起诉 OpenAI：称 ChatGPT 的健康建议，差点要了他的命",
           "url": "https://mp.weixin.qq.com/s/7rvivqjMRWJmpS4RIWyGbg",
-          "summary": "美国牧师起诉 OpenAI：称 ChatGPT 的健康建议，差点要了他的命",
+          "summary": "美国牧师起诉 OpenAI：称 ChatGPT 的健康建议，差点要了他的命 原创 阿雅 阿雅 夕小瑶科技说 在小说阅读器读本章 ...",
           "publishedAt": "2026-07-24T10:52:47+00:00"
         },
         {
@@ -303,7 +303,7 @@
       "contentRole": "trend_discovery",
       "health": "ok",
       "runStatus": "ok",
-      "checkedAt": "2026-07-26T04:55:20.218505+00:00",
+      "checkedAt": "2026-07-26T14:19:01.210377+00:00",
       "feedEntries": 30,
       "inWindow": 30,
       "articles": [
