@@ -1,0 +1,487 @@
+{
+  "issues": [
+    {
+      "issue": {
+        "id": "d3d27fa1-bc7d-42f6-b0c1-62f19c2a6561",
+        "title": "星载大模型推理引擎周报 · 2026-W30",
+        "isoWeek": "2026-W30",
+        "windowStart": "2026-07-19T05:18:54.490814+00:00",
+        "windowEnd": "2026-07-26T05:18:54.490814+00:00",
+        "status": "draft",
+        "targetReadMinutes": 30,
+        "estimatedReadMinutes": 21.0,
+        "itemCount": 20
+      },
+      "trends": [
+        "本周有4项相关进展，集中在LLM/VLM/MoE推理引擎。",
+        "本周有4项相关进展，集中在边缘、端侧与实时大模型。",
+        "本周有3项相关进展，集中在KV Cache与分层存储。",
+        "本周有12项相关进展，集中在other。",
+        "本周有1项相关进展，集中在推理调度与资源编排。"
+      ],
+      "sections": [
+        {
+          "id": "frameworks_benchmarks_datasets",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "framework",
+              "title": "kvcache-ai/ktransformers",
+              "url": "https://github.com/kvcache-ai/ktransformers/releases/tag/v0.6.4",
+              "reason": "综合评分 0.75；涉及inference_runtime、scheduling、quantization；属于官方框架、Benchmark或数据集更新。",
+              "summary": "**中文题名：** 推理调度、KV Cache 管理、MoE 专家调度相关研究\n\n**一句话读懂：这项工作聚焦推理调度、KV Cache 管理、MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进推理调度、KV Cache 管理、MoE 专家调度，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“kvcache-ai/ktransformers”研究推理调度、KV Cache 管理、MoE 专家调度，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及inference_runtime、scheduling、quantization；属于官方框架、Benchmark或数据集更新。",
+              "readMinutes": 1.5,
+              "publishedAt": "2026-07-23T14:32:53+00:00",
+              "updatedAt": "2026-07-23T14:32:53+00:00",
+              "status": "Official release: v0.6.4",
+              "deepRead": {
+                "titleZh": "推理调度、KV Cache 管理、MoE 专家调度相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦推理调度、KV Cache 管理、MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进推理调度、KV Cache 管理、MoE 专家调度，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“kvcache-ai/ktransformers”研究推理调度、KV Cache 管理、MoE 专家调度，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            }
+          ]
+        },
+        {
+          "id": "inference_and_scheduling",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "Efficient Multi-round LLM Inference over Disaggregated Serving",
+              "url": "https://arxiv.org/abs/2602.14516",
+              "reason": "综合评分 0.65；涉及inference_runtime、edge_realtime、scheduling；当前为arXiv v2重要修订候选。",
+              "summary": "**中文题名：** 推理调度、分布式推理相关研究\n\n**一句话读懂：这项工作聚焦推理调度、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进推理调度、分布式推理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“Efficient Multi-round LLM Inference over Disaggregated Serving”研究推理调度、分布式推理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及inference_runtime、edge_realtime、scheduling；当前为arXiv v2重要修订候选。",
+              "readMinutes": 2.0,
+              "publishedAt": "2026-02-16T07:07:30+00:00",
+              "updatedAt": "2026-07-21T08:53:51+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "推理调度、分布式推理相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦推理调度、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进推理调度、分布式推理，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“Efficient Multi-round LLM Inference over Disaggregated Serving”研究推理调度、分布式推理，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention",
+              "url": "https://arxiv.org/abs/2606.09079",
+              "reason": "综合评分 0.62；涉及inference_runtime、kv_storage、power_aware；当前为arXiv v3重要修订候选。",
+              "summary": "**中文题名：** 动态功耗与热约束、KV Cache 管理、分布式推理相关研究\n\n**一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进动态功耗与热约束、KV Cache 管理、分布式推理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention”研究动态功耗与热约束、KV Cache 管理、分布式推理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及inference_runtime、kv_storage、power_aware；当前为arXiv v3重要修订候选。",
+              "readMinutes": 2.0,
+              "publishedAt": "2026-06-08T06:25:54+00:00",
+              "updatedAt": "2026-07-20T13:38:48+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "动态功耗与热约束、KV Cache 管理、分布式推理相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理、分布式推理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进动态功耗与热约束、KV Cache 管理、分布式推理，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“FlashMemory-DeepSeek-V4: Lightning Index Ultra-Long Context via Lookahead Sparse Attention”研究动态功耗与热约束、KV Cache 管理、分布式推理，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            },
+            {
+              "position": 3,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning",
+              "url": "https://arxiv.org/abs/2607.18722",
+              "reason": "综合评分 0.58；涉及inference_runtime、moe_runtime；当前为arXiv v2重要修订候选。",
+              "summary": "**中文题名：** MoE 专家调度相关研究\n\n**一句话读懂：这项工作聚焦MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进MoE 专家调度，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning”研究MoE 专家调度，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及inference_runtime、moe_runtime；当前为arXiv v2重要修订候选。",
+              "readMinutes": 2.0,
+              "publishedAt": "2026-07-21T05:27:50+00:00",
+              "updatedAt": "2026-07-22T14:40:14+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "MoE 专家调度相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦MoE 专家调度，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进MoE 专家调度，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“Stale but Stable: Staleness-Adaptive Trust Regions for Stabilizing Asynchronous Reinforcement Learning”研究MoE 专家调度，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            }
+          ]
+        },
+        {
+          "id": "kv_storage_moe_quantization",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference",
+              "url": "https://arxiv.org/abs/2602.04595",
+              "reason": "综合评分 0.63；涉及kv_storage、edge_realtime、power_aware；当前为arXiv v3重要修订候选。",
+              "summary": "**中文题名：** 动态功耗与热约束、KV Cache 管理相关研究\n\n**一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及kv_storage、edge_realtime、power_aware；当前为arXiv v3重要修订候选。",
+              "readMinutes": 2.0,
+              "publishedAt": "2026-02-04T14:22:08+00:00",
+              "updatedAt": "2026-07-22T11:57:18+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "动态功耗与热约束、KV Cache 管理相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“Harmonia: Algorithm-Hardware Co-Design for Memory- and Compute-Efficient BFP-based LLM Inference”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training",
+              "url": "https://arxiv.org/abs/2603.06642",
+              "reason": "综合评分 0.58；涉及kv_storage；当前为arXiv v2重要修订候选。",
+              "summary": "**中文题名：** KV Cache 管理相关研究\n\n**一句话读懂：这项工作聚焦KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进KV Cache 管理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training”研究KV Cache 管理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及kv_storage；当前为arXiv v2重要修订候选。",
+              "readMinutes": 2.0,
+              "publishedAt": "2026-02-26T01:54:24+00:00",
+              "updatedAt": "2026-07-22T21:06:43+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "KV Cache 管理相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进KV Cache 管理，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“SR-TTT Does Not Learn Retrieval: A Correction and Mechanistic Post-Mortem of Surprisal-Aware Residual Test-Time Training”研究KV Cache 管理，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            }
+          ]
+        },
+        {
+          "id": "power_reliability_edge_distributed",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms",
+              "url": "https://arxiv.org/abs/2605.23348",
+              "reason": "综合评分 0.62；涉及power_aware、edge_realtime、inference_runtime；当前为arXiv v2重要修订候选。",
+              "summary": "**中文题名：** 动态功耗与热约束、KV Cache 管理相关研究\n\n**一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及power_aware、edge_realtime、inference_runtime；当前为arXiv v2重要修订候选。",
+              "readMinutes": 2.0,
+              "publishedAt": "2026-05-22T08:08:47+00:00",
+              "updatedAt": "2026-07-21T12:51:29+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "动态功耗与热约束、KV Cache 管理相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦动态功耗与热约束、KV Cache 管理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进动态功耗与热约束、KV Cache 管理，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“CWind: A Cross-site Router for Large Language Model Inference Serving at Renewable Energy Farms”研究动态功耗与热约束、KV Cache 管理，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "review_article",
+              "title": "让VLA真正跑上机器人：北大团队开源Jetson-PI，Jetson Orin控制频率提升8.66倍",
+              "url": "https://mp.weixin.qq.com/s/ugr2S_Vuf1x9jpHA6IEDzw",
+              "reason": "综合评分 0.53；涉及power_aware、edge_realtime；来自固定订阅池的权威综述或论文解读。",
+              "summary": "**中文题名：** 受限资源下的大模型推理相关研究\n\n**一句话读懂：这项工作聚焦受限资源下的大模型推理，尝试改善大模型推理的效率、资源适应性或可靠性。**\n\n研究问题：如何改进受限资源下的大模型推理，并满足推理系统约束。\n\n方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。\n\n关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。\n\n主要贡献：工作围绕“让VLA真正跑上机器人：北大团队开源Jetson-PI，Jetson Orin控制频率提升8.66倍”研究受限资源下的大模型推理，具体贡献需结合原文核验。\n\n证据：当前证据来自论文摘要或官方项目说明。\n\n局限：尚未完成全文级人工复核，实验边界需阅读原文确认。",
+              "implication": "涉及power_aware、edge_realtime；来自固定订阅池的权威综述或论文解读。",
+              "readMinutes": 1.5,
+              "publishedAt": "2026-07-24T22:43:21+00:00",
+              "updatedAt": "2026-07-24T22:43:21+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "受限资源下的大模型推理相关研究",
+                "oneSentenceZh": "一句话读懂：这项工作聚焦受限资源下的大模型推理，尝试改善大模型推理的效率、资源适应性或可靠性。",
+                "problemZh": "研究问题：如何改进受限资源下的大模型推理，并满足推理系统约束。",
+                "methodZh": "方法概览：当前为规则生成卡片；具体机制需由模型精读论文摘要或全文后补全。",
+                "resultZh": "关键结果：当前来源未形成可核验的中文定量结论，发布前需对照原文确认。",
+                "contributions": [
+                  "工作围绕“让VLA真正跑上机器人：北大团队开源Jetson-PI，Jetson Orin控制频率提升8.66倍”研究受限资源下的大模型推理，具体贡献需结合原文核验。"
+                ],
+                "evidence": [
+                  "当前证据来自论文摘要或官方项目说明。"
+                ],
+                "limitations": [
+                  "尚未完成全文级人工复核，实验边界需阅读原文确认。"
+                ],
+                "confidence": 0.55,
+                "modelVersion": "deterministic-deep-read-v2"
+              }
+            }
+          ]
+        },
+        {
+          "id": "venue_updates",
+          "items": [
+            {
+              "position": 1,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "MLSys 2026",
+              "url": "https://mlsys.org/Conferences/2026",
+              "reason": "综合评分 0.42；检测到2个版本；顶会官方页面发生更新。",
+              "summary": "2026 Conference Skip to yearly menu bar Skip to main content Main Navigation MLSys Code of Conduct Create Profile Privacy Policy Contact MLSys Help/FAQ My Stuff Login Select Year: (2026) 2026 2025 2023 2024 2022 2021 2020 2019 2018 Schedule Invited Talks Papers Organizers Sponsors Calls Call For Travel Grants Call for Artifact Evaluations Call for Research Papers Poster Information Call for Industrial Track Papers Call for Young Professional Symposium MLSys 2026 Ninth Annual Conference on Machine Learning and Systems Bellevue, WA May 18th - 22nd, 2026 Registration 2026 Conference Hotel View Ou",
+              "implication": "检测到2个版本；顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T19:05:38.655136+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 2,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "ICLR 2027",
+              "url": "https://iclr.cc/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "2026 Conference Skip to yearly menu bar Skip to main content Main Navigation ICLR Help/FAQ Contact ICLR Create Profile Code of Conduct Journal To Conference Track Diversity & Inclusion Proceedings at OpenReview Future Meetings Press Exhibitor Information ICLR Blog ICLR Twitter About ICLR Downloads Privacy Policy Reset Password My Stuff Login Select Year: (2026) 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 Dates Calls Call for Papers Call for Workshops Call For Blog Posts Call for Socials Guides Author Guide Area Chair Guide Senior Area Chair Guide Reviewer Guide Poster",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T19:05:38.655136+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 3,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "ISCA 2027",
+              "url": "https://iscaconf.org/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "Welcome to Iscaconf.org Welcome to iscaconf.org Next ISCA Location: Raleigh, USA General Co-Chairs: James Tuck, Huiyang Zhou Program Co-Chairs: Kevin Skadron, Carole-Jean Wu Link: ISCA 53 Past ISCA Symposia Show Chairs: ISCA 52 [Tokyo, Japan] June, 2025 General Co-Chairs: Jean-Luc Gaudiot, University of California, Irvine Hironori Kasahara, Waseda University Program Chair: Daniel Sorin, Duke University Program Vice-Chair: Vijay Nagarajan, University of Utah ISCA 51 [Buenos Aires, Argentina] June, 2024 General Co-Chairs: Augusto Vega, IBM Research Esteban Mocskos, University of Buenos Aires Pro",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T19:05:38.655136+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 4,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "AAAI 2027",
+              "url": "https://aaai.org/conference/aaai/aaai-27/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "AAAI-27 - AAAI Skip to main content AAAI Association for the Advancement of Artificial Intelligence Menu AAAI Association for the Advancement of Artificial Intelligence Menu About AAAI News Officers and Committees Staff Bylaws Awards Fellows Program Classic Paper Award Dissertation Award Distinguished Service Award Allen Newell Award Outstanding Paper Award AI for Humanity Award Feigenbaum Prize Patrick Henry Winston Outstanding Educator Award Engelmore Award AAAI ISEF Awards Senior Member Status Conference Awards Partnerships Resources Mailing Lists Past Presidential Addresses AAAI 2025 Presi",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 5,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "HPCA 2027",
+              "url": "https://hpca-conf.org/2027/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "Redirecting to HPCA 2027... If you are not redirected automatically, please follow this link to the HPCA 2027 homepage .",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 6,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "ASPLOS 2027",
+              "url": "https://www.asplos-conference.org/asplos2027/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "ASPLOS 2027 – ASPLOS 2027 Skip to content ASPLOS 2027 Heraklion, Crete, Greece ◆ April 11-15, 2027 Menu ASPLOS 2027 Call For Papers Committees Organizing Committee Steering Committee Vice Program Chairs Program Committee External Review Committee Artifact Evaluation Submission Information For Authors For Reviewers Committee ASPLOS 2027 ASPLOS, the ACM International Conference on Architectural Support for Programming Languages and Operating Systems, is the premier academic forum for multidisciplinary computer systems research spanning hardware, software, and their interaction. It focuses on com",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 7,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "EuroSys 2027",
+              "url": "https://2027.eurosys.org/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "EuroSys 2027 Conference Website",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 8,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "OSDI 2027",
+              "url": "https://www.usenix.org/conference/osdi27",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "OSDI brings together professionals from academic and industrial backgrounds in what has become a premier forum for discussing the design, implementation, and implications of systems software. The symposium emphasizes innovative research as well as quantified or insightful experiences in systems design and implementation.",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 9,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "ICML 2026",
+              "url": "https://icml.cc/Conferences/2026",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "2026 Conference Skip to yearly menu bar Skip to main content Main Navigation ICML Help/FAQ Contact ICML Create Profile Code of Conduct Privacy Policy Press Journal To Conference Track Careers Downloads Inclusion Future Meetings My Stuff Login Select Year: (2026) 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2002 1996 IMLS Archives Dates Calls Call for Papers Call for Tutorial Nominations Call for Position Papers Call for Workshops Call for Socials and Mentoring Call for Tutorials Call for Expo Presentations Organization Organ",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 10,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "NeurIPS 2026",
+              "url": "https://neurips.cc/Conferences/2026",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "2026 Conference Skip to yearly menu bar Skip to main content Main Navigation NeurIPS Help/FAQ Contact NeurIPS Create Profile Code of Ethics Code of Conduct Journal To Conference Track Diversity & Inclusion Proceedings Future Meetings Press Exhibitor Information Privacy Policy Downloads My Stuff Login Select Year: (2026) 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 Earlier Conferences Dates Submit Call for Papers Main Track Handbook Reviewing Guidelines AI Reviewing Experiment Call for Evaluations & Datasets Evaluations and Datasets FA",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 11,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "SOSP 2026",
+              "url": "https://sigops.org/s/conferences/sosp/2026/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "SOSP 2026: The 32nd Symposium on Operating Systems Principles SOSP 2026 Home Participate Call for Papers Call for Posters Call for Workshops Call for Artifacts Instructions for Authors Student Research Competition Mentoring Attend Registration Student Scholarships Venue Visa Information Program Conference Schedule Accepted Papers Workshops Organizers Sponsors Contact SOSP 2026 The 32 nd Symposium on Operating Systems Principles September 29th - October 2nd, 2026 · Clarion Congress Hotel Prague , Prague, Czechia Book your room at the SOSP'26 rate ! Registration link SOSP goes to Central Europe!",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            },
+            {
+              "position": 12,
+              "role": "quick_scan",
+              "itemType": "venue_event",
+              "title": "MICRO 2026",
+              "url": "https://www.microarch.org/micro59/",
+              "reason": "综合评分 0.40；顶会官方页面发生更新。",
+              "summary": "MICRO 2026: Home MICRO 2026 Submit Work Call for Papers: MICRO 2026 Regular Track Call for Papers: MICRO 2026 Industry Track Call for Workshops & Tutorials Submission Guidelines HotCRP Submission Site (both Tracks) Artifact Evaluation Student Research Competition Program Workshops & Tutorials Attend Venue & Hotel Visa Information Visiting Athens Getting Around Athens Travel Tips Committees Organizing Committee Steering Committee Code of Conduct @MicroArchConf microarch.org Home MICRO 2026 59th IEEE/ACM International Symposium on Microarchitecture ® October 31 – November 4, 2026 Athens, Greece ",
+              "implication": "顶会官方页面发生更新。",
+              "readMinutes": 0.5,
+              "publishedAt": null,
+              "updatedAt": "2026-07-24T18:46:56.283490+00:00",
+              "status": null,
+              "deepRead": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

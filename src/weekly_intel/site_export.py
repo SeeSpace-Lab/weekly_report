@@ -11,9 +11,9 @@ from .utils import normalize_title
 class SiteDataExportAgent:
     name = "SiteDataExportAgent"
 
-    def export(
-        self, connection: sqlite3.Connection, issue_id: str, output: Path
-    ) -> Path:
+    def _issue_payload(
+        self, connection: sqlite3.Connection, issue_id: str
+    ) -> dict[str, object]:
         issue = connection.execute(
             "SELECT * FROM weekly_issues WHERE issue_id=?", (issue_id,)
         ).fetchone()
@@ -126,6 +126,12 @@ class SiteDataExportAgent:
                 for section, items in sections.items()
             ],
         }
+        return payload
+
+    def export(
+        self, connection: sqlite3.Connection, issue_id: str, output: Path
+    ) -> Path:
+        payload = self._issue_payload(connection, issue_id)
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(
             json.dumps(payload, ensure_ascii=False, indent=2),
@@ -138,6 +144,30 @@ class SiteDataExportAgent:
             output.with_name("library-data.json"),
         )
         self.export_sources(connection, output.with_name("source-data.json"))
+        self.export_archive(connection, output.with_name("archive-data.json"))
+        return output.resolve()
+
+    def export_archive(
+        self, connection: sqlite3.Connection, output: Path
+    ) -> Path:
+        issues = connection.execute(
+            """
+            SELECT issue_id
+            FROM weekly_issues
+            WHERE department_id='orbitinfer'
+            ORDER BY iso_week DESC
+            """
+        ).fetchall()
+        payload = {
+            "issues": [
+                self._issue_payload(connection, row["issue_id"])
+                for row in issues
+            ]
+        }
+        output.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
         return output.resolve()
 
     def export_library(

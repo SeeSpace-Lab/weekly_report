@@ -227,6 +227,11 @@ h2 { margin: 0; font-size: clamp(30px, 4vw, 52px); letter-spacing: -.045em; }
 .intelCard h3 a { text-decoration: none; }
 .intelCard h3 a:hover { text-decoration: underline; text-decoration-color: var(--orange); text-underline-offset: 5px; }
 .originalTitle { margin: -4px 0 18px; color: var(--muted); font: 12px/1.55 ui-monospace, monospace; }
+.translatedTitle {
+  margin: -2px 0 20px; color: #55564f;
+  font-size: clamp(17px, 1.55vw, 22px); line-height: 1.42;
+  font-weight: 650; letter-spacing: -.015em;
+}
 .statusTag { align-self: flex-start; margin: 0 0 16px; padding: 5px 8px; border-left: 3px solid var(--orange); background: rgba(255,107,53,.09); font: 10px/1.4 ui-monospace, monospace; }
 .summary { margin: 0; color: #4d4e49; line-height: 1.72; font-size: 14px; }
 .deepRead { color: #3f403c; font-size: 14px; }
@@ -242,6 +247,35 @@ h2 { margin: 0; font-size: clamp(30px, 4vw, 52px); letter-spacing: -.045em; }
 .sourceLink span { color: var(--orange); }
 .emptyState { padding: 90px 0; text-align: center; }
 
+.archiveHero {
+  display: flex; justify-content: space-between; align-items: end; gap: 40px;
+  padding: 74px 5vw 48px; color: var(--paper); background: var(--ink);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.archiveHero h1 { margin: 14px 0; font-size: clamp(56px,8vw,108px); letter-spacing: -.06em; }
+.archiveHero p:last-child { color: rgba(242,239,229,.62); font: 12px/1.5 ui-monospace, monospace; }
+.archiveHero label { min-width: 260px; display: grid; gap: 10px; }
+.archiveHero label span { color: rgba(242,239,229,.58); font: 10px/1 ui-monospace, monospace; letter-spacing: .12em; }
+.archiveHero select {
+  width: 100%; border: 1px solid rgba(255,255,255,.26);
+  padding: 14px; background: #1b1c19; color: var(--signal);
+  font: 13px/1 ui-monospace, monospace;
+}
+.archiveContent { padding: 0 5vw 100px; }
+.archiveSection { padding-top: 64px; }
+.archiveSection .sectionHeading { grid-template-columns: 1fr auto; }
+.archiveGrid {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(360px,1fr));
+  gap: 14px; padding-top: 18px;
+}
+.archiveCard {
+  min-height: 360px; padding: 30px; display: flex; flex-direction: column;
+  border-top: 4px solid var(--ink); background: #f8f5eb;
+}
+.archiveCard h3 { margin: 26px 0 14px; font-size: clamp(24px,2.4vw,36px); line-height: 1.12; }
+.archiveCard h3 a { text-decoration: none; }
+.archiveCard .oneSentence { font-size: 14px; }
+
 footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; padding: 48px 5vw; background: var(--ink); color: var(--paper); }
 footer > div { display: flex; gap: 16px; align-items: center; }
 footer p { margin: 0; max-width: 600px; color: rgba(242,239,229,.58); font-size: 11px; line-height: 1.6; }
@@ -250,6 +284,8 @@ footer p { margin: 0; max-width: 600px; color: rgba(242,239,229,.58); font-size:
   .portalNav { display: none; }
   .directoryIntro { grid-template-columns: 1fr; }
   .departmentCards, .portalResources, .scopeChecklist, .paperLibraryGrid, .sourceGrid { grid-template-columns: 1fr; }
+  .archiveHero { align-items: stretch; flex-direction: column; }
+  .archiveHero label { min-width: 0; width: 100%; }
   .portalMetrics { grid-template-columns: repeat(2, 1fr); }
   .libraryControls { align-items: stretch; flex-direction: column; }
   .venueCoverage { grid-template-columns: 1fr; }
@@ -286,6 +322,7 @@ footer p { margin: 0; max-width: 600px; color: rgba(242,239,229,.58); font-size:
   .portalTimeline > * { margin: 0; padding: 12px 0; }
   .portalTimeline > * + * { border-left: 0; border-top: 1px solid rgba(255,255,255,.18); padding-left: 0; }
   .departmentDirectory, .paperLibraryGrid, .sourceGrid, .scopeChecklist { padding-inline: 22px; }
+  .archiveHero, .archiveContent { padding-inline: 22px; }
   .departmentCard, .libraryCard, .sourceCard, .scopeChecklist > div { padding: 26px 20px; }
 }
 

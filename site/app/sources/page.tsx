@@ -30,6 +30,7 @@ export default function SourcesPage() {
         <nav className="portalNav">
           <a href="/">总览</a>
           <a href="/departments/orbitinfer">部门周报</a>
+          <a href="/archive">历史周报</a>
           <a href="/library">论文库</a>
         </nav>
         <div className="issueStatus"><span className="pulse" />{collectedAccounts.length} 个已采集来源</div>

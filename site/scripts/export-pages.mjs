@@ -11,6 +11,7 @@ const routes = [
   "/",
   "/departments/orbitinfer",
   "/departments/constellation-simulation",
+  "/archive",
   "/library",
   "/sources",
 ];

@@ -114,6 +114,7 @@ export default function Home() {
         </a>
         <nav className="portalNav" aria-label="研发部周报导航">
           <a href="/">总览</a>
+          <a href="/archive">历史周报</a>
           <a href="/library">论文库</a>
           <a href="/sources">公众号</a>
         </nav>
@@ -229,11 +230,11 @@ export default function Home() {
                       </div>
                       <h3>
                         <a href={item.url ?? "#"} target="_blank" rel="noreferrer">
-                          {deepRead?.titleZh || item.title}
+                          {item.title}
                         </a>
                       </h3>
-                      {deepRead?.titleZh && (
-                        <p className="originalTitle">{item.title}</p>
+                      {deepRead?.titleZh && deepRead.titleZh !== item.title && (
+                        <p className="translatedTitle">{deepRead.titleZh}</p>
                       )}
                       {item.status && <p className="statusTag">{item.status}</p>}
                       {deepRead ? (

@@ -22,6 +22,7 @@ export default function PortalHome() {
           </span>
         </a>
         <nav className="portalNav" aria-label="研发部周报导航">
+          <a href="/archive">历史周报</a>
           <a href="/library">论文库</a>
           <a href="/sources">公众号</a>
         </nav>

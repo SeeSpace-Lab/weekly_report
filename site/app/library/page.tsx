@@ -36,6 +36,7 @@ export default function PaperLibraryPage() {
         <nav className="portalNav">
           <a href="/">总览</a>
           <a href="/departments/orbitinfer">部门周报</a>
+          <a href="/archive">历史周报</a>
           <a href="/sources">公众号</a>
         </nav>
         <div className="issueStatus"><span className="pulse" />固定库 v{libraryData.version}</div>

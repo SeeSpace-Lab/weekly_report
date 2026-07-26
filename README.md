@@ -22,6 +22,7 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 - `/`：观宇芯算研发部周报总览；
 - `/departments/orbitinfer`：星载大模型推理引擎部门周报；
 - `/departments/constellation-simulation`：星座智算仿真平台范围占位；
+- `/archive`：按 ISO 周次浏览已经生成的历史周报；
 - `/library`：近两年顶会与重要论文固定库；
 - `/sources`：已经成功采集到文章的公众号及其最新内容。
 
@@ -33,6 +34,7 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 - 公众号只使用配置中的固定订阅池；空 Feed 与未采集到文章的账号保留在内部监控中，不展示在公开页面；
 - 周报只选择本周重要论文、重要版本、框架/Benchmark/数据集及高相关公众号文章，不展示普通顶会主页动态或历史论文回看；
 - 新录用且与部门高度相关的顶会论文先自动补入滚动论文库，再进入对应部门周报候选；
+- 每次生成新一期时，数据库中的既有周报会同时导出到历史归档，不会被新一期覆盖；
 - 精读默认使用确定性后端；配置兼容接口后生成中文题名、一句话摘要、问题、方法、结果和证据等结构化字段；
 - `run-weekly` 同时生成周报、运行审计和 `site/app/report-data.json`；
 - 服务器每周一北京时间 09:00 自动生成私域审核版本；

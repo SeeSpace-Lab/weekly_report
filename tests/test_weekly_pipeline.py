@@ -151,9 +151,18 @@ class WeeklyPipelineTest(unittest.TestCase):
                     encoding="utf-8"
                 )
             )
+            archive_payload = json.loads(
+                site_data.with_name("archive-data.json").read_text(
+                    encoding="utf-8"
+                )
+            )
             self.assertGreaterEqual(len(library_payload["papers"]), 8)
             self.assertGreaterEqual(len(library_payload["venues"]), 20)
             self.assertEqual(source_payload["accounts"], [])
+            self.assertEqual(
+                archive_payload["issues"][0]["issue"]["isoWeek"],
+                "2026-W30",
+            )
             deep_reads = [
                 item["deepRead"]
                 for section in payload["sections"]

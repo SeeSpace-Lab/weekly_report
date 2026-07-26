@@ -48,18 +48,21 @@ test("server-renders the OrbitInfer department report", async () => {
   assert.match(html, /查看一手来源/);
   assert.match(html, /一句话读懂/);
   assert.match(html, /<dt>问题<\/dt>/);
+  assert.match(html, /kvcache-ai\/ktransformers<\/a><\/h3>/);
+  assert.match(html, /class="translatedTitle">推理调度/);
   assert.doesNotMatch(html, /顶会动态/);
   assert.doesNotMatch(html, /论文库回看/);
   assert.doesNotMatch(html, /Your site is taking shape|Building your site/);
 });
 
-test("renders the library, source pool and second department", async () => {
-  const [library, sources, department] = await Promise.all([
+test("renders the library, source pool, archive and second department", async () => {
+  const [library, sources, archive, department] = await Promise.all([
     render("/library"),
     render("/sources"),
+    render("/archive"),
     render("/departments/constellation-simulation"),
   ]);
-  for (const response of [library, sources, department]) {
+  for (const response of [library, sources, archive, department]) {
     assert.equal(response.status, 200);
   }
   assert.match(await library.text(), /Mooncake/);
@@ -67,19 +70,24 @@ test("renders the library, source pool and second department", async () => {
   assert.match(sourceHtml, /PaperWeekly/);
   assert.doesNotMatch(sourceHtml, /OneFlow/);
   assert.doesNotMatch(sourceHtml, /DataFunTalk/);
+  const archiveHtml = await archive.text();
+  assert.match(archiveHtml, /历史周报/);
+  assert.match(archiveHtml, /2026-W30/);
   assert.match(await department.text(), /范围待确认/);
 });
 
 test("ships structured report, library and interaction controls", async () => {
-  const [page, report, library, sources] = await Promise.all([
+  const [page, report, library, sources, archive] = await Promise.all([
     readFile(new URL("../app/departments/orbitinfer/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/report-data.json", import.meta.url), "utf8"),
     readFile(new URL("../app/library-data.json", import.meta.url), "utf8"),
     readFile(new URL("../app/source-data.json", import.meta.url), "utf8"),
+    readFile(new URL("../app/archive-data.json", import.meta.url), "utf8"),
   ]);
   const payload = JSON.parse(report);
   const libraryPayload = JSON.parse(library);
   const sourcePayload = JSON.parse(sources);
+  const archivePayload = JSON.parse(archive);
 
   assert.equal(payload.issue.isoWeek, "2026-W30");
   assert.equal(payload.issue.itemCount, 20);
@@ -97,15 +105,17 @@ test("ships structured report, library and interaction controls", async () => {
   assert.ok(libraryPayload.papers.length >= 8);
   assert.equal(sourcePayload.accounts.length, 7);
   assert.ok(sourcePayload.accounts.every((account) => account.articles.length > 0));
+  assert.equal(archivePayload.issues[0].issue.isoWeek, "2026-W30");
 });
 
 test("exports a GitHub Pages-compatible static snapshot", async () => {
-  const [home, orbitinfer, library, sources] = await Promise.all([
+  const [home, orbitinfer, archive, library, sources] = await Promise.all([
     readFile(new URL("../out/index.html", import.meta.url), "utf8"),
     readFile(
       new URL("../out/departments/orbitinfer/index.html", import.meta.url),
       "utf8",
     ),
+    readFile(new URL("../out/archive/index.html", import.meta.url), "utf8"),
     readFile(new URL("../out/library/index.html", import.meta.url), "utf8"),
     readFile(new URL("../out/sources/index.html", import.meta.url), "utf8"),
   ]);
@@ -113,6 +123,7 @@ test("exports a GitHub Pages-compatible static snapshot", async () => {
   assert.match(home, /href="\/weekly_report\/departments\/orbitinfer"/);
   assert.doesNotMatch(home, /weekly_report\/weekly_report/);
   assert.match(orbitinfer, /本周趋势雷达/);
+  assert.match(archive, /历史周报/);
   assert.match(library, /固定顶会覆盖/);
   assert.match(sources, /本周值得关注的进展/);
 });
