@@ -36,6 +36,7 @@ if [[ "$actual_commit" != "$EXPECTED_COMMIT" ]]; then
 fi
 
 export PATH="$ROOT/miniconda3/envs/weekly-report/bin:/usr/bin:/bin"
+mkdir -p "$STAGED/data"
 python - "$CURRENT/data/weekly_intel.db" "$STAGED/data/weekly_intel.db" <<'PY'
 import sqlite3
 import sys
@@ -47,7 +48,6 @@ target.close()
 source.close()
 PY
 
-pip install -e "$STAGED"
 npm --prefix "$STAGED/site" ci
 npm --prefix "$STAGED/site" run build
 
@@ -74,6 +74,7 @@ test ! -e "$BACKUP"
 systemctl --user stop weekly-site.service caddy.service
 mv "$CURRENT" "$BACKUP"
 mv "$STAGED" "$CURRENT"
+pip install -e "$CURRENT"
 
 ln -sfn \
   "$CURRENT/deploy/server/weekly-review-api.service" \
@@ -82,6 +83,14 @@ systemctl --user daemon-reload
 systemctl --user enable --now weekly-review-api.service
 systemctl --user restart weekly-site.service caddy.service
 
+for _ in $(seq 1 20); do
+  if curl --fail --silent \
+    http://127.0.0.1:8010/api/review/status >/dev/null &&
+    curl --fail --silent http://127.0.0.1:2019/config/ >/dev/null; then
+    break
+  fi
+  sleep 1
+done
 curl --fail --silent http://127.0.0.1:8010/api/review/status >/dev/null
 curl --fail --silent http://127.0.0.1:2019/config/ >/dev/null
 

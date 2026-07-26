@@ -9,7 +9,12 @@ import paramiko
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command")
+    parser.add_argument("command", nargs="?")
+    parser.add_argument(
+        "--upload",
+        nargs=2,
+        metavar=("LOCAL_PATH", "REMOTE_PATH"),
+    )
     parser.add_argument("--host", default="114.111.22.106")
     parser.add_argument("--port", type=int, default=10023)
     parser.add_argument("--user", default="chenwenjin")
@@ -27,6 +32,16 @@ def main() -> int:
         timeout=20,
     )
     try:
+        if args.upload:
+            local_path, remote_path = args.upload
+            sftp = client.open_sftp()
+            try:
+                sftp.put(local_path, remote_path)
+            finally:
+                sftp.close()
+            return 0
+        if not args.command:
+            raise SystemExit("command or --upload is required")
         _, stdout, stderr = client.exec_command(args.command, timeout=300)
         output = stdout.read()
         error = stderr.read()

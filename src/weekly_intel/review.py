@@ -129,7 +129,7 @@ class ReviewService:
                 """
                 SELECT issue_id FROM weekly_issues
                 WHERE department_id=?
-                ORDER BY iso_week DESC, created_at DESC LIMIT 1
+                ORDER BY iso_week DESC LIMIT 1
                 """,
                 (department_id,),
             ).fetchone()
