@@ -1,0 +1,120 @@
+department_id: orbitinfer
+name: 星载大模型推理引擎
+version: "0.1"
+enabled: true
+
+mission: >-
+  跟踪大模型推理引擎及其在星载、边缘、实时、功耗受限、
+  存储受限、可靠性受限和动态通信环境中的研究与产业前沿。
+
+core_topics:
+  - id: inference_runtime
+    label: LLM/VLM/MoE推理引擎
+    weight: 1.0
+  - id: scheduling
+    label: 推理调度与资源编排
+    weight: 1.0
+  - id: power_aware
+    label: 动态功率/能耗/温度感知推理
+    weight: 1.0
+  - id: kv_storage
+    label: KV Cache与分层存储
+    weight: 0.95
+  - id: moe_runtime
+    label: MoE Runtime与专家编排
+    weight: 0.9
+  - id: quantization
+    label: 量化、压缩与自适应精度
+    weight: 0.85
+  - id: reliability
+    label: 可靠推理、软错误与恢复
+    weight: 0.85
+  - id: edge_realtime
+    label: 边缘、端侧与实时大模型
+    weight: 0.8
+  - id: distributed_inference
+    label: 分布式推理与网络感知放置
+    weight: 0.75
+
+adjacent_topics:
+  - AI加速器与低功耗体系结构
+  - HBM/CXL/异构内存与新型存储
+  - 实时系统与energy-aware scheduling
+  - 星载计算、在轨智能与航天器自主系统
+  - 卫星网络与动态通信约束
+  - 辐射环境与体系结构级容错
+
+keywords:
+  include:
+    - LLM inference
+    - VLM inference
+    - MoE inference
+    - inference runtime
+    - LLM serving
+    - prefill decode
+    - continuous batching
+    - power-aware inference
+    - energy-constrained inference
+    - thermal-aware scheduling
+    - KV cache
+    - hierarchical memory
+    - expert placement
+    - expert prefetch
+    - adaptive quantization
+    - fault-tolerant inference
+    - edge LLM
+    - on-device LLM
+    - distributed inference
+    - model migration
+    - 星载大模型
+    - 大模型推理引擎
+    - 推理调度
+    - 动态功率预算
+    - KV Cache量化
+    - MoE专家放置
+    - 可靠推理
+  exclude_unless_strongly_related:
+    - prompt engineering
+    - AI agent application
+    - generic model leaderboard
+    - training-only optimization
+    - pure remote-sensing accuracy
+
+ranking:
+  global_importance:
+    venue_or_review_status: 0.20
+    system_novelty: 0.20
+    evidence_and_reproducibility: 0.20
+    trend_signal: 0.15
+    artifact_value: 0.15
+    version_significance: 0.10
+  department_relevance:
+    inference_runtime: 0.25
+    power_latency_quality: 0.20
+    kv_storage_moe: 0.20
+    reliability: 0.10
+    edge_realtime: 0.10
+    distributed_extension: 0.10
+    near_term_relevance: 0.05
+
+weekly_output:
+  target_read_minutes: 30
+  must_read_min: 3
+  must_read_max: 5
+  deep_read_min: 8
+  deep_read_max: 12
+  quick_scan_min: 10
+  quick_scan_max: 20
+  library_review_min: 1
+  library_review_max: 2
+  sections:
+    - weekly_trends
+    - must_read
+    - inference_and_scheduling
+    - kv_storage_moe_quantization
+    - power_reliability_edge_distributed
+    - frameworks_benchmarks_datasets
+    - venue_updates
+    - library_review
+    - department_relevance
+

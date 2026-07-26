@@ -1,0 +1,198 @@
+source_id,source_name,country,region_scope,module,source_type,url,tier,notes
+CN_FINANCING_001,企查查,China,China,Financing,Database,https://www.qcc.com/,Manual,database signals should be verified with primary/public sources
+CN_FINANCING_002,IT桔子,China,China,Financing;Chip_AI_Compute,Database,https://www.itjuzi.com/,S_Core,database signals should be verified with primary/public sources
+CN_FINANCING_003,投资界 PEDaily,China,China,Financing;Chip_AI_Compute,Financial_Media,https://news.pedaily.cn/,S_Core,China primary-market funding.
+CN_FINANCING_004,深交所 SZSE,China,China,Financing;Chip_AI_Compute,Exchange,https://www.szse.cn/disclosure/,S_Core,"Shenzhen listings, bonds, major transactions."
+CN_POLICY_001,中国政府网 gov.cn,China,China,Policy;Chip_AI_Compute,Official,https://www.gov.cn/,S_Core,"State Council policy, press conferences, ministry coordination."
+CN_POLICY_002,国家航天局 CNSA,China,China,Policy;Technology,Official,https://www.cnsa.gov.cn/,S_Core,"Official China space wording, mission updates, regulation signals."
+CN_POLICY_003,新华社 / Xinhua,China,China,Policy;Technology;Chip_AI_Compute,Official,https://www.news.cn/,S_Core,"Major China missions, policy framing, official English/Chinese wording."
+CN_TECH_001,中科宇航 CAS Space,China,China,Technology;Financing,Company,https://www.cas-space.com/,S_Core,"Lijian launches, cadence, sea launch plans, commercial launch."
+CN_TECH_002,蓝箭航天 LandSpace,China,China,Technology;Financing,Company,https://www.landspace.com/,S_Core,"Zhuque, Tianque engines, methane and reusable progress."
+CN_TECH_003,长光卫星 CGSTL / 吉林一号,China,China,Technology;Financing,Company,https://www.jl1.cn/index.aspx,S_Core,"Jilin-1 constellation, commercial remote sensing, onboard AI, IPO/listing signals."
+CN_FINANCING_005,36氪,China,China,Technology;Financing;Chip_AI_Compute,Financial_Media,https://36kr.com/,S_Core,China hard-tech and commercial space funding scoops.
+GLOBAL_FINANCING_001,Reuters,Global,Global,Policy;Financing;Chip_AI_Compute,Wire_Service,https://www.reuters.com/,S_Core,subscription required
+GLOBAL_FINANCING_002,Company Newsroom / IR,Global,Global,Technology;Financing,Other,N/A,S_Core,original entry had no explicit URL: Company site
+US_FINANCING_001,PR Newswire,US,Global,Financing,Wire_Service,https://www.prnewswire.com/,S_Core,original country value normalized from: US/Global
+US_FINANCING_002,SEC EDGAR,US,US,Financing,Filing,https://www.sec.gov/edgar/search/,S_Core,"S-1, 8-K, Form D, IPO, M&A, US company financing."
+US_FINANCING_003,Crunchbase,US,Global,Financing;Chip_AI_Compute,Database,https://www.crunchbase.com/,S_Core,subscription required; original country value normalized from: US/Global; database signals should be verified with primary/public sources
+US_FINANCING_004,CB Insights,US,Global,Financing;Chip_AI_Compute;Market_Background,Database,https://www.cbinsights.com/,S_Core,subscription required; original country value normalized from: US/Global; database signals should be verified with primary/public sources
+US_POLICY_001,Federal Register,US,US,Policy,Official,https://www.federalregister.gov/,S_Core,"ANOPR, NPRM, interim and final rules."
+US_POLICY_002,GovInfo,US,US,Policy,Official,https://www.govinfo.gov/,S_Core,"Original bill text, Congressional Record, government publications."
+US_POLICY_003,BIS,US,US,Policy;Chip_AI_Compute,Official,https://www.bis.doc.gov/,S_Core,"EAR, Entity List, AI/chip export controls, semiconductor rules."
+US_POLICY_004,Congress.gov,US,US,Policy;Chip_AI_Compute,Official,https://www.congress.gov/,S_Core,Bill lifecycle and committee activity.
+US_POLICY_005,U.S. Department of Commerce,US,US,Policy;Chip_AI_Compute,Official,https://www.commerce.gov/,S_Core,AI/chip/export-control policy entry point; use with BIS and NIST.
+US_POLICY_006,White House Briefing Room,US,US,Policy;Chip_AI_Compute,Official,https://www.whitehouse.gov/briefing-room/,S_Core,merged original entries: OSTP
+US_POLICY_007,FAA AST,US,US,Policy;Technology,Official,https://www.faa.gov/space,S_Core,"Commercial launch licenses, mishap investigations, launch regulation."
+US_POLICY_008,FCC,US,US,Policy;Technology,Official,https://www.fcc.gov/,S_Core,"Spectrum, satellite network authorization, direct-to-device, terminals, space services."
+US_POLICY_009,NASA,US,US,Policy;Technology;Financing,Official,https://www.nasa.gov/,S_Core,"ISS, commercial cargo/crew, CLPS, launch services, SBIR, autonomy and compute."
+US_POLICY_010,National Reconnaissance Office NRO,US,US,Policy;Technology;Financing,Official,https://www.nro.gov/news-media-featured-stories/,S_Core,Commercial EO/SAR/RF/hyperspectral procurement and intelligence satellite demand.
+US_POLICY_011,Space Development Agency SDA,US,US,Policy;Technology;Financing,Official,https://www.sda.mil/news/,S_Core,"PWSA, tracking/transport layers, prototype vendors, optical links."
+US_TECH_001,SpaceNews,US,Global,Policy;Technology;Financing,Industry_Media,https://spacenews.com/,S_Core,original country value normalized from: US/Global
+US_POLICY_012,U.S. Space Force / SSC Newsroom,US,US,Policy;Technology;Financing,Official,https://www.ssc.spaceforce.mil/Newsroom/,S_Core,"Launch procurement, NSSL, commercial partnerships, PLEO contracts."
+US_POLICY_013,DARPA,US,US,Policy;Technology;Financing;Chip_AI_Compute,Official,https://www.darpa.mil/,S_Core,merged original entries: DARPA Microsystems Technology Office
+US_TECH_002,NASASpaceflight,US,Global,Technology,Official,https://www.nasaspaceflight.com/,S_Core,verify elsewhere / cross-check with official source; original country value normalized from: US/Global
+US_TECH_003,Spaceflight Now,US,Global,Technology,Industry_Media,https://spaceflightnow.com/,S_Core,original country value normalized from: US/Global
+US_TECH_004,SpaceX,US,US,Technology,Company,https://www.spacex.com/launches/,S_Core,"Falcon, Starship, Starlink, mission pages; cross-check official social only when necessary."
+US_TECH_005,Blue Origin,US,US,Technology;Financing,Company,https://www.blueorigin.com/,S_Core,"New Glenn, New Shepard, reuse milestones, anomalies, defense launch."
+US_TECH_006,Payload,US,Global,Technology;Financing,Industry_Media,https://payloadspace.com/,S_Core,original country value normalized from: US/Global
+CN_FINANCING_006,企名片,China,China,Financing,Database,https://www.qimingpian.com/,A_Active,database signals should be verified with primary/public sources
+CN_FINANCING_007,天眼查,China,China,Financing,Database,https://www.tianyancha.com/,A_Active,database signals should be verified with primary/public sources
+CN_FINANCING_008,上交所 SSE,China,China,Financing;Chip_AI_Compute,Exchange,https://www.sse.com.cn/disclosure/,A_Active,"Shanghai listings, restructuring, bonds, hard-tech disclosures."
+CN_FINANCING_009,创业邦,China,China,Financing;Chip_AI_Compute,Financial_Media,https://www.cyzone.cn/,A_Active,China startup financing.
+CN_FINANCING_010,港交所披露易 HKEXnews,China,Global,Financing;Chip_AI_Compute,Exchange,https://www1.hkexnews.hk/,A_Active,original country value normalized from: China/Global
+CN_POLICY_004,国务院新闻办 SCIO,China,China,Policy,Official,http://www.scio.gov.cn/,A_Active,Official transcripts and policy briefings.
+CN_CHIP_AI_001,中国信通院 CAICT,China,China,Policy;Chip_AI_Compute;Market_Background,Research_Institute,https://www.caict.ac.cn/,A_Active,useful only when chip / AI compute overlaps with space
+CN_CHIP_AI_002,赛迪 CCID,China,China,Policy;Chip_AI_Compute;Market_Background,Research_Institute,https://www.ccidgroup.com/,A_Active,useful only when chip / AI compute overlaps with space
+CN_POLICY_005,上海市经信委,China,China,Policy;Financing,Company,https://sheitc.sh.gov.cn/,A_Active,"Shanghai commercial space, Qianfan/G60 ecosystem, capital matching policy."
+CN_POLICY_006,国家发改委 NDRC,China,China,Policy;Financing;Chip_AI_Compute,Official,https://www.ndrc.gov.cn/,A_Active,"Private investment, major projects, infrastructure, industrial funds."
+CN_FINANCING_011,财新网,China,China,Policy;Financing;Chip_AI_Compute,Financial_Media,https://www.caixin.com/,A_Active,subscription required
+CN_FINANCING_012,财联社,China,China,Policy;Financing;Chip_AI_Compute,Financial_Media,https://www.cls.cn/,A_Active,China fast market and financing news.
+CN_TECH_004,中新网,China,China,Policy;Technology,Industry_Media,https://www.chinanews.com.cn/,A_Active,Chinese commercial space interviews and mission context.
+CN_POLICY_007,国防科工局 SASTIND,China,China,Policy;Technology,Official,https://www.sastind.gov.cn/,A_Active,"Aerospace industrial system, civil-military integration, industry management."
+CN_POLICY_008,海南省政府 / 文昌,China,China,Policy;Technology,Company,https://www.hainan.gov.cn/,A_Active,Commercial launch site and spaceport policy.
+CN_POLICY_009,北京市经信局,China,China,Policy;Technology;Chip_AI_Compute,Company,https://jxj.beijing.gov.cn/,A_Active,"Beijing commercial rockets, satellite applications, AI+space policy."
+CN_POLICY_010,工信部 MIIT,China,China,Policy;Technology;Chip_AI_Compute,Official,https://www.miit.gov.cn/,A_Active,"Satellite internet, AI industry, intelligent manufacturing, compute infrastructure."
+CN_TECH_005,科技日报,China,China,Policy;Technology;Chip_AI_Compute,Industry_Media,https://www.stdaily.com/,A_Active,China technology and space mission coverage.
+CN_POLICY_011,中国星网 / China SatNet public signals,China,China,Policy;Technology;Financing,Company,https://www.sasac.gov.cn/,A_Active,"No stable public newsroom. Track SASAC, Xiongan, procurement, Qichacha, and official mentions."
+CN_TECH_006,东方空间 Orienspace,China,China,Technology;Financing,Company,https://www.orienspace.com/,A_Active,Gravity launch vehicles and sea launch capability.
+CN_FINANCING_013,中科星图 GEOVIS,China,China,Technology;Financing,Filing,https://www.geovis.com.cn/,A_Active,"Space information, digital earth, remote sensing AI, satellite data platforms."
+CN_TECH_007,天仪研究院 Spacety,China,China,Technology;Financing,Company,http://www.spacety.com/,A_Active,"Small satellites, commercial SAR, constellation missions, IPO signals."
+CN_TECH_008,天兵科技 Space Pioneer,China,China,Technology;Financing,Company,https://www.spacepioneer.com.cn/,A_Active,"Tianlong, liquid rockets, vertical landing tests."
+CN_TECH_009,微纳星空 MinoSpace,China,China,Technology;Financing,Company,https://www.minospace.com/,A_Active,"Small satellite platforms, manufacturing, constellation support."
+CN_TECH_010,时空道宇 Geespace,China,China,Technology;Financing,Company,https://www.geespace.com/news/,A_Active,"Mobility constellation, vehicle-linked satellite services, satellite-phone crossover."
+CN_TECH_011,星河动力 Galactic Energy,China,China,Technology;Financing,Company,https://www.galactic-energy.cn/,A_Active,"Ceres, Pallas, Chinese commercial launch cadence."
+CN_TECH_012,深蓝航天 Deep Blue Aerospace,China,China,Technology;Financing,Company,https://www.deepblueaero.com/,A_Active,Nebula tests and reusable architecture.
+CN_TECH_013,银河航天 GalaxySpace,China,China,Technology;Financing,Company,https://www.galaxy-space.com/,A_Active,"LEO broadband satellites, terminals, payloads, manufacturing."
+CN_TECH_014,国星宇航 ADA Space,China,China,Technology;Financing;Chip_AI_Compute,Company,https://www.adaspace.com/,A_Active,"AI satellites, space compute demonstrations, satellite data applications, financing."
+CN_FINANCING_014,巨潮资讯 CNInfo,China,China,Technology;Financing;Chip_AI_Compute,Filing,https://www.cninfo.com.cn/,A_Active,merged original entries: 航天智装 / 航天环宇等上市公司公告
+CN_TECH_015,中国科学院微小卫星创新研究院,China,China,Technology;Policy;Market_Background,Research_Institute,https://www.microsate.cas.cn/,A_Active,Added based on space-compute weekly brief requirements.
+CN_TECH_016,中国科学院空天信息创新研究院 AIR CAS,China,China,Technology;Policy;Market_Background,Research_Institute,https://www.aircas.cas.cn/,A_Active,Added based on space-compute weekly brief requirements.
+EU_TECH_001,KP Labs,Europe,International,Technology;Financing,Company,https://www.kplabs.space/,A_Active,"Intuition-1, hyperspectral onboard AI, data processing units, algorithms."
+EU_TECH_002,Ubotica,Europe,International,Technology;Financing,Company,https://ubotica.com/news/,A_Active,"CogniSAT, satellite AI, ESA/commercial mission updates, edge inference."
+EU_TECH_003,Unibap Space Solutions,Europe,International,Technology;Financing,Company,https://unibap.com/solutions/software/osfw/,A_Active,"SpaceCloud OS/FW, onboard computing platform, in-orbit processing."
+EU_TECH_004,垣信卫星 SpaceSail / G60 千帆,Europe,International,Technology;Financing,Company,https://www.spacesail.com/,A_Active,"Megaconstellation launch cadence, international partnerships, financing, supply chain."
+EU_FINANCING_001,航天宏图 PIESAT,Europe,International,Technology;Financing,Filing,https://www.piesat.cn/,A_Active,"Nuwa SAR constellation, PIE-Engine, remote sensing AI, listed-company filings."
+GLOBAL_CHIP_AI_001,TrendForce,Global,Global,Chip_AI_Compute;Market_Background,Company,https://www.trendforce.com/news/,A_Active,subscription required; useful only when chip / AI compute overlaps with space
+GLOBAL_FINANCING_003,Bloomberg,Global,Global,Policy;Financing;Chip_AI_Compute,Financial_Media,https://www.bloomberg.com/,A_Active,subscription required
+GLOBAL_FINANCING_004,Financial Times,Global,Global,Policy;Financing;Chip_AI_Compute,Financial_Media,https://www.ft.com/,A_Active,subscription required
+GLOBAL_TECH_001,SpaceWatch Global,Global,Global,Policy;Technology,Industry_Media,https://spacewatch.global/,A_Active,"International cooperation, commercial stations, microgravity research."
+GLOBAL_TECH_002,ICEYE,Global,Global,Technology;Financing,Company,https://www.iceye.com/newsroom/press-releases,A_Active,"SAR remote sensing, near-real-time disaster monitoring, sovereign/government orders."
+JP_CHIP_AI_001,Nikkei Asia,Japan,International,Policy;Financing;Chip_AI_Compute,Industry_Media,https://asia.nikkei.com/,A_Active,subscription required; original country value normalized from: Asia
+OTHER_TECH_001,Spiral Blue,Other,International,Technology;Financing,Company,https://www.spiralblue.space/updates,A_Active,"Space Edge Computer, in-orbit AI hardware, EO data processing."
+US_CHIP_AI_001,SemiAnalysis,US,Global,Chip_AI_Compute;Market_Background,Company,https://semianalysis.com/,A_Active,subscription required; useful only when chip / AI compute overlaps with space; original country value normalized from: US/Global
+US_FINANCING_005,Business Wire,US,Global,Financing,Wire_Service,https://www.businesswire.com/,A_Active,original country value normalized from: US/Global
+US_FINANCING_006,GlobeNewswire,US,Global,Financing,Wire_Service,https://www.globenewswire.com/,A_Active,original country value normalized from: US/Global
+US_FINANCING_007,USAspending.gov,US,US,Financing,Database,https://www.usaspending.gov/,A_Active,Federal spending and contract amounts.
+US_FINANCING_008,PitchBook,US,Global,Financing;Chip_AI_Compute,Database,https://pitchbook.com/,A_Active,subscription required; original country value normalized from: US/Global; database signals should be verified with primary/public sources
+US_FINANCING_009,BryceTech,US,Global,Financing;Market_Background,Research_Institute,https://brycetech.com/,Backup,original country value normalized from: US/Global
+US_FINANCING_010,Space Capital,US,Global,Financing;Market_Background,Research_Institute,https://spacecapital.com/,A_Active,original country value normalized from: US/Global
+US_FINANCING_011,Defense SBIR/STTR Innovation Portal DSIP,US,US,Financing;Technology;Policy,Database,https://www.defensesbirsttr.mil/SBIR-STTR/Program/,A_Active,Added based on space-compute weekly brief requirements.
+US_CHIP_AI_002,CSET,US,US,Policy;Chip_AI_Compute;Market_Background,Think_Tank,https://cset.georgetown.edu/,A_Active,useful only when chip / AI compute overlaps with space
+US_SOURCE_001,Breaking Defense,US,US,Policy;Financing,Industry_Media,https://breakingdefense.com/,A_Active,Defense space and procurement.
+US_SOURCE_002,Defense News,US,US,Policy;Financing,Industry_Media,https://www.defensenews.com/,A_Active,Defense acquisition and commercial contracts.
+US_FINANCING_012,DOD Contract Announcements,US,US,Policy;Financing,Company,https://www.defense.gov/News/Contracts/,A_Active,"Daily defense contracts, space and launch awards."
+US_FINANCING_013,SAM.gov,US,US,Policy;Financing,Database,https://sam.gov/,A_Active,US federal procurement and solicitations.
+US_CHIP_AI_003,NIST CHIPS for America,US,US,Policy;Financing;Chip_AI_Compute,Company,https://www.nist.gov/chips,A_Active,useful only when chip / AI compute overlaps with space
+US_FINANCING_014,Wall Street Journal,US,Global,Policy;Financing;Chip_AI_Compute,Financial_Media,https://www.wsj.com/,A_Active,subscription required; original country value normalized from: US/Global
+US_POLICY_014,CSIS Aerospace Security,US,US,Policy;Market_Background,Think_Tank,https://www.csis.org/programs/aerospace-security-project,A_Active,Space security and commercial space strategic context.
+US_TECH_007,Aviation Week Space,US,Global,Policy;Technology,Industry_Media,https://aviationweek.com/defense-space/space,A_Active,subscription required; original country value normalized from: US/Global
+US_POLICY_015,NOAA Office of Space Commerce,US,US,Policy;Technology,Official,https://www.space.commerce.gov/,A_Active,"Commercial remote sensing, mission authorization, space traffic."
+US_TECH_008,Via Satellite / Satellite Today,US,Global,Policy;Technology,Industry_Media,https://www.satellitetoday.com/,A_Active,original country value normalized from: US/Global
+US_POLICY_016,AFRL Space Vehicles Directorate,US,US,Policy;Technology;Financing,Official,https://www.afrl.af.mil/RV/,A_Active,Added based on space-compute weekly brief requirements.
+US_POLICY_017,Defense Innovation Unit DIU,US,US,Policy;Technology;Financing,Official,https://www.diu.mil/latest,A_Active,"Commercial technology entering defense, hybrid space architecture, prototype awards."
+US_POLICY_018,National Geospatial-Intelligence Agency NGA,US,US,Policy;Technology;Financing,Official,https://www.nga.mil/news/,A_Active,"GEOINT AI, commercial imagery analytics, data platforms, acquisition vehicles."
+US_POLICY_019,Space Rapid Capabilities Office,US,US,Policy;Technology;Financing,Official,https://www.spaceforce.mil/About-Us/Fact-Sheets/Article/2332565/space-rapid-capabilities-office/,A_Active,Added based on space-compute weekly brief requirements.
+US_TECH_009,Ars Technica Space,US,US,Technology,Industry_Media,https://arstechnica.com/science/space/,A_Active,SpaceX/NASA engineering and industry analysis.
+US_TECH_010,AMD Space,US,US,Technology;Chip_AI_Compute,Company,https://www.amd.com/en/solutions/aerospace-and-defense/space.html,A_Active,"Space-grade FPGAs, Versal XQR, Kintex/Virtex, onboard AI and reconfigurable processing."
+US_TECH_011,BAE Systems Space Electronics,US,US,Technology;Chip_AI_Compute,Company,https://www.baesystems.com/en-us/who-we-are/electronic-systems/c4isr/space-electronics,A_Active,"Radiation-hardened processors, ASICs, electronics, mission computers."
+US_TECH_012,CAES,US,US,Technology;Chip_AI_Compute,Company,https://caes.com/products,A_Active,"Space-grade RF, processors, radiation-hardened components, LEON/SPARC context."
+US_TECH_013,Frontgrade Technologies,US,US,Technology;Chip_AI_Compute,Company,https://www.frontgrade.com/radhard,A_Active,"Radiation-hardened and high-reliability processors, memory, power, analog, ASIC/IP."
+US_FINANCING_015,AST SpaceMobile,US,US,Technology;Financing,Filing,https://ast-science.com/,A_Active,"BlueBird satellites, D2D, carrier partnerships, spectrum."
+US_TECH_014,Axiom Space,US,US,Technology;Financing,Company,https://www.axiomspace.com/,A_Active,"Axiom Station, private astronaut missions, EVA suit."
+US_TECH_015,BlackSky,US,US,Technology;Financing,Company,https://ir.blacksky.com/news-events/press-releases,A_Active,"Commercial remote sensing, AI-enabled analytics, government orders, SEC-linked news."
+US_TECH_016,Capella Space,US,US,Technology;Financing,Company,https://www.capellaspace.com/,A_Active,"SAR imagery, tasking, government and defense customers; cross-check wire and buyer releases."
+US_TECH_017,Firefly Aerospace,US,US,Technology;Financing,Company,https://fireflyspace.com/,A_Active,"Alpha, Blue Ghost, Elytra, defense contracts."
+US_TECH_018,HawkEye 360,US,US,Technology;Financing,Company,https://www.he360.com/newsroom/,A_Active,"RF geolocation, maritime/domain awareness, defense and intelligence customers."
+US_POLICY_020,IARPA,US,US,Technology;Financing,Official,https://www.iarpa.gov/newsroom,A_Active,"Intelligence-side AI, remote sensing, geospatial models, compute-adjacent R&D."
+US_FINANCING_016,Intuitive Machines,US,US,Technology;Financing,Filing,https://investors.intuitivemachines.com/news-events/news-releases/default.aspx,A_Active,Commercial lunar missions and NASA contracts.
+US_TECH_019,Loft Orbital,US,Global,Technology;Financing,Company,https://loftorbital.com/newsroom/,A_Active,original country value normalized from: US/Global
+US_TECH_020,Maxar Intelligence,US,US,Technology;Financing,Company,https://maxar.com/press-releases,A_Active,"High-resolution geospatial intelligence, WorldView Legion, 3D/AI products, contracts."
+US_TECH_021,Muon Space,US,US,Technology;Financing,Company,https://www.muonspace.com/press/,A_Active,"Earth observation constellations, climate data, configurable satellite platform, defense customers."
+US_POLICY_021,NASA SBIR/STTR,US,US,Technology;Financing,Official,https://www.nasa.gov/sbir_sttr/,A_Active,"Early space compute, onboard autonomy, avionics, AI, and component projects."
+US_TECH_022,Northrop Grumman Space,US,US,Technology;Financing,Company,https://www.northropgrumman.com/space,A_Active,"Cygnus, Antares, Gateway HALO, defense space contracts."
+US_TECH_023,Planet,US,US,Technology;Financing,Company,https://www.planet.com/company/news/,A_Active,"Remote sensing products, government contracts, AI/data products, earnings."
+US_FINANCING_017,Redwire Space,US,US,Technology;Financing,Filing,https://redwirespace.com/newsroom/,A_Active,"In-space manufacturing, biotech, solar arrays, infrastructure."
+US_FINANCING_018,Rocket Lab,US,Global,Technology;Financing,Filing,https://www.rocketlabusa.com/,A_Active,original country value normalized from: US/Global
+US_FINANCING_019,SBIR.gov,US,US,Technology;Financing,Database,https://www.sbir.gov/,A_Active,Early non-dilutive US small-business funding.
+US_TECH_024,Sidus Space / Exo-Space,US,US,Technology;Financing,Company,https://sidusspace.com/news/,A_Active,Exo-Space acquired by Sidus; maintain under parent source unless a separate newsroom reappears
+US_TECH_025,Sierra Space,US,US,Technology;Financing,Company,https://www.sierraspace.com/,A_Active,"Dream Chaser, LIFE Habitat, Orbital Reef, cargo services."
+US_FINANCING_020,SpaceWERX,US,US,Technology;Financing,Company,https://spacewerx.us/,A_Active,Early commercial space funding and prototype contracts.
+US_TECH_026,Umbra,US,US,Technology;Financing,Company,https://umbra.space/blog/,A_Active,"High-resolution SAR, satellite systems, government/commercial customers."
+US_TECH_027,Varda Space Industries,US,US,Technology;Financing,Company,https://www.varda.com/,A_Active,In-space pharmaceutical manufacturing and reentry capsules.
+US_TECH_028,Vast Space,US,US,Technology;Financing,Company,https://www.vastspace.com/,A_Active,"Haven-1, commercial station interfaces, microgravity research partners."
+US_TECH_029,Aethero,US,US,Technology;Financing;Chip_AI_Compute,Company,https://www.aethero.com/,A_Active,Space-rated edge computing modules and radiation-tolerant compute direction.
+US_TECH_030,Ramon.Space,US,Global,Technology;Financing;Chip_AI_Compute,Company,https://ramon.space/press/,A_Active,original country value normalized from: US/Global
+US_FINANCING_021,TechCrunch,US,Global,Technology;Financing;Chip_AI_Compute,Financial_Media,https://techcrunch.com/,A_Active,original country value normalized from: US/Global
+US_TECH_031,NASA TechPort,US,US,Technology;Financing;Market_Background,Database,https://techport.nasa.gov/,A_Active,Added based on space-compute weekly brief requirements.
+CN_FINANCING_015,北交所 BSE,China,China,Financing;Chip_AI_Compute,Exchange,https://www.bse.cn/,Backup,Specialized supply-chain companies.
+CN_FINANCING_016,新浪财经 / Sina Finance,China,China,Financing;Chip_AI_Compute;Market_Background,Financial_Media,https://finance.sina.com.cn/,S_Core,"China market news, listed-company and industry financing signals."
+CN_POLICY_012,国家网信办 / 中国网信网,China,China,Policy,Official,https://www.cac.gov.cn/,Backup,"AI governance, algorithm filing, satellite data compliance crossover."
+CN_POLICY_013,国家数据局,China,China,Policy;Chip_AI_Compute,Official,https://www.nda.gov.cn/,Backup,"Data elements, compute infrastructure, Digital China crossover."
+CN_CHIP_AI_003,中国半导体行业协会,China,China,Policy;Chip_AI_Compute;Market_Background,Company,https://www.csia.net.cn/,Backup,useful only when chip / AI compute overlaps with space
+CN_CHIP_AI_004,中国算力网 / 算力产业联盟类来源,China,China,Policy;Chip_AI_Compute;Market_Background,Other,N/A,Backup,original entry had no explicit URL: Search/manual; verify elsewhere / cross-check with official source; useful only when chip / AI compute overlaps with space
+CN_CHIP_AI_005,经济日报,China,China,Policy;Chip_AI_Compute;Market_Background,Industry_Media,https://www.ce.cn/,Backup,China industrial policy and space compute analysis.
+CN_TECH_017,中国电子 CEC,China,China,Policy;Technology;Chip_AI_Compute,Company,https://www.cec.com.cn/,Backup,"Chips, advanced compute, information infrastructure, potential space-information crossover."
+CN_TECH_018,中国电科 CETC,China,China,Policy;Technology;Chip_AI_Compute,Company,https://www.cetc.com.cn/,Backup,"Satellite communications, electronic information, radar, payloads, defense electronics."
+CN_POLICY_014,央视新闻 CMG,China,China,Policy;Technology;Chip_AI_Compute,Official,https://news.cctv.com/,Backup,National-level technology and official statements.
+CN_TECH_019,CALT / 一院,China,China,Technology,Company,https://www.calt.com/,Backup,"Launch vehicle design, reusable and heavy-lift context."
+CN_TECH_020,CAST / 五院,China,China,Technology,Company,https://www.cast.cn/,Backup,"Satellite platforms, spacecraft, deep-space probes."
+CN_TECH_021,CMSA,China,China,Technology,Company,https://www.cmse.gov.cn/,Backup,China space station operations and experiments.
+CN_TECH_022,航天科工集团 CASIC,China,China,Technology,Company,https://www.casic.com/,Backup,"Kuaizhou, satellite internet, state-owned commercial programs."
+CN_TECH_023,航天科技集团 CASC,China,China,Technology,Company,https://www.spacechina.com/,Backup,"Long March, Shenzhou/Tianzhou, satellite platform official wording."
+CN_CHIP_AI_006,半导体行业观察,China,China,Technology;Chip_AI_Compute;Market_Background,Company,https://www.semiinsights.com/,Backup,useful only when chip / AI compute overlaps with space
+CN_CHIP_AI_007,电子工程专辑 EET China,China,China,Technology;Chip_AI_Compute;Market_Background,Company,https://www.eet-china.com/,Backup,useful only when chip / AI compute overlaps with space
+CN_TECH_024,九天微星 Commsat,China,China,Technology;Financing,Company,https://www.commsat.cn/,Backup,"Small satellites, satellite IoT, historical satellite-internet industry signal."
+CN_TECH_025,零重力实验室,China,China,Technology;Financing,Company,N/A,Backup,original entry had no explicit URL: Search/manual; verify elsewhere / cross-check with official source
+CN_CHIP_AI_008,爱集微,China,China,Technology;Financing;Chip_AI_Compute,Company,https://www.ijiwei.com/,Backup,useful only when chip / AI compute overlaps with space
+CN_CHIP_AI_009,芯东西,China,China,Technology;Financing;Chip_AI_Compute,Company,https://www.zhidx.com/c/chip,Backup,verify elsewhere / cross-check with official source; useful only when chip / AI compute overlaps with space
+CN_TECH_026,鹏城实验室 PCL,China,China,Technology;Policy;Chip_AI_Compute;Market_Background,Research_Institute,https://pcl.ac.cn/,Watch,Added based on space-compute weekly brief requirements.
+EU_TECH_005,Teledyne e2v / Space Imaging,Europe,Global,Technology,Company,https://www.teledyne-e2v.com/en-us/solutions/imaging,Backup,original country value normalized from: Europe/US
+EU_CHIP_AI_001,Infineon Space Applications / IR HiRel,Europe,Global,Technology;Chip_AI_Compute,Company,https://www.infineon.com/applications/aerospace-and-defense/space-applications,Watch,Added based on space-compute weekly brief requirements.
+EU_CHIP_AI_002,STMicroelectronics Space Products,Europe,Global,Technology;Chip_AI_Compute,Company,https://www.st.com/en/space-products.html,Watch,Added based on space-compute weekly brief requirements.
+EU_TECH_006,ESA Phi-lab,Europe,International,Technology;Financing;Market_Background,Research_Institute,https://philab.esa.int/,Watch,Added based on space-compute weekly brief requirements.
+GLOBAL_CHIP_AI_002,Gartner,Global,Global,Chip_AI_Compute;Market_Background,Other,N/A,Backup,subscription required; useful only when chip / AI compute overlaps with space; split from original bundled entry: Gartner / IDC / Omdia
+GLOBAL_CHIP_AI_003,IDC,Global,Global,Chip_AI_Compute;Market_Background,Other,N/A,Backup,subscription required; useful only when chip / AI compute overlaps with space; split from original bundled entry: Gartner / IDC / Omdia
+GLOBAL_CHIP_AI_004,Omdia,Global,Global,Chip_AI_Compute;Market_Background,Other,N/A,Backup,subscription required; useful only when chip / AI compute overlaps with space; split from original bundled entry: Gartner / IDC / Omdia
+GLOBAL_CHIP_AI_005,EE Times,Global,Global,Technology;Chip_AI_Compute;Market_Background,Company,https://www.eetimes.com/,Backup,useful only when chip / AI compute overlaps with space
+GLOBAL_CHIP_AI_006,Semiconductor Engineering,Global,Global,Technology;Chip_AI_Compute;Market_Background,Company,https://semiengineering.com/,Backup,useful only when chip / AI compute overlaps with space
+GLOBAL_TECH_003,Satellogic,Global,Global,Technology;Financing,Company,https://satellogic.com/news/,Backup,"Low-cost EO constellation, data products, sovereign satellite sales."
+JP_CHIP_AI_002,Renesas Space and Harsh Environment,Japan,Global,Technology;Chip_AI_Compute,Company,https://www.renesas.com/en/products/space-harsh-environment,Watch,Added based on space-compute weekly brief requirements.
+US_POLICY_022,GAO,US,US,Policy,Official,https://www.gao.gov/,Backup,Audits and program execution risk for space procurement.
+US_POLICY_023,RAND,US,US,Policy;Chip_AI_Compute;Market_Background,Think_Tank,https://www.rand.org/,Backup,Strategy and defense-industrial analysis.
+US_POLICY_024,CNAS,US,US,Policy;Market_Background,Think_Tank,https://www.cnas.org/,Backup,"AI, national security, defense space."
+US_TECH_032,The Aerospace Corporation,US,US,Policy;Technology;Market_Background,Research_Institute,https://aerospace.org/,Watch,Added based on space-compute weekly brief requirements.
+US_TECH_033,Descartes Labs,US,US,Technology,Company,https://www.descarteslabs.com/,Backup,"Remote sensing data analysis, AI platform, compute-heavy geospatial workflows."
+US_TECH_034,Esri Newsroom,US,US,Technology,Company,https://www.esri.com/about/newsroom/announcements,Backup,"GIS and GeoAI ecosystem, NGA/defense contracts, geospatial AI context."
+US_TECH_035,ULA,US,US,Technology,Company,https://www.ulalaunch.com/,Backup,US launch capacity and national security launch comparison.
+US_CHIP_AI_004,Analog Devices Space and High Reliability,US,Global,Technology;Chip_AI_Compute,Company,https://www.analog.com/en/solutions/aerospace-and-defense/space.html,Watch,Added based on space-compute weekly brief requirements.
+US_TECH_036,Microchip Space Systems,US,US,Technology;Chip_AI_Compute,Company,https://www.microchip.com/en-us/products/microprocessors/64-bit-mpus/pic64-hpsc,Backup,"HPSC, RT PolarFire, rad-tolerant processors, FPGA and mixed-signal space components."
+US_CHIP_AI_005,ServeTheHome,US,Global,Technology;Chip_AI_Compute;Market_Background,Company,https://www.servethehome.com/,Backup,useful only when chip / AI compute overlaps with space; original country value normalized from: US/Global
+US_FINANCING_022,AFWERX,US,US,Technology;Financing,Company,https://afwerx.com/,Backup,Dual-use and air/space innovation funding.
+US_TECH_037,Orbital Insight,US,US,Technology;Financing,Company,https://www.orbitalinsight.com/,Backup,verify elsewhere / cross-check with official source
+US_TECH_038,Relativity Space,US,US,Technology;Financing,Company,https://www.relativityspace.com/,Backup,Terran R and reusable large launch vehicle progress.
+US_POLICY_025,FERC Federal Energy Regulatory Commission,US,US,Policy,Official,https://www.ferc.gov/news-events,S_Core,AI compute + power grid 主线核心来源；2026 Q2 大负荷接入规则关键监管出口
+US_POLICY_026,House Select Committee on the CCP,US,US,Policy,Official,https://selectcommitteeontheccp.house.gov/media,S_Core,芯片走私、AI 模型蒸馏、云端访问等执法/调查方向核心来源
+CN_POLICY_015,香港特区政府新闻公报 HK Gov Info,China,China-HK,Policy,Official,https://www.info.gov.hk/gia/general/,S_Core,香港 AI/算力/半导体政策主入口，SITI/创科局发言常驻
+CN_POLICY_016,世界互联网大会 WIC,China,China,Policy,Official,https://www.wicwuzhen.cn/,A_Active,AI 安全治理论坛、亚太峰会等高规格会议来源，事件驱动扫描
+CN_FINANCING_017,21世纪经济报道 21jingji,China,China,Financing;Policy,Financial_Media,https://www.21jingji.com/,S_Core,中国主流财经媒体之一，融资/并购/产业资本报道高频
+CN_FINANCING_018,证券时报 STCN,China,China,Financing,Financial_Media,https://www.stcn.com/,S_Core,A 股上市公司公告解读、并购重组类融资条目标准来源
+CN_FINANCING_019,上海证券报 CN Stock,China,China,Financing,Financial_Media,https://www.cnstock.com/,S_Core,中国主流财经媒体，融资/股权变更/上市公司报道
+CN_FINANCING_020,每日经济新闻 NBD,China,China,Financing;Technology,Financial_Media,https://www.nbd.com.cn/,S_Core,财经主流媒体；商业航天供应链与上市公司公告报道高频
+CN_CHIP_AI_010,芯谋研究 ICWise,China,China,Chip_AI_Compute;Financing,Research_Institute,https://www.icwise.com.cn/,S_Core,中国半导体产业核心独立研究机构；融资条目重要参考
+US_FINANCING_023,Forbes,US,US;Global,Financing,Financial_Media,https://www.forbes.com/,Watch,大并购条目金额 / 投资人补充来源；与 Reuters / WSJ 互验
+US_TECH_039,Amazon Press Center,US,US,Technology;Policy;Financing,Company,https://press.aboutamazon.com/,S_Core,Amazon Leo / Kuiper / Globalstar 并购等卫星互联网核心一手来源
+US_TECH_040,Globalstar Investor Relations,US,US,Technology;Policy;Financing,Company,https://investors.globalstar.com/,S_Core,MSS 频谱、D2D、Apple 合作与 Amazon 并购的官方一手来源
+US_FINANCING_024,Credo Technology Investor Relations,US,US,Financing;Chip_AI_Compute,Company,https://investors.credosemi.com/,S_Core,AI 集群光互连/CPO 整合主线公司一手来源
+US_FINANCING_025,Molex Newsroom,US,US,Financing;Chip_AI_Compute,Company,https://www.molex.com/en-us/about/news,Watch,光电共封装/CPO 供应链整合事件来源；事件驱动扫描
+CN_TECH_027,新浪科技 Sina Tech,China,China,Technology;Financing,Industry_Media,https://tech.sina.com.cn/,Watch,新浪科技频道，与新浪财经互补；高频转载、需回溯一手来源
+US_SOURCE_003,SEC EDGAR S-1 Filings,US,US,Financing,Filing,https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&type=S-1&dateb=&owner=include&count=40,S_Core,IPO 注册环节专项入口；与通用 SEC EDGAR 条目互补

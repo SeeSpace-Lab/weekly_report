@@ -1,0 +1,290 @@
+version: "0.1"
+
+sources:
+  - source_id: arxiv
+    name: arXiv
+    source_type: paper_api
+    connector: ArxivCollector
+    tier: S_Core
+    homepage_url: https://arxiv.org/
+    endpoint: https://export.arxiv.org/api/query
+    categories: [cs.DC, cs.OS, cs.PF, cs.AR, cs.LG, cs.CL, cs.CV, cs.NI]
+    search_terms:
+      - large language model inference
+      - LLM inference
+      - LLM serving
+      - inference engine
+      - inference runtime
+      - inference scheduling
+      - KV cache
+      - continuous batching
+      - speculative decoding
+      - mixture of experts inference
+      - edge LLM
+      - on-device LLM
+      - energy efficient inference
+      - power aware inference
+      - inference quantization
+    max_results: 200
+    timeout_seconds: 30
+    user_agent: weekly-intel/0.1 (OrbitInfer research survey)
+    schedule: daily
+
+  - source_id: openreview
+    name: OpenReview
+    source_type: paper_api
+    connector: OpenReviewCollector
+    tier: S_Core
+    homepage_url: https://openreview.net/
+    api_v2: https://api2.openreview.net
+    legacy_api: https://api.openreview.net
+    venues:
+      - {venue_id: ICLR.cc/2024/Conference, venue: ICLR, year: 2024}
+      - {venue_id: ICLR.cc/2025/Conference, venue: ICLR, year: 2025}
+      - {venue_id: ICLR.cc/2026/Conference, venue: ICLR, year: 2026}
+      - {venue_id: NeurIPS.cc/2024/Conference, venue: NeurIPS, year: 2024}
+      - {venue_id: NeurIPS.cc/2025/Conference, venue: NeurIPS, year: 2025}
+      - {venue_id: NeurIPS.cc/2026/Conference, venue: NeurIPS, year: 2026}
+      - {venue_id: MLSys.org/2024/Conference, venue: MLSys, year: 2024}
+      - {venue_id: MLSys.org/2025/Conference, venue: MLSys, year: 2025}
+      - {venue_id: MLSys.org/2026/Conference, venue: MLSys, year: 2026}
+      - {venue_id: ICML.cc/2024/Conference, venue: ICML, year: 2024}
+      - {venue_id: ICML.cc/2025/Conference, venue: ICML, year: 2025}
+      - {venue_id: ICML.cc/2026/Conference, venue: ICML, year: 2026}
+    page_size: 500
+    max_pages: 10
+    timeout_seconds: 30
+    user_agent: weekly-intel/0.1 (OrbitInfer research survey)
+    token_env: OPENREVIEW_TOKEN
+    schedule: daily
+
+  - source_id: crossref
+    name: Crossref
+    source_type: paper_api
+    connector: CrossrefCollector
+    tier: A_Active
+    homepage_url: https://www.crossref.org/
+    endpoint: https://api.crossref.org
+    search_terms:
+      - large language model inference
+      - LLM inference serving
+      - inference scheduling
+      - KV cache
+      - speculative decoding
+      - energy efficient inference
+      - power aware inference
+      - edge LLM inference
+    rows_per_query: 50
+    timeout_seconds: 30
+    user_agent: weekly-intel/0.1 (OrbitInfer research survey)
+    schedule: weekly
+
+  - source_id: venue_official_pages
+    name: 顶会官方页面
+    source_type: venue
+    connector: VenueCollector
+    tier: S_Core
+    homepage_url: https://aaai.org/conference/aaai/
+    timeout_seconds: 30
+    user_agent: weekly-intel/0.1 (OrbitInfer research survey)
+    pages:
+      - {id: aaai-2027, name: AAAI 2027, category: ai, url: "https://aaai.org/conference/aaai/aaai-27/"}
+      - {id: hpca-2027, name: HPCA 2027, category: architecture, url: "https://hpca-conf.org/2027/"}
+      - {id: asplos-2027, name: ASPLOS 2027, category: systems_architecture, url: "https://www.asplos-conference.org/asplos2027/"}
+      - {id: eurosys-2027, name: EuroSys 2027, category: systems, url: "https://2027.eurosys.org/"}
+      - {id: iclr-2027, name: ICLR 2027, category: ai, url: "https://iclr.cc/"}
+      - {id: mlsys-2026, name: MLSys 2026, category: systems_ml, url: "https://mlsys.org/Conferences/2026"}
+      - {id: isca-2027, name: ISCA 2027, category: architecture, url: "https://iscaconf.org/"}
+      - {id: osdi-2027, name: OSDI 2027, category: systems, url: "https://www.usenix.org/conference/osdi27"}
+      - {id: icml-2026, name: ICML 2026, category: ai, url: "https://icml.cc/Conferences/2026"}
+      - {id: neurips-2026, name: NeurIPS 2026, category: ai, url: "https://neurips.cc/Conferences/2026"}
+      - {id: sosp-2026, name: SOSP 2026, category: systems, url: "https://sigops.org/s/conferences/sosp/2026/"}
+      - {id: micro-2026, name: MICRO 2026, category: architecture, url: "https://www.microarch.org/micro59/"}
+    schedule: weekly
+
+  - source_id: github_sglang
+    name: SGLang GitHub
+    source_type: repository
+    connector: GitHubCollector
+    tier: S_Core
+    homepage_url: https://github.com/sgl-project/sglang
+    repository: sgl-project/sglang
+    token_env: GITHUB_TOKEN
+    collect: [releases, tags, repository_metadata]
+    schedule: daily
+
+  - source_id: github_vllm
+    name: vLLM GitHub
+    source_type: repository
+    connector: GitHubCollector
+    tier: S_Core
+    homepage_url: https://github.com/vllm-project/vllm
+    repository: vllm-project/vllm
+    token_env: GITHUB_TOKEN
+    collect: [releases, tags, repository_metadata]
+    schedule: daily
+
+  - source_id: github_ktransformers
+    name: KTransformers GitHub
+    source_type: repository
+    connector: GitHubCollector
+    tier: S_Core
+    homepage_url: https://github.com/kvcache-ai/ktransformers
+    repository: kvcache-ai/ktransformers
+    token_env: GITHUB_TOKEN
+    collect: [releases, tags, repository_metadata]
+    schedule: daily
+
+  - source_id: github_tensorrt_llm
+    name: TensorRT-LLM GitHub
+    source_type: repository
+    connector: GitHubCollector
+    tier: A_Active
+    homepage_url: https://github.com/NVIDIA/TensorRT-LLM
+    repository: NVIDIA/TensorRT-LLM
+    token_env: GITHUB_TOKEN
+    collect: [releases, tags, repository_metadata]
+    schedule: daily
+
+  - source_id: huggingface_hub
+    name: Hugging Face Hub
+    source_type: model_hub
+    connector: HuggingFaceCollector
+    tier: A_Active
+    homepage_url: https://huggingface.co/
+    endpoint: https://huggingface.co
+    resource_types: [models, datasets]
+    search_terms:
+      - llm inference
+      - llm serving
+      - kv cache
+      - speculative decoding
+      - edge llm
+      - inference benchmark
+    limit_per_query: 20
+    timeout_seconds: 30
+    token_env: HF_TOKEN
+    user_agent: weekly-intel/0.1 (OrbitInfer research survey)
+    schedule: daily
+
+  - source_id: wechat_jiqizhixin
+    name: 机器之心
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: S_Core
+    account_id: jiqizhixin
+    feed_url_env: WECHAT_FEED_JIQIZHIXIN
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_baai_hub
+    name: 智源社区
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: S_Core
+    account_id: baai_hub
+    feed_url_env: WECHAT_FEED_BAAI_HUB
+    homepage_url: https://hub.baai.ac.cn/
+    access_mode: website_plus_subscription
+    fallbacks: [official_website, sogou_search, manual_url]
+    schedule: daily
+
+  - source_id: wechat_paperweekly
+    name: PaperWeekly
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: S_Core
+    account_id: paperweekly
+    feed_url_env: WECHAT_FEED_PAPERWEEKLY
+    content_role: paper_interpretation
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_ai_frontline
+    name: AI前线
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: S_Core
+    account_id: ai_frontline
+    feed_url_env: WECHAT_FEED_AI_FRONTLINE
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_oneflow
+    name: OneFlow
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: S_Core
+    account_id: oneflow
+    feed_url_env: WECHAT_FEED_ONEFLOW
+    homepage_url: https://www.oneflow.org/
+    account_hint: OneFlowTechnology
+    access_mode: website_plus_subscription
+    fallbacks: [official_website, sogou_search, manual_url]
+    schedule: daily
+
+  - source_id: wechat_qbitai
+    name: 量子位
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: A_Active
+    account_id: qbitai
+    feed_url_env: WECHAT_FEED_QBITAI
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_aiera
+    name: 新智元
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: A_Active
+    account_id: aiera
+    feed_url_env: WECHAT_FEED_AIERA
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_ai_tech_review
+    name: AI科技评论
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: A_Active
+    account_id: ai_tech_review
+    feed_url_env: WECHAT_FEED_AI_TECH_REVIEW
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_xixiaoyao
+    name: 夕小瑶科技说
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: A_Active
+    account_id: xixiaoyao
+    feed_url_env: WECHAT_FEED_XIXIAOYAO
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: wechat_datafuntalk
+    name: DataFunTalk
+    source_type: wechat
+    connector: WechatPoolCollector
+    tier: A_Active
+    account_id: datafuntalk
+    feed_url_env: WECHAT_FEED_DATAFUNTALK
+    access_mode: pending_subscription_adapter
+    fallbacks: [sogou_search, chrome, manual_url]
+    schedule: daily
+
+  - source_id: manual_inbox
+    name: 研究员人工投递
+    source_type: manual
+    connector: ManualInboxCollector
+    tier: Manual
+    inbox_path: inbox/manual.jsonl
+    schedule: on_demand

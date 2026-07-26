@@ -1,0 +1,48 @@
+version: "0.1"
+
+fixed_venues:
+  - {id: aaai, name: AAAI, category: ai, source_mode: official_website}
+  - {id: hpca, name: HPCA, category: architecture, source_mode: official_website}
+  - {id: asplos, name: ASPLOS, category: systems_architecture, source_mode: official_website}
+  - {id: eurosys, name: EuroSys, category: systems, source_mode: official_website}
+  - {id: iclr, name: ICLR, category: ai, source_mode: openreview}
+  - {id: mlsys, name: MLSys, category: systems_ml, source_mode: openreview}
+  - {id: isca, name: ISCA, category: architecture, source_mode: official_website}
+  - {id: osdi, name: OSDI, category: systems, source_mode: usenix}
+  - {id: icml, name: ICML, category: ai, source_mode: proceedings}
+  - {id: neurips, name: NeurIPS, category: ai, source_mode: openreview}
+  - {id: sosp, name: SOSP, category: systems, source_mode: official_website}
+  - {id: micro, name: MICRO, category: architecture, source_mode: official_website}
+
+supplemental_venues:
+  - {id: nsdi, name: NSDI, category: networking_systems}
+  - {id: sigcomm, name: SIGCOMM, category: networking}
+  - {id: sc, name: SC, category: hpc}
+  - {id: ppopp, name: PPoPP, category: parallel_systems}
+  - {id: rtss, name: RTSS, category: realtime}
+  - {id: rtas, name: RTAS, category: realtime}
+  - {id: ecrts, name: ECRTS, category: realtime}
+  - {id: mobisys, name: MobiSys, category: mobile_edge}
+  - {id: sensys, name: SenSys, category: embedded_edge}
+  - {id: ipsn, name: IPSN, category: embedded_edge}
+  - {id: fast, name: FAST, category: storage}
+  - {id: dac, name: DAC, category: design_automation}
+  - {id: date, name: DATE, category: design_automation}
+  - {id: iccad, name: ICCAD, category: design_automation}
+  - {id: islped, name: ISLPED, category: low_power}
+
+event_types:
+  - cfp_published
+  - deadline_changed
+  - submissions_closed
+  - decisions_released
+  - accepted_papers_released
+  - program_released
+  - award_announced
+  - proceedings_released
+
+date_policy:
+  confirmed_requires_official_source: true
+  estimated_dates_allowed_in_database: true
+  estimated_dates_allowed_as_confirmed: false
+

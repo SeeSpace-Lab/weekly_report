@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+data/*.db
+data/*.db-*
+src/*.egg-info/
+services/*-data/
+runs/site-stage-*/
+runs/*.tgz
+site/.git.sites-backup/

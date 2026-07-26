@@ -1,0 +1,1 @@
+{"id":"example-wechat-article","url":"https://mp.weixin.qq.com/s/example","title":"示例：大模型推理系统综述","document_type":"review_article","published_at":"2026-07-24T08:00:00+08:00","submitted_at":"2026-07-24T09:00:00+08:00","source_account":"PaperWeekly","submitter":"researcher@example.com","summary":"介绍近期KV Cache与推理调度工作。","identifiers":{},"metadata":{"related_arxiv_ids":["2607.12345"]}}

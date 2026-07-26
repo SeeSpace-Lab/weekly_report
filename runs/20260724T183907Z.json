@@ -1,0 +1,128 @@
+{
+  "status": "degraded",
+  "started_for": "2026-07-24T18:39:07.226922+00:00",
+  "window": {
+    "start": "2026-07-17T18:39:07.226922+00:00",
+    "end": "2026-07-24T18:39:07.226922+00:00"
+  },
+  "collection": [
+    {
+      "source_id": "arxiv",
+      "run_id": "5be960f1-75f1-4c51-aa9e-326e83781924",
+      "status": "ok",
+      "documents": 52,
+      "errors": [],
+      "stats": {
+        "parsed": 200,
+        "in_window": 52
+      }
+    },
+    {
+      "source_id": "openreview",
+      "run_id": "8a25e7c0-cc00-4615-a21b-f70de47f881a",
+      "status": "blocked",
+      "documents": 0,
+      "errors": [
+        {
+          "code": "challenge_required",
+          "message": "Challenge verification required (2026-07-24-14833529)",
+          "retryable": true,
+          "target": "https://openreview.net/challenge?redirect=https%3A%2F%2Fapi2.openreview.net%2Fnotes%3Fcontent.venueid%3DICLR.cc%252F2024%252FConference%26limit%3D500%26offset%3D0",
+          "details": {}
+        }
+      ],
+      "stats": {
+        "venues": 12,
+        "fetched": 0,
+        "in_window": 0
+      }
+    },
+    {
+      "source_id": "github_sglang",
+      "run_id": "f0ee4025-0129-425a-b1c2-2ccc4095b00a",
+      "status": "blocked",
+      "documents": 0,
+      "errors": [
+        {
+          "code": "rate_limited",
+          "message": "GitHub HTTP 403",
+          "retryable": true,
+          "target": "https://api.github.com/repos/sgl-project/sglang/releases?per_page=100",
+          "details": {}
+        }
+      ],
+      "stats": {}
+    },
+    {
+      "source_id": "github_vllm",
+      "run_id": "65069e5f-6a76-4018-8828-c623682b0181",
+      "status": "blocked",
+      "documents": 0,
+      "errors": [
+        {
+          "code": "rate_limited",
+          "message": "GitHub HTTP 403",
+          "retryable": true,
+          "target": "https://api.github.com/repos/vllm-project/vllm/releases?per_page=100",
+          "details": {}
+        }
+      ],
+      "stats": {}
+    },
+    {
+      "source_id": "github_ktransformers",
+      "run_id": "b2c775bf-d0b9-4224-b920-a49e234a32e0",
+      "status": "blocked",
+      "documents": 0,
+      "errors": [
+        {
+          "code": "rate_limited",
+          "message": "GitHub HTTP 403",
+          "retryable": true,
+          "target": "https://api.github.com/repos/kvcache-ai/ktransformers/releases?per_page=100",
+          "details": {}
+        }
+      ],
+      "stats": {}
+    },
+    {
+      "source_id": "github_tensorrt_llm",
+      "run_id": "f64db854-e6da-411d-8cf8-b86489a2d4c0",
+      "status": "blocked",
+      "documents": 0,
+      "errors": [
+        {
+          "code": "rate_limited",
+          "message": "GitHub HTTP 403",
+          "retryable": true,
+          "target": "https://api.github.com/repos/NVIDIA/TensorRT-LLM/releases?per_page=100",
+          "details": {}
+        }
+      ],
+      "stats": {}
+    },
+    {
+      "source_id": "manual_inbox",
+      "run_id": "b27a333a-2658-4eb2-811e-5ef82add75f4",
+      "status": "unchanged",
+      "documents": 0,
+      "errors": [],
+      "stats": {
+        "lines": 0,
+        "in_window": 0,
+        "path": "inbox\\manual.jsonl"
+      }
+    }
+  ],
+  "weekly": {
+    "issue_id": "d3d27fa1-bc7d-42f6-b0c1-62f19c2a6561",
+    "assessed_count": 73,
+    "trend_count": 6,
+    "selection_count": 7,
+    "estimated_read_minutes": 13.5,
+    "output_path": "D:\\code\\weekly_report\\outputs\\orbitinfer\\2026-W30.md",
+    "version_diffs": 3,
+    "interpretation_claims": 0,
+    "interpretation_links": 0
+  }
+}
