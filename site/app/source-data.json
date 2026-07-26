@@ -52,20 +52,6 @@
       ]
     },
     {
-      "sourceId": "wechat_oneflow",
-      "name": "OneFlow",
-      "tier": "S_Core",
-      "homepageUrl": "https://www.oneflow.org/",
-      "accountAlias": "OneFlowTechnology",
-      "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-07-26T04:55:19.898113+00:00",
-      "feedEntries": 0,
-      "inWindow": 0,
-      "articles": []
-    },
-    {
       "sourceId": "wechat_paperweekly",
       "name": "PaperWeekly",
       "tier": "S_Core",
@@ -258,20 +244,6 @@
       ]
     },
     {
-      "sourceId": "wechat_datafuntalk",
-      "name": "DataFunTalk",
-      "tier": "A_Active",
-      "homepageUrl": null,
-      "accountAlias": "datafuntalk",
-      "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-07-26T04:55:20.942880+00:00",
-      "feedEntries": 0,
-      "inWindow": 0,
-      "articles": []
-    },
-    {
       "sourceId": "wechat_xixiaoyao",
       "name": "夕小瑶科技说",
       "tier": "A_Active",
@@ -321,20 +293,6 @@
           "publishedAt": "2026-07-22T09:50:01+00:00"
         }
       ]
-    },
-    {
-      "sourceId": "wechat_aiera",
-      "name": "新智元",
-      "tier": "A_Active",
-      "homepageUrl": null,
-      "accountAlias": "AI_era",
-      "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-07-26T04:55:20.278216+00:00",
-      "feedEntries": 0,
-      "inWindow": 0,
-      "articles": []
     },
     {
       "sourceId": "wechat_qbitai",

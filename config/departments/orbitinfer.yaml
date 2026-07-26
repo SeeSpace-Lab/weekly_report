@@ -99,14 +99,14 @@ ranking:
 
 weekly_output:
   target_read_minutes: 30
+  max_items: 8
+  max_wechat_items: 3
   must_read_min: 3
   must_read_max: 5
   deep_read_min: 8
   deep_read_max: 12
   quick_scan_min: 10
   quick_scan_max: 20
-  library_review_min: 1
-  library_review_max: 2
   sections:
     - weekly_trends
     - must_read
@@ -114,7 +114,4 @@ weekly_output:
     - kv_storage_moe_quantization
     - power_reliability_edge_distributed
     - frameworks_benchmarks_datasets
-    - venue_updates
-    - library_review
     - department_relevance
-

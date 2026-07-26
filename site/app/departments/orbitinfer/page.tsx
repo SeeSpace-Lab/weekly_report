@@ -44,8 +44,6 @@ const sectionNames: Record<string, string> = {
   kv_storage_moe_quantization: "KV Cache · MoE · 量化",
   power_reliability_edge_distributed: "功耗 · 可靠性 · 边缘",
   frameworks_benchmarks_datasets: "框架 · Benchmark · 数据集",
-  venue_updates: "顶会动态",
-  library_review: "论文库回看",
 };
 
 const roleNames: Record<string, string> = {
@@ -76,9 +74,15 @@ function plainSummary(value: string | null) {
 export default function Home() {
   const [activeSection, setActiveSection] = useState("all");
   const [query, setQuery] = useState("");
+  const weeklySections = useMemo(
+    () => report.sections.filter(
+      (section) => !["venue_updates", "library_review"].includes(section.id),
+    ),
+    [],
+  );
   const sections = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase();
-    return report.sections
+    return weeklySections
       .filter((section) => activeSection === "all" || section.id === activeSection)
       .map((section) => ({
         ...section,
@@ -92,7 +96,11 @@ export default function Home() {
         }),
       }))
       .filter((section) => section.items.length > 0);
-  }, [activeSection, query]);
+  }, [activeSection, query, weeklySections]);
+  const itemCount = weeklySections.reduce(
+    (total, section) => total + section.items.length,
+    0,
+  );
 
   return (
     <main>
@@ -126,12 +134,12 @@ export default function Home() {
           <em>推理引擎</em>周报
         </h1>
         <p className="heroLead">
-          面向动态功率预算、KV Cache、MoE Runtime、边缘与可靠推理的
-          每周研究情报。保留顶会论文、重要版本与官方开源进展。
+          聚焦本周值得关注的重要论文、权威解读、开源框架、
+          Benchmark 与数据集进展。
         </p>
         <div className="metrics" aria-label="本期统计">
           <div>
-            <strong>{report.issue.itemCount}</strong>
+            <strong>{itemCount}</strong>
             <span>精选条目</span>
           </div>
           <div>
@@ -174,7 +182,7 @@ export default function Home() {
             >
               全部
             </button>
-            {report.sections.map((section) => (
+            {weeklySections.map((section) => (
               <button
                 key={section.id}
                 className={activeSection === section.id ? "active" : ""}

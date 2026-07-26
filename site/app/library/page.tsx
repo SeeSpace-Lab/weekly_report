@@ -42,9 +42,9 @@ export default function PaperLibraryPage() {
       </header>
 
       <section className="libraryHero">
-        <p className="kicker">TWO-YEAR ROLLING LIBRARY + FAMOUS EXCEPTIONS</p>
-        <h1>重要论文不是<br /><em>七天后就过期</em></h1>
-        <p>按技术问题组织近两年顶会论文，同时保留少量领域奠基工作。论文事实来自正式会议页面，公众号只作为中文解读附件。</p>
+        <p className="kicker">ROLLING RESEARCH KNOWLEDGE BASE</p>
+        <h1>追踪关键工作的演进<br /><em>建立可复用的研究坐标</em></h1>
+        <p>持续收录近两年相关顶会论文、重要版本与少量奠基工作，并关联中文解读和开源实现。</p>
       </section>
 
       <section className="libraryControls">

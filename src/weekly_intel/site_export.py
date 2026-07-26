@@ -228,6 +228,107 @@ class SiteDataExportAgent:
                     "interpretations": interpretations[:3],
                 }
             )
+        configured_titles = {
+            normalize_title(str(paper["title"])) for paper in papers
+        }
+        live_papers = connection.execute(
+            """
+            SELECT r.item_id, r.canonical_title, r.canonical_url,
+                   r.abstract_or_summary, r.first_published_at,
+                   r.latest_updated_at, a.topic_tags_json,
+                   (
+                       SELECT e.claim_text FROM evidence_claims e
+                       WHERE e.item_id=r.item_id
+                         AND e.claim_type='publication_status'
+                       ORDER BY e.created_at DESC LIMIT 1
+                   ) AS publication_status,
+                   (
+                       SELECT c.title_zh
+                       FROM weekly_selections ws
+                       JOIN deep_read_cards c
+                         ON c.selection_id=ws.selection_id
+                       WHERE ws.item_id=r.item_id
+                       ORDER BY c.updated_at DESC LIMIT 1
+                   ) AS title_zh,
+                   (
+                       SELECT c.one_sentence_zh
+                       FROM weekly_selections ws
+                       JOIN deep_read_cards c
+                         ON c.selection_id=ws.selection_id
+                       WHERE ws.item_id=r.item_id
+                       ORDER BY c.updated_at DESC LIMIT 1
+                   ) AS one_sentence_zh,
+                   (
+                       SELECT c.department_implication
+                       FROM weekly_selections ws
+                       JOIN deep_read_cards c
+                         ON c.selection_id=ws.selection_id
+                       WHERE ws.item_id=r.item_id
+                       ORDER BY c.updated_at DESC LIMIT 1
+                   ) AS department_implication,
+                   (
+                       SELECT COUNT(*) FROM item_versions v
+                       WHERE v.item_id=r.item_id
+                   ) AS version_count
+            FROM research_items r
+            JOIN department_assessments a ON a.assessment_id=(
+                SELECT a2.assessment_id
+                FROM department_assessments a2
+                WHERE a2.item_id=r.item_id
+                  AND a2.department_id=?
+                ORDER BY a2.assessed_at DESC LIMIT 1
+            )
+            WHERE r.item_type='paper'
+              AND r.first_published_at >= datetime('now', '-2 years')
+              AND a.department_relevance >= 0.55
+              AND EXISTS (
+                  SELECT 1 FROM evidence_claims e
+                  WHERE e.item_id=r.item_id
+                    AND e.claim_type='publication_status'
+                    AND (
+                        lower(e.claim_text) LIKE '%accept%'
+                        OR lower(e.claim_text) LIKE '%oral%'
+                        OR lower(e.claim_text) LIKE '%poster%'
+                        OR lower(e.claim_text) LIKE '%spotlight%'
+                    )
+              )
+            ORDER BY r.latest_updated_at DESC
+            """,
+            (config["department_id"],),
+        ).fetchall()
+        for row in live_papers:
+            normalized = normalize_title(row["canonical_title"])
+            if normalized in configured_titles:
+                continue
+            topic_tags = json.loads(row["topic_tags_json"] or "[]")
+            topic = topic_tags[0] if topic_tags else "inference_runtime"
+            papers.append(
+                {
+                    "id": row["item_id"],
+                    "title": row["canonical_title"],
+                    "titleZh": row["title_zh"] or row["canonical_title"],
+                    "venue": row["publication_status"] or "顶会论文",
+                    "year": int(str(row["first_published_at"])[:4]),
+                    "topic": topic,
+                    "status": row["publication_status"] or "顶会论文",
+                    "url": row["canonical_url"],
+                    "codeUrl": None,
+                    "oneSentenceZh": (
+                        row["one_sentence_zh"]
+                        or "本条目已由自动筛选加入论文库，中文精读摘要待审核补充。"
+                    ),
+                    "whyItMattersZh": (
+                        row["department_implication"]
+                        or "近两年新录用且与星载大模型推理引擎方向高度相关。"
+                    ),
+                    "famousException": False,
+                    "latestUpdatedAt": row["latest_updated_at"],
+                    "versionCount": int(row["version_count"]),
+                    "latestChange": None,
+                    "interpretations": [],
+                }
+            )
+            configured_titles.add(normalized)
         payload = {
             "departmentId": config["department_id"],
             "version": config["version"],
@@ -303,6 +404,8 @@ class SiteDataExportAgent:
             )
             if health == "unchanged":
                 health = "no_recent_update"
+            if not articles:
+                continue
             accounts.append(
                 {
                     "sourceId": row["source_id"],

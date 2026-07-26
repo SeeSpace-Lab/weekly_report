@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import json
 import sqlite3
 import uuid
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any, Iterable
 
 from .models import AssessmentResult, TrendCluster
@@ -113,49 +112,64 @@ class WeeklySelectionAgent:
             ),
             reverse=True,
         )
+        item_types = {
+            row["item_id"]: row["item_type"]
+            for row in connection.execute(
+                """
+                SELECT item_id, item_type FROM research_items
+                WHERE item_id IN (
+                    SELECT item_id FROM department_assessments
+                    WHERE department_id=? AND assessed_at>=?
+                )
+                """,
+                (self.department_id, isoformat(window_start)),
+            ).fetchall()
+        }
         selected: list[tuple[str, AssessmentResult, float]] = []
+        selected_item_ids: set[str] = set()
         used_minutes = 0.0
+        max_items = int(self.output_config.get("max_items", 8))
+        max_wechat_items = int(
+            self.output_config.get("max_wechat_items", 3)
+        )
         must_read_max = int(self.output_config.get("must_read_max", 5))
         must_count = 0
-        for assessment_id, result, score in ranked:
+
+        def add_candidate(
+            candidate: tuple[str, AssessmentResult, float]
+        ) -> bool:
+            nonlocal used_minutes, must_count
+            assessment_id, result, score = candidate
+            if len(selected) >= max_items:
+                return False
+            if result.item_id in selected_item_ids:
+                return False
             if result.recommendation == "must_read":
                 if must_count >= must_read_max:
-                    continue
+                    return False
                 must_count += 1
             if used_minutes + result.estimated_read_minutes > target_minutes:
-                continue
-            selected.append((assessment_id, result, score))
+                return False
+            selected.append(candidate)
+            selected_item_ids.add(result.item_id)
             used_minutes += result.estimated_read_minutes
+            return True
 
-        selected_ids = {result.item_id for _, result, _ in selected}
-        library_max = int(self.output_config.get("library_review_max", 2))
-        library_rows = connection.execute(
-            """
-            SELECT r.item_id
-            FROM research_items r
-            WHERE r.item_type='paper'
-              AND r.first_published_at < ?
-              AND r.first_published_at >= ?
-              AND EXISTS (
-                  SELECT 1 FROM evidence_claims e
-                  WHERE e.item_id=r.item_id
-                    AND e.claim_type='publication_status'
-                    AND (
-                        lower(e.claim_text) LIKE '%accept%'
-                        OR lower(e.claim_text) LIKE '%oral%'
-                        OR lower(e.claim_text) LIKE '%poster%'
-                        OR lower(e.claim_text) LIKE '%spotlight%'
-                    )
-              )
-            ORDER BY r.latest_updated_at DESC
-            LIMIT ?
-            """,
-            (
-                isoformat(window_start),
-                isoformat(window_end - timedelta(days=730)),
-                library_max + len(selected_ids),
-            ),
-        ).fetchall()
+        # Reserve a small part of the reading budget for high-relevance
+        # articles from the fixed WeChat pool. Without this, papers tend to
+        # monopolize the top of a purely numerical ranking.
+        review_candidates = [
+            candidate
+            for candidate in ranked
+            if item_types.get(candidate[1].item_id) == "review_article"
+        ]
+        for candidate in review_candidates[:max_wechat_items]:
+            add_candidate(candidate)
+
+        for candidate in ranked:
+            if len(selected) >= max_items:
+                break
+            add_candidate(candidate)
 
         positions: dict[str, int] = defaultdict(int)
         for assessment_id, result, score in selected:
@@ -196,33 +210,4 @@ class WeeklySelectionAgent:
                 ),
             )
 
-        library_added = 0
-        for row in library_rows:
-            if row["item_id"] in selected_ids or library_added >= library_max:
-                continue
-            section = "library_review"
-            positions[section] += 1
-            connection.execute(
-                """
-                INSERT INTO weekly_selections (
-                    selection_id, issue_id, item_id, section, position,
-                    content_role, selection_reason, display_summary,
-                    department_implication, estimated_read_minutes, created_at
-                )
-                SELECT ?, ?, item_id, ?, ?, 'library_review',
-                       '近两年顶会论文库回看', abstract_or_summary,
-                       '作为稳定知识库条目供研究员回溯。', 1.0, ?
-                FROM research_items WHERE item_id=?
-                """,
-                (
-                    str(uuid.uuid4()),
-                    issue_id,
-                    section,
-                    positions[section],
-                    now,
-                    row["item_id"],
-                ),
-            )
-            used_minutes += 1.0
-            library_added += 1
-        return issue_id, len(selected) + library_added, used_minutes
+        return issue_id, len(selected), used_minutes

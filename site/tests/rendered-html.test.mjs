@@ -34,6 +34,7 @@ test("server-renders the research portal", async () => {
   assert.match(html, /星载大模型/);
   assert.match(html, /星座智算/);
   assert.match(html, /2026-W30/);
+  assert.match(html, /周一 09:00 更新/);
   assert.match(html, /顶会与重要论文库/);
   assert.match(html, /og:image/);
 });
@@ -43,10 +44,12 @@ test("server-renders the OrbitInfer department report", async () => {
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /本周趋势雷达/);
-  assert.match(html, /20<\/strong><span>精选条目/);
+  assert.match(html, /8<\/strong><span>精选条目/);
   assert.match(html, /查看一手来源/);
   assert.match(html, /一句话读懂/);
   assert.match(html, /<dt>问题<\/dt>/);
+  assert.doesNotMatch(html, /顶会动态/);
+  assert.doesNotMatch(html, /论文库回看/);
   assert.doesNotMatch(html, /Your site is taking shape|Building your site/);
 });
 
@@ -60,7 +63,10 @@ test("renders the library, source pool and second department", async () => {
     assert.equal(response.status, 200);
   }
   assert.match(await library.text(), /Mooncake/);
-  assert.match(await sources.text(), /PaperWeekly/);
+  const sourceHtml = await sources.text();
+  assert.match(sourceHtml, /PaperWeekly/);
+  assert.doesNotMatch(sourceHtml, /OneFlow/);
+  assert.doesNotMatch(sourceHtml, /DataFunTalk/);
   assert.match(await department.text(), /范围待确认/);
 });
 
@@ -89,7 +95,8 @@ test("ships structured report, library and interaction controls", async () => {
   assert.match(page, /setQuery/);
   assert.match(page, /target="_blank"/);
   assert.ok(libraryPayload.papers.length >= 8);
-  assert.equal(sourcePayload.accounts.length, 10);
+  assert.equal(sourcePayload.accounts.length, 7);
+  assert.ok(sourcePayload.accounts.every((account) => account.articles.length > 0));
 });
 
 test("exports a GitHub Pages-compatible static snapshot", async () => {
@@ -107,5 +114,5 @@ test("exports a GitHub Pages-compatible static snapshot", async () => {
   assert.doesNotMatch(home, /weekly_report\/weekly_report/);
   assert.match(orbitinfer, /本周趋势雷达/);
   assert.match(library, /固定顶会覆盖/);
-  assert.match(sources, /公众号负责发现和解释/);
+  assert.match(sources, /本周值得关注的进展/);
 });

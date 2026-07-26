@@ -3,9 +3,13 @@ import libraryData from "./library-data.json";
 import sourceData from "./source-data.json";
 
 export default function PortalHome() {
-  const activeSources = sourceData.accounts.filter(
-    (account) => account.health === "ok" || account.health === "no_recent_update",
-  ).length;
+  const collectedSources = sourceData.accounts.filter(
+    (account) => account.articles.length > 0,
+  );
+  const weeklyItemCount = reportData.sections
+    .filter((section) => !["venue_updates", "library_review"].includes(section.id))
+    .reduce((total, section) => total + section.items.length, 0);
+  const date = (value: string) => value.slice(0, 10).replaceAll("-", ".");
 
   return (
     <main className="portalPage">
@@ -30,15 +34,17 @@ export default function PortalHome() {
       <section className="portalHero">
         <p className="kicker">GUANYU AI · R&amp;D WEEKLY</p>
         <h1>观宇芯算<br /><em>研发部周报</em></h1>
-        <p>
-          面向研究员的部门级技术情报入口。服务器自动采集、归一化和生成，
-          各部门独立定义范围，审核通过后再进入公开发布流程。
-        </p>
+        <div className="portalTimeline">
+          <strong>{reportData.issue.isoWeek}</strong>
+          <span>{date(reportData.issue.windowStart)}—{date(reportData.issue.windowEnd)}</span>
+          <span>周一 09:00 更新</span>
+          <span>{reportData.issue.status === "approved" ? "审核通过" : "内部审核中"}</span>
+        </div>
         <div className="portalMetrics">
           <div><strong>2</strong><span>部门入口</span></div>
-          <div><strong>{reportData.issue.itemCount}</strong><span>本周精选</span></div>
+          <div><strong>{weeklyItemCount}</strong><span>本周精选</span></div>
           <div><strong>{libraryData.papers.length}</strong><span>固定论文库</span></div>
-          <div><strong>{activeSources}/10</strong><span>公众号可用</span></div>
+          <div><strong>{collectedSources.length}</strong><span>已采集公众号</span></div>
         </div>
       </section>
 
@@ -83,7 +89,7 @@ export default function PortalHome() {
         <a href="/sources">
           <span>SOURCE RADAR / 02</span>
           <h2>公众号订阅池</h2>
-          <p>固定十个 AI 与大模型公众号，展示采集健康状态、最新文章和关联论文。</p>
+          <p>仅展示已经取得文章的 AI 与大模型来源，持续追踪最新解读与技术信号。</p>
         </a>
       </section>
     </main>

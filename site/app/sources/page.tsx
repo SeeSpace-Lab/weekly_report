@@ -17,6 +17,9 @@ function readableDate(value: string | null) {
 }
 
 export default function SourcesPage() {
+  const collectedAccounts = sourceData.accounts.filter(
+    (account) => account.articles.length > 0,
+  );
   return (
     <main className="sourcesPage">
       <header className="topbar">
@@ -29,17 +32,17 @@ export default function SourcesPage() {
           <a href="/departments/orbitinfer">部门周报</a>
           <a href="/library">论文库</a>
         </nav>
-        <div className="issueStatus"><span className="pulse" />{sourceData.accounts.length} 个固定来源</div>
+        <div className="issueStatus"><span className="pulse" />{collectedAccounts.length} 个已采集来源</div>
       </header>
 
       <section className="sourcesHero">
-        <p className="kicker">DISCOVERY · INTERPRETATION · VERIFICATION</p>
-        <h1>公众号负责发现和解释<br /><em>原始来源负责证明</em></h1>
-        <p>公众号文章不会冒充论文主记录；事实需要回到论文、顶会官网、GitHub 或官方项目页核验。</p>
+        <p className="kicker">WEEKLY SIGNALS · TRUSTED SOURCES</p>
+        <h1>从可信来源识别<br /><em>本周值得关注的进展</em></h1>
+        <p>聚合高质量中文综述、论文解读与技术观察，筛选后进入各部门周报。</p>
       </section>
 
       <section className="sourceGrid">
-        {sourceData.accounts.map((account, index) => (
+        {collectedAccounts.map((account, index) => (
           <article className="sourceCard" key={account.sourceId}>
             <div className="sourceHeader">
               <span>{String(index + 1).padStart(2, "0")}</span>

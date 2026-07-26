@@ -178,10 +178,11 @@ class DepartmentAssessmentAgent:
         artifact_release = bool(release_status) and row["item_type"] in {
             "framework", "benchmark", "dataset"
         }
-        authoritative_review = (
+        subscribed_review = (
             row["item_type"] == "review_article"
-            and int(row["interpretation_count"]) > 0
+            and row["source_tier"] in {"S_Core", "S_Watch"}
         )
+        authoritative_review = subscribed_review and relevance >= 0.4
         official_venue_event = row["item_type"] == "venue_event"
         importance = min(
             1.0,
@@ -227,8 +228,11 @@ class DepartmentAssessmentAgent:
             recommendation = "recommended"
             minutes = 1.5
         elif official_venue_event:
-            recommendation = "scan"
-            minutes = 0.5
+            # Conference home-page changes are collected as evidence. They do
+            # not belong in the weekly report unless they resolve to an
+            # accepted, department-relevant paper.
+            recommendation = "archive"
+            minutes = 0.0
         elif exclusion_hits:
             recommendation = "exclude"
             minutes = 0.0
@@ -327,7 +331,16 @@ class DepartmentAssessmentAgent:
                    (
                        SELECT GROUP_CONCAT(metadata_json, ' ')
                        FROM item_versions v2 WHERE v2.item_id = r.item_id
-                   ) AS metadata_text
+                   ) AS metadata_text,
+                   (
+                       SELECT s.tier
+                       FROM item_versions v3
+                       JOIN raw_documents d3
+                         ON d3.raw_document_id=v3.raw_document_id
+                       JOIN sources s ON s.source_id=d3.source_id
+                       WHERE v3.item_id=r.item_id
+                       ORDER BY v3.created_at DESC LIMIT 1
+                   ) AS source_tier
             FROM research_items r
             WHERE r.latest_updated_at >= ?
               AND r.latest_updated_at <= ?
