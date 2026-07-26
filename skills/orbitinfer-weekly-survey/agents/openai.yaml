@@ -1,0 +1,4 @@
+interface:
+  display_name: "星载大模型推理周报 Agent"
+  short_description: "在本地完成每周技术情报采集、筛选、精读、核验和待审稿生成"
+  default_prompt: "Use $orbitinfer-weekly-survey to prepare the local OrbitInfer research survey for human review."

@@ -16,6 +16,7 @@ from .review import ReviewService
 from .orchestrator import WeeklyOrchestrator
 from .weekly import WeeklyPipelineService
 from .site_export import SiteDataExportAgent
+from .codex_handoff import CodexWeeklyHandoff
 
 
 def _default_root() -> Path:
@@ -170,6 +171,34 @@ def build_parser() -> argparse.ArgumentParser:
     export_site.add_argument("issue_id")
     export_site.add_argument(
         "--output",
+        type=Path,
+        default=root / "site" / "app" / "report-data.json",
+    )
+
+    codex_brief = subparsers.add_parser("export-codex-brief")
+    codex_brief.add_argument("--issue-id")
+    codex_brief.add_argument("--limit", type=int, default=30)
+    codex_brief.add_argument(
+        "--department",
+        type=Path,
+        default=root / "config" / "departments" / "orbitinfer.yaml",
+    )
+    codex_brief.add_argument(
+        "--output",
+        type=Path,
+        default=root / "runs" / "codex" / "current-brief.json",
+    )
+
+    codex_import = subparsers.add_parser("import-codex-analysis")
+    codex_import.add_argument("payload", type=Path)
+    codex_import.add_argument(
+        "--department",
+        type=Path,
+        default=root / "config" / "departments" / "orbitinfer.yaml",
+    )
+    codex_import.add_argument("--output", type=Path)
+    codex_import.add_argument(
+        "--site-data",
         type=Path,
         default=root / "site" / "app" / "report-data.json",
     )
@@ -551,6 +580,67 @@ def main(argv: list[str] | None = None) -> int:
                 connection, args.issue_id, args.output
             )
         print(json.dumps({"status": "ok", "output": str(output)}))
+        return 0
+    if args.command == "export-codex-brief":
+        database.initialize(args.schema)
+        department = load_yaml(args.department)
+        issue_id = args.issue_id or ReviewService(
+            database
+        ).current_issue_id(department["department_id"])
+        with database.session() as connection:
+            output = CodexWeeklyHandoff(args.department).export_brief(
+                connection, issue_id, args.output, args.limit
+            )
+        print(
+            json.dumps(
+                {"status": "ok", "issue_id": issue_id, "output": str(output)},
+                ensure_ascii=False,
+            )
+        )
+        return 0
+    if args.command == "import-codex-analysis":
+        database.initialize(args.schema)
+        payload = json.loads(args.payload.read_text(encoding="utf-8"))
+        issue_id = str(payload.get("issueId") or "")
+        if not issue_id:
+            raise ValueError("issueId is required")
+        with database.session() as connection:
+            issue = connection.execute(
+                "SELECT iso_week FROM weekly_issues WHERE issue_id=?",
+                (issue_id,),
+            ).fetchone()
+        if not issue:
+            raise ValueError(f"issue not found: {issue_id}")
+        output = args.output or (
+            _default_root()
+            / "outputs"
+            / load_yaml(args.department)["department_id"]
+            / f"{issue['iso_week']}.md"
+        )
+        with database.transaction() as connection:
+            imported_issue, count = CodexWeeklyHandoff(
+                args.department
+            ).import_analysis(
+                connection,
+                args.payload,
+                output,
+                args.site_data,
+            )
+        readiness = ReviewService(database).approval_readiness(imported_issue)
+        print(
+            json.dumps(
+                {
+                    "status": "ok",
+                    "issue_id": imported_issue,
+                    "selections": count,
+                    "ready": readiness.ready,
+                    "blockers": readiness.blockers,
+                    "output": str(output.resolve()),
+                    "site_data": str(args.site_data.resolve()),
+                },
+                ensure_ascii=False,
+            )
+        )
         return 0
     return 2
 

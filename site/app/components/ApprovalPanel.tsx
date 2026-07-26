@@ -20,10 +20,12 @@ export default function ApprovalPanel({
     setState("working");
     setMessage("");
     try {
-      const response = await fetch("/api/review/approve", {
+      const response = await fetch(
+        "http://127.0.0.1:8010/api/review/approve",
+        {
         method: "POST",
-        credentials: "same-origin",
-      });
+        },
+      );
       const payload = (await response.json()) as {
         error?: string;
         blockers?: string[];

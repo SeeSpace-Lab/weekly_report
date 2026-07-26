@@ -118,9 +118,9 @@ class WeeklyPipelineTest(unittest.TestCase):
             self.assertIn("# 星载大模型推理引擎周报", content)
             self.assertIn("## 本周趋势", content)
             self.assertIn("Power-Aware Scheduling", content)
-            self.assertIn("一句话读懂", content)
-            self.assertIn("研究问题", content)
-            self.assertIn("主要贡献", content)
+            self.assertIn("待 Codex 精读", content)
+            self.assertIn("研究问题待 Codex", content)
+            self.assertIn("尚未完成 Codex 精读", content)
             with database.session() as connection:
                 issue = connection.execute(
                     "SELECT status, output_markdown_url FROM weekly_issues"

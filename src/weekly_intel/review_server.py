@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+import sys
 import threading
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -18,7 +19,7 @@ class ReviewAPI:
     def __init__(
         self,
         database: Database,
-        approve_command: Path,
+        approve_command: tuple[str, ...],
         allowed_origin: str,
     ):
         self.database = database
@@ -45,8 +46,8 @@ class ReviewAPI:
             if not readiness["ready"]:
                 raise ValueError("; ".join(readiness["blockers"]))
             result = subprocess.run(
-                [str(self.approve_command)],
-                cwd=self.approve_command.parents[2],
+                list(self.approve_command),
+                cwd=Path(__file__).resolve().parents[2],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
@@ -76,6 +77,12 @@ def make_handler(api: ReviewAPI) -> type[BaseHTTPRequestHandler]:
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
+            origin = self.headers.get("Origin")
+            if origin and origin.rstrip("/") == api.allowed_origin:
+                self.send_header(
+                    "Access-Control-Allow-Origin",
+                    api.allowed_origin,
+                )
             self.end_headers()
             self.wfile.write(body)
 
@@ -138,18 +145,20 @@ def main() -> None:
     )
     database = Database(root / "data" / "weekly_intel.db")
     database.initialize(root / "schemas" / "weekly_intel.sql")
-    approve_command = Path(
-        os.environ.get(
-            "WEEKLY_APPROVE_COMMAND",
-            root / "deploy" / "server" / "approve-and-sync.sh",
+    configured_command = os.environ.get("WEEKLY_APPROVE_COMMAND")
+    if configured_command:
+        approve_command = (configured_command,)
+    else:
+        approve_command = (
+            sys.executable,
+            str((root / "scripts" / "approve_and_sync.py").resolve()),
         )
-    ).resolve()
     api = ReviewAPI(
         database=database,
         approve_command=approve_command,
         allowed_origin=os.environ.get(
             "WEEKLY_REVIEW_ORIGIN",
-            "https://114-111-22-106.nip.io",
+            "http://127.0.0.1:3000",
         ),
     )
     server = ThreadingHTTPServer(

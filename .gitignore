@@ -9,6 +9,7 @@ services/*-data/
 runs/site-stage-*/
 runs/*.tgz
 runs/*.json
+runs/codex/
+runs/local/
 site/.git.sites-backup/
-deploy/server/runtime.env
 .server-password
