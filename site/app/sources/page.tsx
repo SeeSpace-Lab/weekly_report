@@ -29,7 +29,7 @@ export default function SourcesPage() {
         </a>
         <nav className="portalNav">
           <a href="/">总览</a>
-          <a href="/departments/orbitinfer">部门周报</a>
+          <a href="/">部门周报</a>
           <a href="/archive">历史周报</a>
           <a href="/library">论文库</a>
         </nav>

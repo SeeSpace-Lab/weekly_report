@@ -3,6 +3,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
+from .config import find_department
 from .utils import display_title
 
 
@@ -20,12 +21,46 @@ SECTION_TITLES = {
 class MarkdownRenderAgent:
     name = "MarkdownRenderAgent"
 
+    @staticmethod
+    def _section_metadata(
+        department_id: str,
+    ) -> tuple[dict[str, str], dict[str, int]]:
+        root = Path(__file__).resolve().parents[2]
+        try:
+            department = find_department(
+                root / "config" / "departments",
+                department_id,
+                sources_path=root / "config" / "sources.yaml",
+            )
+        except ValueError:
+            return SECTION_TITLES, {
+                section: index
+                for index, section in enumerate(SECTION_TITLES)
+            }
+        output_config = department.get("weekly_output", {})
+        configured = output_config.get("section_labels", {})
+        ordered_sections = [
+            section
+            for section in output_config.get("sections", [])
+            if section != "weekly_trends"
+        ]
+        return (
+            {**SECTION_TITLES, **configured},
+            {
+                section: index
+                for index, section in enumerate(ordered_sections)
+            },
+        )
+
     def render(self, connection: sqlite3.Connection, issue_id: str) -> str:
         issue = connection.execute(
             "SELECT * FROM weekly_issues WHERE issue_id=?", (issue_id,)
         ).fetchone()
         if not issue:
             raise ValueError(f"issue not found: {issue_id}")
+        section_titles, section_order = self._section_metadata(
+            str(issue["department_id"])
+        )
         rows = connection.execute(
             """
             SELECT s.*, r.canonical_title, r.canonical_url, r.authors_json,
@@ -54,6 +89,13 @@ class MarkdownRenderAgent:
             """,
             (issue_id,),
         ).fetchall()
+        rows = sorted(
+            rows,
+            key=lambda row: (
+                section_order.get(str(row["section"]), 999),
+                int(row["position"]),
+            ),
+        )
         latest_decisions = {
             row["selection_id"]: row["decision"]
             for row in connection.execute(
@@ -88,7 +130,7 @@ class MarkdownRenderAgent:
                 current_section = row["section"]
                 lines.extend(
                     [
-                        f"## {SECTION_TITLES.get(current_section, current_section)}",
+                        f"## {section_titles.get(current_section, current_section)}",
                         "",
                     ]
                 )

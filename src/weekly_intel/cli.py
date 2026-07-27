@@ -9,7 +9,7 @@ from pathlib import Path
 
 from .candidates import rank_candidates
 from .calendar_window import previous_complete_week
-from .config import load_sources, load_yaml
+from .config import load_departments, load_sources, load_yaml
 from .contracts import CollectionWindow
 from .db import Database
 from .service import CollectionService
@@ -37,6 +37,35 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser("init-db")
+
+    validate_departments = subparsers.add_parser("validate-departments")
+    validate_departments.add_argument(
+        "--directory",
+        type=Path,
+        default=root / "config" / "departments",
+    )
+    validate_departments.add_argument(
+        "--sources",
+        type=Path,
+        default=root / "config" / "sources.yaml",
+    )
+
+    sync_departments = subparsers.add_parser("sync-departments")
+    sync_departments.add_argument(
+        "--directory",
+        type=Path,
+        default=root / "config" / "departments",
+    )
+    sync_departments.add_argument(
+        "--sources",
+        type=Path,
+        default=root / "config" / "sources.yaml",
+    )
+    sync_departments.add_argument(
+        "--output",
+        type=Path,
+        default=root / "site" / "app" / "department-data.json",
+    )
 
     arxiv = subparsers.add_parser("collect-arxiv")
     arxiv.add_argument("--days", type=int, default=7)
@@ -222,6 +251,43 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "init-db":
         database.initialize(args.schema)
         print(json.dumps({"status": "ok", "database": str(args.db)}))
+        return 0
+    if args.command == "validate-departments":
+        departments = load_departments(
+            args.directory,
+            sources_path=args.sources,
+        )
+        print(
+            json.dumps(
+                {
+                    "status": "ok",
+                    "departments": [
+                        {
+                            "department_id": department["department_id"],
+                            "enabled": department.get("enabled", True),
+                        }
+                        for department in departments
+                    ],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0
+    if args.command == "sync-departments":
+        load_departments(args.directory, sources_path=args.sources)
+        database.initialize(args.schema)
+        with database.session() as connection:
+            output = SiteDataExportAgent().export_departments(
+                connection,
+                args.directory,
+                args.output,
+            )
+        print(
+            json.dumps(
+                {"status": "ok", "output": str(output)},
+                ensure_ascii=False,
+            )
+        )
         return 0
     if args.command == "collect-arxiv":
         database.initialize(args.schema)

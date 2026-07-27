@@ -3,11 +3,13 @@
 import { useState } from "react";
 
 type ApprovalPanelProps = {
+  departmentId: string;
   status: string;
   isoWeek: string;
 };
 
 export default function ApprovalPanel({
+  departmentId,
   status,
   isoWeek,
 }: ApprovalPanelProps) {
@@ -21,7 +23,8 @@ export default function ApprovalPanel({
     setMessage("");
     try {
       const response = await fetch(
-        "http://127.0.0.1:8010/api/review/approve",
+        "http://127.0.0.1:8010/api/review/approve?" +
+          new URLSearchParams({ department: departmentId }),
         {
         method: "POST",
         },

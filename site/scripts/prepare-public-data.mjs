@@ -3,32 +3,29 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const siteRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const appRoot = join(siteRoot, "app");
-const reportPath = join(appRoot, "report-data.json");
-const archivePath = join(appRoot, "archive-data.json");
+const dataPath = join(siteRoot, "app", "department-data.json");
+const data = JSON.parse(await readFile(dataPath, "utf8"));
 
-const report = JSON.parse(await readFile(reportPath, "utf8"));
-if (report.issue.status !== "approved") {
-  throw new Error(
-    `Refusing public preparation: issue status is ${report.issue.status}`,
-  );
+let approvedCount = 0;
+for (const department of data.departments) {
+  department.archive = department.archive
+    .filter((report) =>
+      ["approved", "published"].includes(report.issue.status),
+    )
+    .map((report) => {
+      if (report.issue.status === "approved") {
+        report.issue.status = "published";
+        approvedCount += 1;
+      }
+      return report;
+    });
+  department.currentReport = department.archive[0] ?? null;
 }
-report.issue.status = "published";
 
-const archive = JSON.parse(await readFile(archivePath, "utf8"));
-archive.issues = archive.issues
-  .filter(
-    (issue) =>
-      issue.issue.status === "approved" ||
-      issue.issue.status === "published" ||
-      issue.issue.id === report.issue.id,
-  )
-  .map((issue) => {
-    if (issue.issue.id === report.issue.id) {
-      issue.issue.status = "published";
-    }
-    return issue;
-  });
+if (!approvedCount && !data.departments.some(
+  (department) => department.currentReport?.issue.status === "published",
+)) {
+  throw new Error("Refusing public preparation: no approved report exists");
+}
 
-await writeFile(reportPath, JSON.stringify(report, null, 2), "utf8");
-await writeFile(archivePath, JSON.stringify(archive, null, 2), "utf8");
+await writeFile(dataPath, JSON.stringify(data, null, 2), "utf8");

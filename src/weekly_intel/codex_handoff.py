@@ -216,6 +216,16 @@ class CodexWeeklyHandoff:
                         "name": self.department["name"],
                         "mission": self.department.get("mission"),
                         "coreTopics": self.department.get("core_topics", []),
+                        "adjacentTopics": self.department.get(
+                            "adjacent_topics",
+                            [],
+                        ),
+                        "keywords": self.department.get("keywords", {}),
+                        "paperWatchlist": self.department.get(
+                            "paper_watchlist",
+                            [],
+                        ),
+                        "sourcePool": self.department.get("source_pool", {}),
                     },
                     "constraints": self.department.get("weekly_output", {}),
                     "instructions": [

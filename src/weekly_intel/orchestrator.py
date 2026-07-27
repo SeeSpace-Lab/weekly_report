@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from .config import load_sources
+from .config import department_source_configs, load_sources
 from .contracts import CollectionBatch, CollectionWindow
 from .db import Database
 from .service import CollectionService
@@ -31,7 +31,10 @@ class WeeklyOrchestrator:
         department: dict[str, Any],
     ):
         self.database = database
-        self.sources = load_sources(sources_path)
+        self.sources = department_source_configs(
+            load_sources(sources_path),
+            department,
+        )
         self.department = department
 
     @staticmethod
@@ -61,43 +64,61 @@ class WeeklyOrchestrator:
         window = CollectionWindow(start, end)
         service = CollectionService(self.database)
         batches: list[CollectionBatch] = []
-        batches.append(
-            service.collect_arxiv(self.sources["arxiv"], window, limit=200)
-        )
-        batches.append(
-            service.collect_openreview(
-                self.sources["openreview"],
-                window,
-                page_size=500,
-                max_pages=10,
-            )
-        )
-        batches.append(
-            service.collect_crossref(
-                self.sources["crossref"],
-                window,
-                rows_per_query=50,
-            )
-        )
         for source in self.sources.values():
-            if source.enabled and source.connector == "GitHubCollector":
-                batches.append(service.collect_github(source, window, per_page=100))
-        batches.append(
-            service.collect_huggingface(
-                self.sources["huggingface_hub"],
-                window,
-                limit_per_query=20,
-            )
-        )
-        for source in self.sources.values():
-            if source.enabled and source.connector == "WechatPoolCollector":
+            if not source.enabled:
+                continue
+            if source.connector == "ArxivCollector":
+                batches.append(
+                    service.collect_arxiv(
+                        source,
+                        window,
+                        limit=int(source.options.get("max_results", 200)),
+                    )
+                )
+            elif source.connector == "OpenReviewCollector":
+                batches.append(
+                    service.collect_openreview(
+                        source,
+                        window,
+                        page_size=int(source.options.get("page_size", 100)),
+                        max_pages=int(source.options.get("max_pages", 3)),
+                    )
+                )
+            elif source.connector == "CrossrefCollector":
+                batches.append(
+                    service.collect_crossref(
+                        source,
+                        window,
+                        rows_per_query=int(
+                            source.options.get("rows_per_query", 50)
+                        ),
+                    )
+                )
+            elif source.connector == "GitHubCollector":
+                batches.append(
+                    service.collect_github(source, window, per_page=100)
+                )
+            elif source.connector == "HuggingFaceCollector":
+                batches.append(
+                    service.collect_huggingface(
+                        source,
+                        window,
+                        limit_per_query=int(
+                            source.options.get("limit_per_query", 20)
+                        ),
+                    )
+                )
+            elif source.connector == "WechatPoolCollector":
                 batches.append(service.collect_wechat(source, window))
-        batches.append(
-            service.collect_venues(self.sources["venue_official_pages"], window)
-        )
-        batches.append(
-            service.collect_manual(self.sources["manual_inbox"], window)
-        )
+            elif source.connector == "VenueCollector":
+                batches.append(service.collect_venues(source, window))
+            elif source.connector == "ManualInboxCollector":
+                batches.append(service.collect_manual(source, window))
+            else:
+                raise ValueError(
+                    f"unsupported collector for {source.source_id}: "
+                    f"{source.connector}"
+                )
         weekly = WeeklyPipelineService(
             self.database, self.department
         ).build(iso_week, window.start, window.end, output_path)

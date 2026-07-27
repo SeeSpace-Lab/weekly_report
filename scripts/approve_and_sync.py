@@ -1,19 +1,24 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import subprocess
 import sys
 from pathlib import Path
 
+from weekly_intel.config import department_slug, find_department
+from weekly_intel.db import Database
+from weekly_intel.review import ReviewService
+
 
 ROOT = Path(__file__).resolve().parents[1]
-ALLOWED_PREFIXES = (
-    "outputs/orbitinfer/",
-    "site/app/report-data.json",
-    "site/app/archive-data.json",
+SHARED_ALLOWED_PREFIXES = (
+    "site/app/department-data.json",
     "site/app/library-data.json",
     "site/app/source-data.json",
+    "site/app/archive-data.json",
+    "site/app/data/departments/",
 )
 
 
@@ -25,6 +30,12 @@ def run(command: list[str], cwd: Path = ROOT) -> subprocess.CompletedProcess[str
         text=True,
         encoding="utf-8",
     )
+
+
+def current_branch() -> str:
+    return run(
+        ["git", "branch", "--show-current"],
+    ).stdout.strip()
 
 
 def assert_git_index_writable() -> None:
@@ -60,7 +71,31 @@ def assert_git_index_writable() -> None:
         ) from error
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--department", default="orbitinfer")
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
+    branch = current_branch()
+    if branch in {"main", "develop"}:
+        raise RuntimeError(
+            f"Refusing to approve directly on protected branch {branch}; "
+            "use a feature/* or fix/* branch and open a pull request."
+        )
+    department = find_department(
+        ROOT / "config" / "departments",
+        args.department,
+        sources_path=ROOT / "config" / "sources.yaml",
+    )
+    department_id = str(department["department_id"])
+    slug = department_slug(department)
+    allowed_prefixes = (
+        f"outputs/{department_id}/",
+        *SHARED_ALLOWED_PREFIXES,
+    )
     status = subprocess.run(
         ["git", "status", "--porcelain", "--untracked-files=no"],
         cwd=ROOT,
@@ -74,61 +109,88 @@ def main() -> int:
         path = line[3:].replace("\\", "/")
         if not any(
             path == prefix or path.startswith(prefix)
-            for prefix in ALLOWED_PREFIXES
+            for prefix in allowed_prefixes
         ):
             unexpected.append(line)
     if unexpected:
         raise RuntimeError(
-            "本地工作区存在周报数据以外的未提交改动，拒绝审核同步：\n"
-            + "\n".join(unexpected)
+            "本地工作区存在当前部门周报数据以外的未提交改动，"
+            "拒绝审核同步：\n" + "\n".join(unexpected)
         )
 
-    # Check the exact permission that previously failed before mutating the
-    # issue from review to approved. This prevents a half-approved local issue.
     assert_git_index_writable()
-    report_path = ROOT / "site" / "app" / "report-data.json"
-    report = json.loads(report_path.read_text(encoding="utf-8"))
-    if report["issue"]["status"] not in {"approved", "published"}:
-        run(
-            [
-                sys.executable,
-                "-m",
-                "weekly_intel.cli",
-                "approve-and-export",
-                "--reviewer",
-                "local-review-site",
-                "--output",
-                str(report_path),
-            ]
+    database = Database(ROOT / "data" / "weekly_intel.db")
+    database.initialize(ROOT / "schemas" / "weekly_intel.sql")
+    issue_id = ReviewService(database).current_issue_id(department_id)
+    report_path = (
+        ROOT
+        / "site"
+        / "app"
+        / "data"
+        / "departments"
+        / slug
+        / "report.json"
+    )
+    reviewer = str(
+        department.get("owners", {}).get(
+            "reviewer_label",
+            f"{department_id}-local-review",
         )
+    )
+    run(
+        [
+            sys.executable,
+            "-m",
+            "weekly_intel.cli",
+            "approve-and-export",
+            "--issue-id",
+            issue_id,
+            "--reviewer",
+            reviewer,
+            "--output",
+            str(report_path),
+        ]
+    )
     npm = "npm.cmd" if sys.platform == "win32" else "npm"
     run([npm, "run", "build"], ROOT / "site")
     run(
         [
             "git",
             "add",
-            "site/app/report-data.json",
-            "site/app/archive-data.json",
+            str(report_path.relative_to(ROOT)),
+            "site/app/department-data.json",
             "site/app/library-data.json",
             "site/app/source-data.json",
-            "outputs/orbitinfer",
+            "site/app/archive-data.json",
+            f"outputs/{department_id}",
         ]
     )
     report = json.loads(report_path.read_text(encoding="utf-8"))
     iso_week = str(report["issue"]["isoWeek"])
     staged = subprocess.run(
-        ["git", "diff", "--cached", "--quiet"], cwd=ROOT, check=False
+        ["git", "diff", "--cached", "--quiet"],
+        cwd=ROOT,
+        check=False,
     )
     if staged.returncode:
-        run(["git", "commit", "-m", f"Approve {iso_week} weekly report"])
-        run(["git", "push", "origin", "main"])
+        run(
+            [
+                "git",
+                "commit",
+                "-m",
+                f"feat(report): approve {department_id} {iso_week} weekly report",
+            ]
+        )
+        run(["git", "push", "-u", "origin", branch])
     print(
         json.dumps(
             {
                 "status": "approved",
+                "departmentId": department_id,
                 "isoWeek": iso_week,
                 "synced": True,
-                "publicationTriggered": True,
+                "publicationTriggered": False,
+                "nextStep": "Open a pull request; production publication occurs after merge to main.",
             },
             ensure_ascii=False,
         )

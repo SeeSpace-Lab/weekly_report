@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Any
 
 from .models import AssessmentResult
+from ..config import department_source_ids
 from ..utils import isoformat, json_dumps, normalize_title, utc_now
 
 
@@ -126,6 +127,22 @@ class DepartmentAssessmentAgent:
             topic["id"]: float(topic.get("weight", 1.0))
             for topic in department.get("core_topics", [])
         }
+        self.topic_vocabulary = {
+            str(topic["id"]): tuple(
+                str(value)
+                for value in (
+                    topic.get("keywords")
+                    or TOPIC_VOCABULARY.get(str(topic["id"]), ())
+                )
+            )
+            for topic in department.get("core_topics", [])
+        }
+        self.topic_sections = {
+            str(topic["id"]): str(topic.get("section"))
+            for topic in department.get("core_topics", [])
+            if topic.get("section")
+        }
+        self.allowed_source_ids = department_source_ids(department)
         self.include_keywords = [
             normalize_title(str(value))
             for value in department.get("keywords", {}).get("include", [])
@@ -135,6 +152,13 @@ class DepartmentAssessmentAgent:
             for value in department.get("keywords", {}).get(
                 "exclude_unless_strongly_related", []
             )
+        ]
+        self.watchlist_terms = [
+            normalize_title(
+                str(item.get("title") or item.get("query") or "")
+            )
+            for item in department.get("paper_watchlist", [])
+            if isinstance(item, dict)
         ]
 
     def assess_row(self, row: sqlite3.Row) -> AssessmentResult:
@@ -148,7 +172,7 @@ class DepartmentAssessmentAgent:
             )
         )
         topic_scores: dict[str, float] = {}
-        for topic_id, vocabulary in TOPIC_VOCABULARY.items():
+        for topic_id, vocabulary in self.topic_vocabulary.items():
             matches = sum(
                 1 for term in vocabulary if normalize_title(term) in text
             )
@@ -160,8 +184,13 @@ class DepartmentAssessmentAgent:
                 )
         include_hits = sum(1 for term in self.include_keywords if term in text)
         exclusion_hits = sum(1 for term in self.exclude_keywords if term in text)
+        watchlist_hit = any(
+            term and term in text for term in self.watchlist_terms
+        )
         strongest = max(topic_scores.values(), default=0.0)
         relevance = min(1.0, strongest + min(0.3, include_hits * 0.06))
+        if watchlist_hit:
+            relevance = max(relevance, 0.9)
         if exclusion_hits and relevance < 0.65:
             relevance *= 0.45
 
@@ -192,6 +221,7 @@ class DepartmentAssessmentAgent:
             + (0.2 if artifact_release else 0)
             + (0.15 if authoritative_review else 0)
             + (0.2 if official_venue_event else 0)
+            + (0.15 if watchlist_hit else 0)
             + min(0.12, 0.04 * max(0, version_count - 1))
             + min(0.12, 0.04 * max(0, identifier_count - 1)),
         )
@@ -252,12 +282,20 @@ class DepartmentAssessmentAgent:
             else (
                 "venue_updates"
                 if official_venue_event
-                else SECTION_BY_TOPIC.get(primary_topic, "inference_and_scheduling")
+                else self.topic_sections.get(
+                    primary_topic,
+                    SECTION_BY_TOPIC.get(
+                        primary_topic,
+                        "department_relevance",
+                    ),
+                )
             )
         )
         reasons = []
         if tags:
             reasons.append("涉及" + "、".join(tags[:3]))
+        if watchlist_hit:
+            reasons.append("命中部门论文重点跟踪清单")
         if accepted:
             reasons.append("具有顶会录用状态")
         if version_count > 1:
@@ -341,6 +379,14 @@ class DepartmentAssessmentAgent:
                        WHERE v3.item_id=r.item_id
                        ORDER BY v3.created_at DESC LIMIT 1
                    ) AS source_tier
+                   ,
+                   (
+                       SELECT GROUP_CONCAT(DISTINCT d4.source_id)
+                       FROM item_versions v4
+                       JOIN raw_documents d4
+                         ON d4.raw_document_id=v4.raw_document_id
+                       WHERE v4.item_id=r.item_id
+                   ) AS source_ids_csv
             FROM research_items r
             WHERE r.latest_updated_at >= ?
               AND r.latest_updated_at <= ?
@@ -352,6 +398,16 @@ class DepartmentAssessmentAgent:
         assessed: list[tuple[str, AssessmentResult]] = []
         assessed_at = isoformat(utc_now())
         for row in rows:
+            row_source_ids = {
+                source_id
+                for source_id in str(row["source_ids_csv"] or "").split(",")
+                if source_id
+            }
+            if (
+                self.allowed_source_ids
+                and not row_source_ids.intersection(self.allowed_source_ids)
+            ):
+                continue
             result = self.assess_row(row)
             assessment_id = str(uuid.uuid4())
             connection.execute(

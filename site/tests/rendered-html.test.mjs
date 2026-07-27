@@ -78,18 +78,22 @@ test("renders the library, source pool, archive and second department", async ()
 });
 
 test("ships structured report, library and interaction controls", async () => {
-  const [page, report, library, sources, archive] = await Promise.all([
-    readFile(new URL("../app/departments/orbitinfer/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/report-data.json", import.meta.url), "utf8"),
+  const [page, departmentDataText, library, sources] = await Promise.all([
+    readFile(new URL("../app/components/DepartmentReport.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/department-data.json", import.meta.url), "utf8"),
     readFile(new URL("../app/library-data.json", import.meta.url), "utf8"),
     readFile(new URL("../app/source-data.json", import.meta.url), "utf8"),
-    readFile(new URL("../app/archive-data.json", import.meta.url), "utf8"),
   ]);
-  const payload = JSON.parse(report);
+  const departmentPayload = JSON.parse(departmentDataText);
+  const orbitinfer = departmentPayload.departments.find(
+    (department) => department.id === "orbitinfer",
+  );
+  const payload = orbitinfer.currentReport;
   const libraryPayload = JSON.parse(library);
   const sourcePayload = JSON.parse(sources);
-  const archivePayload = JSON.parse(archive);
 
+  assert.equal(departmentPayload.departments.length, 2);
+  assert.equal(orbitinfer.enabled, true);
   assert.equal(payload.issue.isoWeek, "2026-W30");
   const renderedItemCount = payload.sections.reduce(
     (count, section) => count + section.items.length,
@@ -111,7 +115,7 @@ test("ships structured report, library and interaction controls", async () => {
   assert.ok(libraryPayload.papers.length >= 8);
   assert.equal(sourcePayload.accounts.length, 7);
   assert.ok(sourcePayload.accounts.every((account) => account.articles.length > 0));
-  assert.equal(archivePayload.issues[0].issue.isoWeek, "2026-W30");
+  assert.equal(orbitinfer.archive[0].issue.isoWeek, "2026-W30");
 });
 
 test("exports a GitHub Pages-compatible static snapshot", async () => {

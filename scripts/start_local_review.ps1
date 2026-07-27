@@ -1,6 +1,22 @@
+param(
+    [string]$Department = "orbitinfer"
+)
+
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
+$departmentDataPath = Join-Path $repoRoot "site\app\department-data.json"
+$departmentData = Get-Content -LiteralPath $departmentDataPath -Raw |
+    ConvertFrom-Json
+$departmentEntry = $departmentData.departments |
+    Where-Object {
+        $_.id -eq $Department -or $_.slug -eq $Department
+    } |
+    Select-Object -First 1
+if (-not $departmentEntry) {
+    throw "Unknown department: $Department"
+}
+$departmentSlug = $departmentEntry.slug
 $logDirectory = Join-Path $repoRoot "runs\local"
 New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
 
@@ -46,7 +62,10 @@ if (-not (Test-LocalPort -Port 3000)) {
 $deadline = [DateTime]::UtcNow.AddSeconds(30)
 while ([DateTime]::UtcNow -lt $deadline) {
     if ((Test-LocalPort -Port 8010) -and (Test-LocalPort -Port 3000)) {
-        Write-Output "Local review is ready at http://127.0.0.1:3000/departments/orbitinfer/"
+        Write-Output (
+            "Local review is ready at " +
+            "http://127.0.0.1:3000/departments/$departmentSlug/"
+        )
         exit 0
     }
     Start-Sleep -Milliseconds 500

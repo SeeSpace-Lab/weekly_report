@@ -1,7 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import archiveData from "../archive-data.json";
+import departmentData from "../department-data.json";
+import type { Report } from "../components/DepartmentReport";
+
+type DepartmentArchive = {
+  id: string;
+  slug: string;
+  name: string;
+  archive: Report[];
+};
+
+const departments = (
+  departmentData.departments as unknown as DepartmentArchive[]
+).filter((department) => department.archive.length > 0);
 
 const sectionNames: Record<string, string> = {
   must_read: "本周必读",
@@ -16,18 +28,24 @@ function readableDate(value: string) {
 }
 
 export default function ArchivePage() {
+  const [selectedDepartment, setSelectedDepartment] = useState(
+    departments[0]?.slug ?? "",
+  );
+  const department =
+    departments.find((entry) => entry.slug === selectedDepartment) ??
+    departments[0];
   const [selectedWeek, setSelectedWeek] = useState(
-    archiveData.issues[0]?.issue.isoWeek ?? "",
+    department?.archive[0]?.issue.isoWeek ?? "",
   );
   const report = useMemo(
     () =>
-      archiveData.issues.find(
+      department?.archive.find(
         (issue) => issue.issue.isoWeek === selectedWeek,
-      ) ?? archiveData.issues[0],
-    [selectedWeek],
+      ) ?? department?.archive[0],
+    [department, selectedWeek],
   );
 
-  if (!report) {
+  if (!department || !report) {
     return <main className="emptyState">尚无历史周报。</main>;
   }
 
@@ -48,23 +66,39 @@ export default function ArchivePage() {
         </a>
         <nav className="portalNav">
           <a href="/">总览</a>
-          <a href="/departments/orbitinfer">最新周报</a>
+          <a href={`/departments/${department.slug}`}>最新周报</a>
           <a href="/library">论文库</a>
           <a href="/sources">公众号</a>
         </nav>
-        <div className="issueStatus"><span className="pulse" />{archiveData.issues.length} 期存档</div>
+        <div className="issueStatus"><span className="pulse" />{department.archive.length} 期存档</div>
       </header>
 
       <section className="archiveHero">
         <div>
-          <p className="kicker">ORBITINFER · WEEKLY ARCHIVE</p>
+          <p className="kicker">{department.name} · WEEKLY ARCHIVE</p>
           <h1>历史周报</h1>
           <p>{readableDate(report.issue.windowStart)}—{readableDate(report.issue.windowEnd)} · {itemCount} 项精选</p>
         </div>
         <label>
-          <span>选择周次</span>
+          <span>选择部门与周次</span>
+          <select
+            value={department.slug}
+            onChange={(event) => {
+              const next = departments.find(
+                (entry) => entry.slug === event.target.value,
+              );
+              setSelectedDepartment(event.target.value);
+              setSelectedWeek(next?.archive[0]?.issue.isoWeek ?? "");
+            }}
+          >
+            {departments.map((entry) => (
+              <option key={entry.id} value={entry.slug}>
+                {entry.name}
+              </option>
+            ))}
+          </select>
           <select value={selectedWeek} onChange={(event) => setSelectedWeek(event.target.value)}>
-            {archiveData.issues.map((issue) => (
+            {department.archive.map((issue) => (
               <option key={issue.issue.id} value={issue.issue.isoWeek}>
                 {issue.issue.isoWeek} · {issue.issue.status}
               </option>
