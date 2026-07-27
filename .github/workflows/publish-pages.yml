@@ -72,9 +72,6 @@ jobs:
   build:
     needs: verify
     runs-on: ubuntu-latest
-    env:
-      # A custom domain serves the Pages artifact at the domain root.
-      PAGES_BASE_PATH: ""
     steps:
       - uses: actions/checkout@v4
 
