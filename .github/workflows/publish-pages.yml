@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "site/app/department-data.json"
-      - "site/app/data/departments/**"
+      - ".github/workflows/publish-pages.yml"
+      - "site/**"
   workflow_dispatch:
     inputs:
       confirm:
@@ -87,6 +87,7 @@ jobs:
           npm ci
           node scripts/prepare-public-data.mjs
           npm run export:pages
+          node --test tests/rendered-html.test.mjs
 
       - uses: actions/configure-pages@v5
 
@@ -104,3 +105,41 @@ jobs:
       - name: Deploy approved snapshot
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify deployed CSS
+        shell: bash
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          node - <<'NODE'
+          const delay = (milliseconds) =>
+            new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+          for (let attempt = 1; attempt <= 6; attempt += 1) {
+            const pageUrl = new URL(process.env.PAGE_URL);
+            pageUrl.searchParams.set("smoke", `${Date.now()}-${attempt}`);
+            const page = await fetch(pageUrl, { cache: "no-store" });
+            const html = await page.text();
+            const cssPath = html.match(/href="([^"]+\.css)"/)?.[1];
+            const cssUrl = cssPath
+              ? new URL(cssPath, pageUrl).href
+              : null;
+            const css = cssUrl
+              ? await fetch(`${cssUrl}?smoke=${Date.now()}`, {
+                  cache: "no-store",
+                })
+              : null;
+
+            if (page.ok && css?.ok) {
+              console.log(`Verified ${cssUrl}`);
+              process.exit(0);
+            }
+
+            console.error(
+              `Attempt ${attempt}: page=${page.status}, css=${css?.status ?? "missing"}`,
+            );
+            if (attempt < 6) await delay(5000);
+          }
+
+          throw new Error("Deployed page did not load its CSS asset");
+          NODE
