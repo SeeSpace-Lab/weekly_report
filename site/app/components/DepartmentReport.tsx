@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import reportData from "../../report-data.json";
-import ApprovalPanel from "../../components/ApprovalPanel";
+import { useState } from "react";
+import ApprovalPanel from "./ApprovalPanel";
 
 type DeepRead = {
   titleZh: string;
@@ -17,7 +16,7 @@ type DeepRead = {
   modelVersion: string;
 };
 
-type ReportItem = {
+export type ReportItem = {
   position: number;
   role: string;
   itemType: string;
@@ -33,13 +32,24 @@ type ReportItem = {
   deepRead?: DeepRead | null;
 };
 
-type Report = Omit<typeof reportData, "sections"> & {
+export type Report = {
+  issue: {
+    id: string;
+    departmentId: string;
+    title: string;
+    isoWeek: string;
+    windowStart: string;
+    windowEnd: string;
+    status: string;
+    targetReadMinutes: number;
+    estimatedReadMinutes: number;
+    itemCount: number;
+  };
+  trends: string[];
   sections: Array<{ id: string; items: ReportItem[] }>;
 };
 
-const report = reportData as Report;
-
-const sectionNames: Record<string, string> = {
+const defaultSectionNames: Record<string, string> = {
   must_read: "本周必读",
   inference_and_scheduling: "推理引擎与调度",
   kv_storage_moe_quantization: "KV Cache · MoE · 量化",
@@ -72,45 +82,70 @@ function plainSummary(value: string | null) {
     .trim();
 }
 
-export default function Home() {
+type DepartmentPresentation = {
+  id: string;
+  name: string;
+  page: {
+    brand_mark?: string;
+    eyebrow?: string;
+    headline?: string[];
+    description?: string;
+  };
+  sectionLabels: Record<string, string>;
+};
+
+export default function DepartmentReport({
+  department,
+  report,
+}: {
+  department: DepartmentPresentation;
+  report: Report;
+}) {
   const [activeSection, setActiveSection] = useState("all");
   const [query, setQuery] = useState("");
-  const weeklySections = useMemo(
-    () => report.sections.filter(
-      (section) => !["venue_updates", "library_review"].includes(section.id),
-    ),
-    [],
+  const sectionNames = {
+    ...defaultSectionNames,
+    ...department.sectionLabels,
+  };
+  const weeklySections = report.sections.filter(
+    (section) =>
+      !["venue_updates", "library_review"].includes(section.id),
   );
-  const sections = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase();
-    return weeklySections
-      .filter((section) => activeSection === "all" || section.id === activeSection)
-      .map((section) => ({
-        ...section,
-        items: section.items.filter((item) => {
-          if (!normalized) return true;
-          return `${item.title} ${item.reason} ${item.summary ?? ""} ${
-            item.deepRead?.titleZh ?? ""
-          } ${item.deepRead?.oneSentenceZh ?? ""}`
-            .toLocaleLowerCase()
-            .includes(normalized);
-        }),
-      }))
-      .filter((section) => section.items.length > 0);
-  }, [activeSection, query, weeklySections]);
+  const normalized = query.trim().toLocaleLowerCase();
+  const sections = weeklySections
+    .filter(
+      (section) => activeSection === "all" || section.id === activeSection,
+    )
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => {
+        if (!normalized) return true;
+        return `${item.title} ${item.reason} ${item.summary ?? ""} ${
+          item.deepRead?.titleZh ?? ""
+        } ${item.deepRead?.oneSentenceZh ?? ""}`
+          .toLocaleLowerCase()
+          .includes(normalized);
+      }),
+    }))
+    .filter((section) => section.items.length > 0);
   const itemCount = weeklySections.reduce(
     (total, section) => total + section.items.length,
     0,
   );
+  const headline = department.page.headline ?? [department.name];
+  const brandMark =
+    department.page.brand_mark ?? department.name.slice(0, 2);
 
   return (
     <main>
       <header className="topbar">
         <a className="brand" href="/" aria-label="返回研发部周报总览">
-          <span className="brandMark">OI</span>
+          <span className="brandMark">{brandMark}</span>
           <span>
-            <b>ORBITINFER</b>
-            <small>WEEKLY INTELLIGENCE</small>
+            <b>{department.name}</b>
+            <small>
+              {department.page.eyebrow ?? "WEEKLY INTELLIGENCE"}
+            </small>
           </span>
         </a>
         <nav className="portalNav" aria-label="研发部周报导航">
@@ -135,13 +170,16 @@ export default function Home() {
           <span>RESEARCH RADAR / 01</span>
         </div>
         <h1>
-          星载大模型
-          <br />
-          <em>推理引擎</em>周报
+          {headline.map((line, index) => (
+            <span key={line}>
+              {index === headline.length - 1 ? <em>{line}</em> : line}
+              {index < headline.length - 1 && <br />}
+            </span>
+          ))}
+          周报
         </h1>
         <p className="heroLead">
-          聚焦本周值得关注的重要论文、权威解读、开源框架、
-          Benchmark 与数据集进展。
+          {department.page.description ?? department.name}
         </p>
         <div className="metrics" aria-label="本期统计">
           <div>
@@ -164,6 +202,7 @@ export default function Home() {
       </section>
 
       <ApprovalPanel
+        departmentId={department.id}
         status={report.issue.status}
         isoWeek={report.issue.isoWeek}
       />
@@ -311,8 +350,8 @@ export default function Home() {
 
       <footer>
         <div>
-          <span className="brandMark">OI</span>
-          <p>星载大模型推理引擎 · 自动化研究情报系统</p>
+          <span className="brandMark">{brandMark}</span>
+          <p>{department.name} · 自动化研究情报系统</p>
         </div>
         <p>
           自动生成，发布前需经研究员核验。时间窗口：

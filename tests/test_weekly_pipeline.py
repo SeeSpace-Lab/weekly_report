@@ -137,8 +137,15 @@ class WeeklyPipelineTest(unittest.TestCase):
             self.assertEqual(Path(issue["output_markdown_url"]), output.resolve())
             site_data = Path(temp_dir) / "report-data.json"
             with database.transaction() as connection:
-                SiteDataExportAgent().export(
+                exporter = SiteDataExportAgent()
+                exporter.export(
                     connection, result.issue_id, site_data
+                )
+                department_data = Path(temp_dir) / "department-data.json"
+                exporter.export_departments(
+                    connection,
+                    root / "config" / "departments",
+                    department_data,
                 )
             payload = json.loads(site_data.read_text(encoding="utf-8"))
             library_payload = json.loads(
@@ -156,12 +163,31 @@ class WeeklyPipelineTest(unittest.TestCase):
                     encoding="utf-8"
                 )
             )
+            department_payload = json.loads(
+                department_data.read_text(encoding="utf-8")
+            )
             self.assertGreaterEqual(len(library_payload["papers"]), 8)
             self.assertGreaterEqual(len(library_payload["venues"]), 20)
             self.assertEqual(source_payload["accounts"], [])
             self.assertEqual(
                 archive_payload["issues"][0]["issue"]["isoWeek"],
                 "2026-W30",
+            )
+            orbitinfer = next(
+                item
+                for item in department_payload["departments"]
+                if item["id"] == "orbitinfer"
+            )
+            self.assertEqual(
+                orbitinfer["currentReport"]["issue"]["isoWeek"],
+                "2026-W30",
+            )
+            self.assertTrue(
+                any(
+                    item["id"] == "constellation_simulation"
+                    and item["currentReport"] is None
+                    for item in department_payload["departments"]
+                )
             )
             deep_reads = [
                 item["deepRead"]

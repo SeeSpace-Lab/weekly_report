@@ -9,7 +9,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from .db import Database
 from .review import ReviewService
@@ -27,10 +27,13 @@ class ReviewAPI:
         self.allowed_origin = allowed_origin.rstrip("/")
         self._lock = threading.Lock()
 
-    def status(self) -> dict[str, Any]:
+    def status(self, department_id: str = "orbitinfer") -> dict[str, Any]:
         service = ReviewService(self.database)
-        readiness = service.approval_readiness(service.current_issue_id())
+        readiness = service.approval_readiness(
+            service.current_issue_id(department_id)
+        )
         return {
+            "departmentId": department_id,
             "issueId": readiness.issue_id,
             "isoWeek": readiness.iso_week,
             "status": readiness.status,
@@ -38,15 +41,19 @@ class ReviewAPI:
             "blockers": list(readiness.blockers),
         }
 
-    def approve(self) -> dict[str, Any]:
+    def approve(self, department_id: str = "orbitinfer") -> dict[str, Any]:
         if not self._lock.acquire(blocking=False):
             raise RuntimeError("另一项审核同步任务正在执行")
         try:
-            readiness = self.status()
+            readiness = self.status(department_id)
             if not readiness["ready"]:
                 raise ValueError("; ".join(readiness["blockers"]))
             result = subprocess.run(
-                list(self.approve_command),
+                [
+                    *self.approve_command,
+                    "--department",
+                    department_id,
+                ],
                 cwd=Path(__file__).resolve().parents[2],
                 capture_output=True,
                 text=True,
@@ -57,7 +64,7 @@ class ReviewAPI:
             if result.returncode:
                 detail = (result.stderr or result.stdout).strip()[-2000:]
                 raise RuntimeError(f"审核同步失败：{detail}")
-            payload = self.status()
+            payload = self.status(department_id)
             payload["synced"] = True
             return payload
         finally:
@@ -93,11 +100,16 @@ def make_handler(api: ReviewAPI) -> type[BaseHTTPRequestHandler]:
             return origin.rstrip("/") == api.allowed_origin
 
         def do_GET(self) -> None:  # noqa: N802
-            if urlparse(self.path).path != "/api/review/status":
+            parsed = urlparse(self.path)
+            if parsed.path != "/api/review/status":
                 self._json(HTTPStatus.NOT_FOUND, {"error": "not found"})
                 return
+            department_id = parse_qs(parsed.query).get(
+                "department",
+                ["orbitinfer"],
+            )[0]
             try:
-                self._json(HTTPStatus.OK, api.status())
+                self._json(HTTPStatus.OK, api.status(department_id))
             except Exception as error:
                 self._json(
                     HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -105,9 +117,14 @@ def make_handler(api: ReviewAPI) -> type[BaseHTTPRequestHandler]:
                 )
 
         def do_POST(self) -> None:  # noqa: N802
-            if urlparse(self.path).path != "/api/review/approve":
+            parsed = urlparse(self.path)
+            if parsed.path != "/api/review/approve":
                 self._json(HTTPStatus.NOT_FOUND, {"error": "not found"})
                 return
+            department_id = parse_qs(parsed.query).get(
+                "department",
+                ["orbitinfer"],
+            )[0]
             if not self._origin_allowed():
                 self._json(HTTPStatus.FORBIDDEN, {"error": "invalid origin"})
                 return
@@ -118,7 +135,10 @@ def make_handler(api: ReviewAPI) -> type[BaseHTTPRequestHandler]:
                 )
                 return
             try:
-                self._json(HTTPStatus.OK, api.approve())
+                self._json(
+                    HTTPStatus.OK,
+                    api.approve(department_id),
+                )
             except ValueError as error:
                 self._json(HTTPStatus.CONFLICT, {"error": str(error)})
             except Exception as error:

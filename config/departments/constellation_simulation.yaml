@@ -4,6 +4,21 @@ version: "0.1-placeholder"
 enabled: false
 status: scope_pending
 
+page:
+  order: 2
+  slug: constellation-simulation
+  brand_mark: CS
+  eyebrow: CONSTELLATION SIMULATION
+  headline:
+    - 星座智算
+    - 仿真平台
+  description: 范围确认后启用独立采集、筛选、精读、审核和归档。
+
+owners:
+  content_owner: 待指定
+  github_team: weekly-report-reviewers
+  reviewer_label: constellation-simulation-review
+
 mission: >-
   预留面向星座智算仿真平台的独立周报入口。待获得部门项目资料后，
   再确定仿真对象、系统层级、核心指标、固定来源和选稿规则。
@@ -21,4 +36,3 @@ activation_requirements:
   - exclusion_boundary
   - venue_and_source_pool
   - project_adjacent_topics
-

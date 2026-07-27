@@ -37,7 +37,8 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 - 新录用且与部门高度相关的顶会论文先自动补入滚动论文库，再进入对应部门周报候选；
 - 每次生成新一期时，数据库中的既有周报会同时导出到历史归档，不会被新一期覆盖；
 - Python 不调用外部模型 API；Codex 本地计划任务生成中文题名、一句话摘要、问题、方法、结果和证据等结构化字段；
-- `run-weekly` 同时生成周报、运行审计和 `site/app/report-data.json`；
+- `run-weekly` 同时生成部门周报、运行审计，并更新
+  `site/app/department-data.json` 中对应部门的当前期次和独立归档；
 - Codex 每周在本地项目中生成待审版本，研究员通过本地页面审核；
 - GitHub Pages 只接受状态为 `approved` 的快照；本地确认后自动触发，手动工作流保留为故障恢复入口。
 
@@ -75,6 +76,30 @@ powershell.exe -ExecutionPolicy Bypass -File scripts\start_local_review.ps1
 ```
 
 访问 `http://127.0.0.1:3000/departments/orbitinfer/`。
+
+指定其他部门时：
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File `
+  scripts\start_local_review.ps1 -Department <department_id>
+```
+
+## 新增部门
+
+每个部门只维护一个 `config/departments/<department_id>.yaml`。复制
+`config/departments/_template.yaml` 后，在该文件中填写研究使命、核心与邻近主题、
+排除边界、论文检索式、重点会议、公众号、论文跟踪清单、阅读预算和审核责任。
+共享来源的连接端点及 WeRSS 标识仍由 `config/sources.yaml` 统一维护。
+
+```powershell
+.\.venv\Scripts\weekly-intel.exe validate-departments
+.\.venv\Scripts\weekly-intel.exe sync-departments
+npm.cmd --prefix site run build
+```
+
+完整字段说明和调研边界检查表见
+`docs/department_weekly_scope_guide.md`；新增部门、替换公众号、调整论文数据库、
+会议或期刊范围的详细步骤见 `docs/department_onboarding_operations.md`。
 
 本地验证静态 Pages 产物：
 

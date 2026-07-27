@@ -7,10 +7,14 @@ const outputRoot = join(siteRoot, "out");
 const clientRoot = join(siteRoot, "dist", "client");
 const repository = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "weekly_report";
 const basePath = (process.env.PAGES_BASE_PATH ?? `/${repository}`).replace(/\/$/, "");
+const departmentData = JSON.parse(
+  await readFile(join(siteRoot, "app", "department-data.json"), "utf8"),
+);
 const routes = [
   "/",
-  "/departments/orbitinfer",
-  "/departments/constellation-simulation",
+  ...departmentData.departments.map(
+    (department) => `/departments/${department.slug}`,
+  ),
   "/archive",
   "/library",
   "/sources",

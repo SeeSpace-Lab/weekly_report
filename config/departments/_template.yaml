@@ -1,0 +1,126 @@
+# 复制本文件并改名为 <department_id>.yaml。
+# 文件名以下划线开头时不会被系统加载。
+department_id: example_department
+name: 示例部门
+version: "0.1"
+enabled: false
+status: scope_pending
+timezone: Asia/Shanghai
+
+page:
+  order: 99
+  slug: example-department
+  brand_mark: EX
+  eyebrow: EXAMPLE DEPARTMENT WEEKLY
+  headline:
+    - 示例方向
+    - 技术情报
+  description: 用一句话说明本部门周报解决什么研究决策问题。
+
+owners:
+  content_owner: 待指定
+  github_team: weekly-report-reviewers
+  reviewer_label: example-department-review
+
+mission: >-
+  用两到四句话说明部门的任务、近期技术目标、系统约束和周报服务的决策。
+
+core_topics:
+  - id: primary_topic
+    label: 核心主题
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - English search phrase
+      - 中文检索词
+  - id: secondary_topic
+    label: 次核心主题
+    weight: 0.8
+    section: secondary_topic
+    keywords:
+      - another technical phrase
+
+adjacent_topics:
+  - 只有在能改变本部门架构、指标或实验方案时才纳入的邻近方向
+
+keywords:
+  include:
+    - 核心英文关键词
+    - 核心中文关键词
+  exclude_unless_strongly_related:
+    - 明确不进入周报的泛化方向
+
+# 可填写具体论文标题，或需要持续跟踪的精确查询短语。
+# 命中清单会提高部门相关性，但仍必须满足本周有更新和证据充分。
+paper_watchlist:
+  - title: "Exact Paper Title"
+    reason: 与当前项目基线直接相关
+  - query: "precise benchmark or method name"
+    reason: 跟踪关键方法的新版本、代码或数据集
+
+# 只引用 config/sources.yaml 中已经注册的 source_id。
+# 新公众号必须先在共享来源目录和 WeRSS 中完成一次技术接入。
+source_pool:
+  papers:
+    - arxiv
+    - openreview
+    - crossref
+  venues:
+    - venue_official_pages
+  repositories: []
+  models_and_datasets:
+    - huggingface_hub
+  wechat:
+    - wechat_paperweekly
+  manual:
+    - manual_inbox
+  overrides:
+    arxiv:
+      categories: [cs.DC]
+      search_terms:
+        - department-specific paper query
+    openreview:
+      venues:
+        - venue_id: ICLR.cc/2026/Conference
+          venue: ICLR
+          year: 2026
+
+ranking:
+  global_importance:
+    venue_or_review_status: 0.20
+    system_novelty: 0.20
+    evidence_and_reproducibility: 0.20
+    trend_signal: 0.15
+    artifact_value: 0.15
+    version_significance: 0.10
+
+weekly_output:
+  target_read_minutes: 30
+  max_items: 8
+  max_wechat_items: 3
+  wechat_candidate_reserve: 8
+  must_read_min: 3
+  must_read_max: 5
+  deep_read_min: 8
+  deep_read_max: 12
+  quick_scan_min: 10
+  quick_scan_max: 20
+  sections:
+    - weekly_trends
+    - must_read
+    - primary_topic
+    - secondary_topic
+    - frameworks_benchmarks_datasets
+    - department_relevance
+  section_labels:
+    must_read: 本周必读
+    primary_topic: 核心主题
+    secondary_topic: 次核心主题
+    frameworks_benchmarks_datasets: 框架、Benchmark 与数据集
+    department_relevance: 部门专项意义
+
+activation_requirements:
+  - 部门使命和近期研究决策已确认
+  - 核心主题、邻近主题和排除边界已确认
+  - 论文来源、检索式、重点会场和公众号已确认
+  - 内容负责人和 GitHub 发布审核团队已确认

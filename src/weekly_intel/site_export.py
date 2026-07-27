@@ -4,7 +4,12 @@ import json
 import sqlite3
 from pathlib import Path
 
-from .config import load_yaml
+from .config import (
+    department_slug,
+    department_source_ids,
+    load_departments,
+    load_yaml,
+)
 from .utils import display_title, normalize_title
 
 
@@ -105,6 +110,7 @@ class SiteDataExportAgent:
         payload = {
             "issue": {
                 "id": issue["issue_id"],
+                "departmentId": issue["department_id"],
                 "title": issue["title"],
                 "isoWeek": issue["iso_week"],
                 "windowStart": issue["window_start"],
@@ -138,25 +144,47 @@ class SiteDataExportAgent:
             encoding="utf-8",
         )
         root = Path(__file__).resolve().parents[2]
+        site_app_root = (root / "site" / "app").resolve()
+        output_parent = output.resolve().parent
+        is_portal_output = (
+            output_parent == site_app_root
+            or site_app_root in output_parent.parents
+        )
+        shared_output = site_app_root if is_portal_output else output.parent
+        department_id = str(payload["issue"]["departmentId"])
         self.export_library(
             connection,
             root / "config" / "paper_library.yaml",
-            output.with_name("library-data.json"),
+            shared_output / "library-data.json",
         )
-        self.export_sources(connection, output.with_name("source-data.json"))
-        self.export_archive(connection, output.with_name("archive-data.json"))
+        self.export_sources(connection, shared_output / "source-data.json")
+        self.export_archive(
+            connection,
+            shared_output / "archive-data.json",
+            department_id,
+        )
+        if is_portal_output:
+            self.export_departments(
+                connection,
+                root / "config" / "departments",
+                site_app_root / "department-data.json",
+            )
         return output.resolve()
 
     def export_archive(
-        self, connection: sqlite3.Connection, output: Path
+        self,
+        connection: sqlite3.Connection,
+        output: Path,
+        department_id: str = "orbitinfer",
     ) -> Path:
         issues = connection.execute(
             """
             SELECT issue_id
             FROM weekly_issues
-            WHERE department_id='orbitinfer'
+            WHERE department_id=?
             ORDER BY iso_week DESC
-            """
+            """,
+            (department_id,),
         ).fetchall()
         payload = {
             "issues": [
@@ -164,6 +192,79 @@ class SiteDataExportAgent:
                 for row in issues
             ]
         }
+        output.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return output.resolve()
+
+    def export_departments(
+        self,
+        connection: sqlite3.Connection,
+        config_directory: Path,
+        output: Path,
+    ) -> Path:
+        root = Path(__file__).resolve().parents[2]
+        departments = load_departments(
+            config_directory,
+            sources_path=root / "config" / "sources.yaml",
+        )
+        entries: list[dict[str, object]] = []
+        for department in departments:
+            department_id = str(department["department_id"])
+            issue_rows = connection.execute(
+                """
+                SELECT issue_id
+                FROM weekly_issues
+                WHERE department_id=?
+                ORDER BY iso_week DESC
+                """,
+                (department_id,),
+            ).fetchall()
+            reports = [
+                self._issue_payload(connection, str(row["issue_id"]))
+                for row in issue_rows
+            ]
+            page = department.get("page", {})
+            output_config = department.get("weekly_output", {})
+            entries.append(
+                {
+                    "id": department_id,
+                    "slug": department_slug(department),
+                    "name": department["name"],
+                    "version": department["version"],
+                    "enabled": bool(department.get("enabled", True)),
+                    "status": department.get(
+                        "status",
+                        "active" if department.get("enabled", True)
+                        else "disabled",
+                    ),
+                    "mission": department["mission"],
+                    "page": page,
+                    "owners": department.get("owners", {}),
+                    "coreTopics": department.get("core_topics", []),
+                    "adjacentTopics": department.get("adjacent_topics", []),
+                    "activationRequirements": department.get(
+                        "activation_requirements",
+                        [],
+                    ),
+                    "sourceIds": sorted(
+                        department_source_ids(department)
+                    ),
+                    "sectionLabels": output_config.get(
+                        "section_labels",
+                        {},
+                    ),
+                    "weeklyOutput": output_config,
+                    "currentReport": reports[0] if reports else None,
+                    "archive": reports,
+                }
+            )
+        payload = {
+            "schemaVersion": 1,
+            "departments": entries,
+        }
+        output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(
             json.dumps(payload, ensure_ascii=False, indent=2),
             encoding="utf-8",

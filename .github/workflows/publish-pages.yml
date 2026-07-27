@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "site/app/report-data.json"
-      - "site/app/archive-data.json"
+      - "site/app/department-data.json"
+      - "site/app/data/departments/**"
   workflow_dispatch:
     inputs:
       confirm:
@@ -14,6 +14,10 @@ on:
         type: string
       issue:
         description: "批准时锁定的 ISO 周，例如 2026-W30"
+        required: false
+        type: string
+      department:
+        description: "部门 ID，例如 orbitinfer"
         required: false
         type: string
 
@@ -40,30 +44,37 @@ jobs:
         shell: bash
         run: |
           node - <<'NODE'
-          const report = require("./site/app/report-data.json");
-          if (report.issue.status !== "approved") {
-            throw new Error(`Refusing publication: issue status is ${report.issue.status}`);
+          const data = require("./site/app/department-data.json");
+          const reports = data.departments.flatMap((department) =>
+            department.archive.map((report) => ({ department, report })),
+          );
+          const approved = reports.filter(({ department, report }) =>
+            report.issue.status === "approved" &&
+            (!process.env.EXPECTED_DEPARTMENT ||
+              department.id === process.env.EXPECTED_DEPARTMENT) &&
+            (!process.env.EXPECTED_ISSUE ||
+              report.issue.isoWeek === process.env.EXPECTED_ISSUE),
+          );
+          if (!approved.length) {
+            throw new Error("Refusing publication: no matching approved report");
           }
-          if (
-            process.env.EXPECTED_ISSUE &&
-            report.issue.isoWeek !== process.env.EXPECTED_ISSUE
-          ) {
-            throw new Error(
-              `Refusing publication: expected ${process.env.EXPECTED_ISSUE}, found ${report.issue.isoWeek}`,
-            );
-          }
+          const { department, report } = approved[0];
           const fs = require("node:fs");
           fs.appendFileSync(
             process.env.GITHUB_OUTPUT,
-            `issue=${report.issue.isoWeek}\n`,
+            `issue=${department.id}/${report.issue.isoWeek}\n`,
           );
           NODE
         env:
           EXPECTED_ISSUE: ${{ inputs.issue }}
+          EXPECTED_DEPARTMENT: ${{ inputs.department }}
 
   build:
     needs: verify
     runs-on: ubuntu-latest
+    env:
+      # A custom domain serves the Pages artifact at the domain root.
+      PAGES_BASE_PATH: ""
     steps:
       - uses: actions/checkout@v4
 
