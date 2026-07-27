@@ -86,16 +86,15 @@ powershell.exe -ExecutionPolicy Bypass -File `
 
 ## 新增部门
 
-每个部门只维护一个 `config/departments/<department_id>.yaml`。复制
-`config/departments/_template.yaml` 后，在该文件中填写研究使命、核心与邻近主题、
-排除边界、论文检索式、重点会议、公众号、论文跟踪清单、阅读预算和审核责任。
-共享来源的连接端点及 WeRSS 标识仍由 `config/sources.yaml` 统一维护。
+部门配置以公司 GitHub 仓库为唯一来源。拥有仓库 Write 权限的部门负责人可以直接
+在 GitHub 网页中复制 `config/departments/_template.yaml`，创建
+`config/departments/<department_id>.yaml`，然后从自己的 `feature/*` 分支向
+`develop` 发起 Pull Request。PR 会自动校验全部部门配置并构建站点；负责人不需要
+访问本仓库维护人的电脑，也不需要安装 Python、Node.js 或 Codex。
 
-```powershell
-.\.venv\Scripts\weekly-intel.exe validate-departments
-.\.venv\Scripts\weekly-intel.exe sync-departments
-npm.cmd --prefix site run build
-```
+每个部门只维护一个 YAML，在其中填写研究使命、核心与邻近主题、排除边界、论文
+检索式、重点会议、公众号、论文跟踪清单、阅读预算和审核责任。共享来源的连接端点
+及 WeRSS 标识仍由 `config/sources.yaml` 统一维护。
 
 完整字段说明和调研边界检查表见
 `docs/department_weekly_scope_guide.md`；新增部门、替换公众号、调整论文数据库、

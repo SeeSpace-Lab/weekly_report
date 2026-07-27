@@ -2,7 +2,13 @@
 
 ## 1. 先说结论
 
-在以下前提下，新增部门只需要复制并编辑一个部门 YAML：
+部门配置以公司 GitHub 仓库
+[`SeeSpace-Lab/weekly_report`](https://github.com/SeeSpace-Lab/weekly_report)
+为唯一来源。其他部门负责人不需要访问维护人的本地工作区，也不需要安装 Codex、
+Python 或 Node.js；拥有仓库 Write 权限后，可以直接通过 GitHub 网页创建部门 YAML
+并发起 Pull Request。
+
+在以下前提下，新增部门只需要在 GitHub 中复制并编辑一个部门 YAML：
 
 - 使用的论文数据库、会议来源、GitHub 仓库和公众号已经登记在
   `config/sources.yaml`；
@@ -28,21 +34,37 @@ Pages 路由或新的站点构建脚本。
 | 严格按期刊名称建立白名单 | 暂不完全支持 | 当前 Crossref 只按检索词查询，需要增加期刊白名单过滤 |
 | 新增全新的采集类型或内部数据库 | 否 | 需要实现采集器并登记共享来源 |
 
-## 2. 新增部门的标准流程
+## 2. 在 GitHub 新增部门的标准流程
 
-### 2.1 复制模板
+### 2.1 准备权限
 
-在项目根目录 `D:\code\weekly_report` 执行：
+部门负责人需要：
 
-```powershell
-Copy-Item config\departments\_template.yaml `
-  config\departments\satellite_network.yaml
-```
+- 接受公司 GitHub Organization 或仓库邀请；
+- 对 `SeeSpace-Lab/weekly_report` 至少拥有 Write 权限；
+- 开启公司要求的 2FA；
+- 知道本部门的 `department_id`，例如 `satellite_network`。
+
+Write 权限足以创建功能分支和 Pull Request，不需要 Organization Owner 或仓库
+Admin 权限。
+
+### 2.2 在 GitHub 网页复制模板
+
+1. 打开
+   [`config/departments/_template.yaml`](https://github.com/SeeSpace-Lab/weekly_report/blob/develop/config/departments/_template.yaml)；
+2. 点击 **Raw**，复制文件全部内容；
+3. 回到
+   [`config/departments`](https://github.com/SeeSpace-Lab/weekly_report/tree/develop/config/departments)；
+4. 点击 **Add file → Create new file**；
+5. 在当前目录下将文件名填写为 `<department_id>.yaml`，例如
+   `satellite_network.yaml`；确认页面顶部最终显示的完整路径是
+   `config/departments/satellite_network.yaml`；
+6. 粘贴模板内容并编辑。
 
 文件名建议与 `department_id` 一致。不要直接编辑 `_template.yaml`，因为以下划线
 开头的文件会被自动任务忽略。
 
-### 2.2 先保持禁用
+### 2.3 填写期间保持禁用
 
 编辑过程中保持：
 
@@ -51,9 +73,10 @@ enabled: false
 status: scope_pending
 ```
 
-这样即使文件尚未填写完整，自动任务也只生成部门占位页面，不会编造调研范围。
+未合并的 GitHub 分支不会被本地周报自动任务读取。保持禁用还能避免配置在尚未确认
+完整时被误启用。
 
-### 2.3 填写完整后启用
+### 2.4 填写完整后启用
 
 确认所有字段后改为：
 
@@ -62,23 +85,44 @@ enabled: true
 status: active
 ```
 
-下一次自动任务会发现并运行该部门。
+Pull Request 合入 `develop`，并随后由维护人将 `develop` 合入 `main` 后，下一次
+本地自动任务同步公司仓库时会发现并运行该部门。
 
-### 2.4 是否必须手工执行命令
+### 2.5 提交功能分支并创建 PR
 
-不是必须。设置 `enabled: true` 后可以等待下一次自动任务。
+在页面底部选择 **Create a new branch for this commit and start a pull request**，
+分支名使用：
 
-但首次启用前强烈建议本地检查，因为一个启用部门的无效 YAML 会导致自动任务的
-统一配置校验失败：
-
-```powershell
-.\.venv\Scripts\weekly-intel.exe validate-departments
-.\.venv\Scripts\weekly-intel.exe sync-departments
-npm.cmd --prefix site run build
+```text
+feature/department-<department_id>
 ```
 
-`validate-departments` 检查字段、标识、主题、篇数、阅读时间和来源 ID。
-`sync-departments` 只刷新部门目录与占位页面，不生成论文内容。
+然后点击 **Propose changes**，创建目标为 `develop` 的 Pull Request，并指定仓库
+维护人或 `owners.github_team` 对应团队审核。
+
+### 2.6 等待 GitHub Actions 校验
+
+PR 中的 **Validate department configuration** 会自动：
+
+1. 校验字段、标识、主题、篇数、阅读时间和来源 ID；
+2. 运行部门配置单元测试；
+3. 根据新配置生成部门页面数据；
+4. 构建站点，确认配置可以正常渲染。
+
+检查失败时不要合并。打开失败的 Job 查看错误，在 GitHub 网页继续编辑同一分支，
+修复后检查会自动重跑。部门负责人不需要在本地执行校验命令。
+
+### 2.7 审核、合并与生效
+
+1. 至少一名 Reviewer 审核并 Approve；
+2. 所有 Actions 检查通过；
+3. 维护人将功能分支合入 `develop`；
+4. 按公司发布节奏，由维护人通过 PR 将 `develop` 合入 `main`；
+5. 本地自动任务在生成周报前同步 `origin/main`，然后读取新部门配置。
+
+合入 `develop` 只代表配置通过集成审核；进入 `main` 后才成为本地自动任务使用的
+正式配置。任何 GitHub Actions Secret、Token、Cookie、内网地址或账号密码都不能
+写入部门 YAML、Issue 或 PR 评论。
 
 ## 3. YAML 顶层组件
 
@@ -179,7 +223,7 @@ page:
 - `headline`：首页卡片和部门页主标题，可分成两行；
 - `description`：面向读者的一句话说明。
 
-页面地址为：
+本地维护人员预览时的页面地址为：
 
 ```text
 http://127.0.0.1:3000/departments/satellite-network/
@@ -195,7 +239,7 @@ owners:
 ```
 
 - `content_owner`：对范围、选题和内容正确性负责；
-- `github_team`：迁移到公司 GitHub 后负责合并或发布审批的团队；
+- `github_team`：在公司 GitHub 中负责 PR 审核的团队；
 - `reviewer_label`：写入本地审核记录的稳定标签。
 
 内容负责人不需要是公司 GitHub 组织管理员。公司管理员只需一次性配置仓库权限、
@@ -634,16 +678,21 @@ activation_requirements:
 
 每周一 08:00，“多部门研发周报”会：
 
-1. 校验所有部门 YAML；
-2. 同步部门目录和页面；
-3. 读取全部 `enabled: true` 的部门；
-4. 按部门来源池独立采集和形成候选；
-5. 按部门使命、主题和排除范围独立筛选；
-6. 为每个部门生成独立候选包和分析文件；
-7. 导入中文精读并保持状态为 `review`；
-8. 统一运行 Python 测试、站点构建和 Pages 静态导出；
-9. 启动本地审核页面；
-10. 不自动点击审核，不提交、不推送、不发布。
+1. 确认本地工作区干净，并快进同步公司仓库 `origin/main`；
+2. 校验所有部门 YAML；
+3. 同步部门目录和页面；
+4. 读取全部 `enabled: true` 的部门；
+5. 按部门来源池独立采集和形成候选；
+6. 按部门使命、主题和排除范围独立筛选；
+7. 为每个部门生成独立候选包和分析文件；
+8. 导入中文精读并保持状态为 `review`；
+9. 统一运行 Python 测试、站点构建和 Pages 静态导出；
+10. 启动本地审核页面；
+11. 不自动点击审核，不提交、不推送、不发布。
+
+如果本地存在未提交改动，自动任务必须停止并报告，不能通过 reset、覆盖文件或强制
+合并来获取远端配置。这样 GitHub 上已进入 `main` 的部门配置才是下一次生成任务的
+输入，同时不会破坏尚未审核的本地周报。
 
 如果某部门本期已经 `approved` 或 `published`，自动任务会保护该期内容并跳过，
 不会覆盖已批准选择。
@@ -756,7 +805,7 @@ status: active
 - [ ] `target_read_minutes <= 30`；
 - [ ] 内容负责人和 GitHub 审核团队已填写；
 - [ ] 完成后设置 `enabled: true`、`status: active`；
-- [ ] 首次启用前建议运行 `validate-departments`；
+- [ ] GitHub PR 的 **Validate department configuration** 已通过；
 - [ ] 周报最终仍由研究员在本地审核页面确认。
 
 ## 23. 相关文件

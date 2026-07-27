@@ -1,0 +1,51 @@
+name: Validate department configuration
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - "config/departments/**"
+      - "config/sources.yaml"
+      - "src/weekly_intel/config.py"
+      - "src/weekly_intel/site_export.py"
+      - "tests/test_department_config.py"
+      - "site/**"
+      - ".github/workflows/validate-department-config.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install configuration validator
+        run: python -m pip install .
+
+      - name: Validate all department files
+        run: |
+          weekly-intel validate-departments
+          python -m unittest tests.test_department_config
+
+      - name: Generate department pages
+        run: weekly-intel sync-departments
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Build site with proposed configuration
+        working-directory: site
+        run: |
+          npm ci
+          npm run build

@@ -11,8 +11,11 @@
 技术连接，同时保证选题范围、论文查询、公众号清单、阅读预算和审核责任集中在
 一个文件中。
 
-新增部门时复制 `config/departments/_template.yaml`，先保持 `enabled: false`。
-填写完成并通过验证后，再设置为 `enabled: true`。
+新增部门时，部门负责人应在公司 GitHub 网页中从
+`config/departments/_template.yaml` 创建自己的
+`config/departments/<department_id>.yaml`，从 `feature/*` 分支向 `develop`
+发起 Pull Request。填写期间保持 `enabled: false`；完整填写后设置为
+`enabled: true`，由 GitHub Actions 自动验证。
 
 ## 二、范围必须回答的六个问题
 
@@ -82,18 +85,21 @@
 - `owners.github_team` 对公司仓库中的合并和发布负责；不要求内容负责人拥有组织
   管理员权限。
 
-## 四、启用步骤
+## 四、GitHub 启用步骤
 
-```powershell
-Copy-Item config\departments\_template.yaml `
-  config\departments\<department_id>.yaml
+1. 在 GitHub 打开 `develop` 分支的 `config/departments/_template.yaml`；
+2. 复制内容并在 `config/departments` 目录通过
+   **Add file → Create new file** 新建 `<department_id>.yaml`；
+3. 完成配置并设置 `enabled: true`、`status: active`；
+4. 提交到 `feature/department-<department_id>` 分支；
+5. 向 `develop` 发起 Pull Request；
+6. 等待 **Validate department configuration** 通过和 Reviewer Approve；
+7. 由维护人合入 `develop`，再按发布节奏将 `develop` 合入 `main`。
 
-.\.venv\Scripts\weekly-intel.exe validate-departments
-.\.venv\Scripts\weekly-intel.exe sync-departments
-npm.cmd --prefix site run build
-```
+部门负责人不需要使用维护人的本地路径，也不需要在本地安装或运行校验工具。以下
+命令仅供维护人员在需要立即试运行时使用。
 
-验证通过后，将新文件的 `enabled` 改为 `true`。运行该部门周报时显式传入：
+运行该部门周报时显式传入：
 
 ```powershell
 .\.venv\Scripts\weekly-intel.exe run-weekly --days 7 `
