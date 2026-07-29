@@ -82,17 +82,6 @@ core_topics:
       - protein language model
       - AIDD
       - generative models for protein
-  - id: semantic_compression
-    label: 语义压缩
-    weight: 1.0
-    section: primary_topic
-    keywords:
-      - task-driven compression
-      - semantic compression
-      - video coding for machine
-      - image coding for machine
-      - feature compression
-      - latent representation compression
   - id: remote_sensing_compression
     label: 遥感压缩
     weight: 0.95
