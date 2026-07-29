@@ -1,0 +1,236 @@
+# 复制本文件并改名为 <department_id>.yaml。
+# 文件名以下划线开头时不会被系统加载。
+department_id: model_and_application
+name: 模型应用
+version: "0.1"
+enabled: true
+timezone: Asia/Shanghai
+
+page:
+  order: 3
+  slug: model_and_application
+  brand_mark: MA
+  eyebrow: MODEL AND APPLICATION WEEKLY
+  headline:
+    - 基础模型
+    - Agent
+    - 数据压缩
+  description: 跟踪模型、Agent、数据压缩方向的研究进展。
+
+owners:
+  content_owner: 李文硕
+  github_team: weekly-report-reviewers
+  reviewer_label: model-and-algorithm-review
+
+mission: >-
+  跟踪基础语言大模型、多模态大模型以及遥感领域大模型的技术发展，包括数据、评测、模型架构、训练方法以及著名大模型公司的相关信息，
+  跟踪通用Agent架构、遥感/地质Agent设计方法，数据压缩技术发展。
+
+core_topics:
+  - id: token_compression
+    label: Token压缩
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - token compression
+      - token reduction
+      - token merging
+      - token压缩
+  - id: compression_for_llm
+    label: 压缩模型结合
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - compressed video representation
+      - compressed video understanding
+      - codec aware video language model
+      - video codec representation
+      - compressed domain inference
+  - id: semantic_compression
+    label: 语义压缩
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - task-driven compression
+      - semantic compression
+      - video coding for machine
+      - image coding for machine
+      - feature compression
+      - latent representation compression
+  - id: vision_language_model
+    label: 多模态模型
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - VLM
+      - vision language model
+      - multimodal large language model
+      - vision transformer
+  - id: remote_sensing_model
+    label: 遥感大模型
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - remote sensing VLM
+      - remote sensing agent
+  - id: AI4S
+    label: AI4S
+    weight: 1.0
+    section: primary_topic
+    keywords:
+      - AI for drug discovery
+      - protein language model
+      - AIDD
+      - generative models for protein
+  - id: remote_sensing_compression
+    label: 遥感压缩
+    weight: 0.95
+    section: secondary_topic
+    keywords:
+      - AI remote sensing compression
+      - learned remote sensing compression
+      - end-to-end remote sensing compression
+      - AI遥感压缩
+  - id: video_compression
+    label: 视频压缩
+    weight: 0.9
+    section: secondary_topic
+    keywords:
+      - end-to-end video compression
+      - AI video compression
+      - learned video compression
+      - AI视频压缩
+  - id: image_compression
+    label: 图像压缩
+    weight: 0.9
+    section: secondary_topic
+    keywords:
+      - end-to-end image compression
+      - AI image compression
+      - learned image compression
+      - AI图像压缩
+  
+
+adjacent_topics:
+  - 只有在能改变本部门架构、指标或实验方案时才纳入的邻近方向
+
+keywords:
+  include:
+    - token compression
+    - token reduction
+    - token merging
+    - compressed video representation
+    - compressed video understanding
+    - codec aware video language model
+    - video codec representation
+    - compressed domain inference
+    - task-driven compression
+    - semantic compression
+    - video coding for machine
+    - image coding for machine
+    - feature compression
+    - latent representation compression
+    - AI remote sensing compression
+    - learned remote sensing compression
+    - end-to-end remote sensing compression
+    - end-to-end video compression
+    - AI video compression
+    - learned video compression
+    - end-to-end image compression
+    - AI image compression
+    - learned image compression
+    - AI图像压缩
+    - AI视频压缩
+    - AI遥感压缩
+    - token压缩
+    - AI for drug discovery
+    - protein language model
+    - AIDD
+    - generative models for protein
+    - VLM
+    - vision language model
+    - multimodal large language model
+    - vision transformer
+    - remote sensing VLM
+    - remote sensing agent
+    - 遥感大模型
+    - 遥感智能体
+    - 多模态大模型
+    - AI制药
+  exclude_unless_strongly_related:
+    - 明确不进入周报的泛化方向
+
+# 可填写具体论文标题，或需要持续跟踪的精确查询短语。
+# 命中清单会提高部门相关性，但仍必须满足本周有更新和证据充分。
+paper_watchlist:
+  - title: "Exact Paper Title"
+    reason: 与当前项目基线直接相关
+  - query: "precise benchmark or method name"
+    reason: 跟踪关键方法的新版本、代码或数据集
+
+# 只引用 config/sources.yaml 中已经注册的 source_id。
+# 新公众号必须先在共享来源目录和 WeRSS 中完成一次技术接入。
+source_pool:
+  papers:
+    - arxiv
+    - openreview
+    - crossref
+  venues:
+    - venue_official_pages
+  repositories: []
+  models_and_datasets:
+    - huggingface_hub
+  wechat:
+    - wechat_paperweekly
+  manual:
+    - manual_inbox
+  overrides:
+    arxiv:
+      categories: [cs.DC]
+      search_terms:
+        - department-specific paper query
+    openreview:
+      venues:
+        - venue_id: ICLR.cc/2026/Conference
+          venue: ICLR
+          year: 2026
+
+ranking:
+  global_importance:
+    venue_or_review_status: 0.20
+    system_novelty: 0.20
+    evidence_and_reproducibility: 0.20
+    trend_signal: 0.15
+    artifact_value: 0.15
+    version_significance: 0.10
+
+weekly_output:
+  target_read_minutes: 30
+  max_items: 8
+  max_wechat_items: 3
+  wechat_candidate_reserve: 8
+  must_read_min: 3
+  must_read_max: 5
+  deep_read_min: 8
+  deep_read_max: 12
+  quick_scan_min: 10
+  quick_scan_max: 20
+  sections:
+    - weekly_trends
+    - must_read
+    - primary_topic
+    - secondary_topic
+    - frameworks_benchmarks_datasets
+    - department_relevance
+  section_labels:
+    must_read: 本周必读
+    primary_topic: 核心主题
+    secondary_topic: 次核心主题
+    frameworks_benchmarks_datasets: 框架、Benchmark 与数据集
+    department_relevance: 部门专项意义
+
+activation_requirements:
+  - 部门使命和近期研究决策已确认
+  - 核心主题、邻近主题和排除边界已确认
+  - 论文来源、检索式、重点会场和公众号已确认
+  - 内容负责人和 GitHub 发布审核团队已确认
