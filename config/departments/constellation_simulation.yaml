@@ -1,38 +1,729 @@
 department_id: constellation_simulation
 name: 星座智算仿真平台
-version: "0.1-placeholder"
-enabled: false
-status: scope_pending
+version: "0.4"
+enabled: true
+status: active
+timezone: Asia/Shanghai
 
 page:
   order: 2
   slug: constellation-simulation
   brand_mark: CS
-  eyebrow: CONSTELLATION SIMULATION
+  eyebrow: CONSTELLATION COMPUTING SIMULATION
   headline:
     - 星座智算
     - 仿真平台
-  description: 范围确认后启用独立采集、筛选、精读、审核和归档。
+  description: >-
+    跟踪 L2 密集编队、L3 星座级服务组织与 OrbitServe 仿真平台进展，
+    为模型、实验、Runtime 和受约束 DSE 提供每周可核验的研究情报。
 
 owners:
-  content_owner: 待指定
+  content_owner: OrbitServe / OB3 研究组
   github_team: weekly-report-reviewers
   reviewer_label: constellation-simulation-review
 
 mission: >-
-  预留面向星座智算仿真平台的独立周报入口。待获得部门项目资料后，
-  再确定仿真对象、系统层级、核心指标、固定来源和选稿规则。
 
-shared_evidence:
-  - papers
-  - frameworks
-  - benchmarks
-  - datasets
-  - review_articles
+  面向全球地面 ChatLLM Serving，跟踪星座级仿真、密集计算编队、
+  Compute Cell 组织和轨道状态感知运行时研究。周报重点服务 OrbitServe
+  仿真器模块设计、L2/L3 设计空间选择、实验基线、参数校准和论文差异性判断。
+  轨道、通信、能源、散热与成本研究只有在能够改变系统约束、参数范围或实验结论时才纳入。
+
+scope_boundary:
+  primary_layers: [L2, L3]
+  contextual_layers: [L1, L4]
+  owns: 多星密集编队、Compute Cell 内协同，以及 Compute Cell 之间的星座级服务组织与 OrbitServe
+  routing_rules:
+    - 主要创新发生在单颗卫星内部的模型执行、KV、量化或批处理时，归属星载大模型推理引擎
+    - 主要控制对象是多颗卫星、密集编队、Compute Cell 拓扑或跨星模型执行时，归属本部门 L2
+    - 主要控制对象是 Compute Cell 之间的接入、路径、状态、调度或服务连续性时，归属本部门 L3
+    - 同时跨越 L1 与 L2 时，按论文主要实验变量和核心贡献确定主板块，另一板块只写交叉影响，不重复精读
+    - L4 轨道面与全球构型只用于理论定界和敏感性分析，不作为本部门全局搜索主体
+  handoff_department: orbitinfer
+
+project_positioning:
+  target_service: 面向全球地面用户的 ChatLLM Serving
+  current_label: 星座级高可信 ChatLLM Serving 仿真工具平台与系统研究
+  supersedes:
+    - two-timescale co-design
+    - 把轨道构型与 Serving 策略做无边界全局联合搜索
+  contributions:
+    - id: high_fidelity_simulator
+      statement: 构建高可信星座级 ChatLLM Serving 仿真工具平台，并明确模块、接口和校准方法
+    - id: characterization
+      statement: 刻画太空算力在什么条件下可行、瓶颈在哪里以及关键变量如何相互作用
+    - id: orbit_aware_runtime
+      statement: 设计面向轨道移动、卫星状态变化和服务连续性的 orbit-aware Runtime
+    - id: constrained_l2_l3_dse
+      statement: 在明确约束下开展 L2/L3 设计空间探索，形成 Cost-SLO 和系统设计结论
+  l4_role: L4 只用于理论定界、上下界和小范围敏感性分析，不作为全局搜索主体
+
+# 这些问题会进入 Codex 候选包，约束每周选稿和精读的判断方向。
+research_questions:
+  - 本周是否出现直接覆盖 L2 密集编队、Compute Cell 或 L3 星座级服务组织的新论文？
+  - 新工作是否改变 OrbitServe 仿真器、Runtime、Characterization 或受约束 DSE 的设计？
+  - 哪些变量、参数、数据集、代码或实测结果可以用于仿真校准和实验对比？
+  - 新工作与 OrbitServe 最新四项 contribution 重叠在哪里，仍缺少什么？
+  - 国内外研究机构或企业的新计划是否改变卫星规模、硬件、ISL、能源、散热或成本假设？
+  - 国内微信公众号本周是否出现可回溯到论文、项目官网或正式公告的有价值线索？
+
+# 当前定位以高可信仿真器、条件与瓶颈分析、orbit-oriented Runtime、
+# 受约束 L2/L3 DSE 为准，不再使用 two-timescale co-design 作为主线。
+content_requirements:
+  require_content_and_judgment: true
+  content_field: contentZh
+  judgment_field: oneSentenceZh
+  research_keyword_profile:
+    required: true
+    dimensions:
+      - technicalDomains
+      - architecturesOrModels
+      - workloadsOrScenarios
+      - otherKeywords
+    derive_from:
+      - abstract
+      - introduction
+      - method
+      - full_text
+    title_only_inference_forbidden: true
+  publication_context:
+    required: true
+    status_values:
+      - peer_reviewed_published
+      - peer_reviewed_accepted
+      - arxiv_preprint_only
+      - publication_status_unclear
+    published_or_accepted:
+      fields:
+        - venueFullName
+        - venueType
+        - publicationYear
+        - ccfRating
+        - venueLevelAssessment
+        - venueAssessmentBasis
+      rules:
+        - 优先以会议或期刊官网、正式论文集、DBLP、Crossref 或 OpenReview 核验录用与发表状态
+        - 给出会议或期刊全称、研究领域和大致层级；适用时标注 CCF A/B/C
+        - CCF 未收录时写明“CCF 未收录”，再依据领域影响力、同行认可度和代表性论文给出谨慎对标
+        - 不把作者自行填写的 arXiv comments 当成已经录用，除非能由会议或期刊一手页面交叉核验
+    arxiv_preprint_only:
+      fields:
+        - authorAffiliations
+        - seniorOrCorrespondingAuthors
+        - verifiedHonors
+        - representativeWorks
+        - authorTrackRecordAssessment
+        - identityEvidence
+      rules:
+        - 优先评估通讯作者、资深作者或项目负责人；必要时补充第一作者背景
+        - 学校、机构、IEEE/ACM Fellow 等身份必须来自机构主页、学会名录或作者主页等可核验来源
+        - 代表作需说明论文题目、发表 venue 和与当前工作的关系，不只罗列数量或引用数
+        - 严格区分同名作者；无法确认身份或代表作时明确写“未核验”，不得猜测
+        - 作者履历只用于判断研究积累和线索可信度，不能替代对当前论文方法、实验和证据的审核
+  news_and_wechat:
+    require_concrete_content: true
+    separate_judgment: true
+  department_implication_required: false
+
+editorial_guidance:
+  department_implication_required: false
+  tone: >-
+    沿用现有 OrbitInfer 周报的技术卡片骨架和信息密度，但先写具体内容，再写加粗的判断；
+    论文补充技术领域、架构/模型、Workload/场景和自动识别关键词，之后再写问题、方法、
+    结果、证据与局限。表达比论文摘要更口语化、直接，但不改成聊天记录，也不强制写部门启示。
+    主周报不再按固定条数平均压缩：强相关内容完整展开，弱相关内容按层级和主题合并成短摘要；
+    目标阅读时间约 10–12 分钟。所有相关论文仍要逐篇保留在调查索引中。
+  item_structure:
+    - 给出中文标题，并用一小段具体内容说明论文、新闻或公众号到底讲了什么
+    - 具体内容之后再给出加粗的一句话判断，说明证据能支持什么、不能支持什么
+    - 研究条目给出技术领域、架构/模型、Workload/场景和其他自动识别关键词
+    - 已发表或已录用论文补充会议/期刊全称、领域层级、CCF 评级或有依据的对标判断
+    - 仅有 arXiv 版本的论文补充核心作者单位、已核验身份、代表作和研究积累判断
+    - 问题、方法和结果各用一句话交代，只保留理解结论所需的信息
+    - 证据与局限合并为一条短说明，写清一手来源、适用条件和当前不能推出的结论
+    - 强相关且证据充分的内容使用完整技术卡片，不因来源配额被压缩成一句话
+    - 弱相关内容不逐条展开，按 L2/L3 和相近主题合并成一至数段摘要，并概括共同结论与差异
+    - 主周报之外生成调查索引，为每条通过初筛的线索给出具体内容、L2/L3、来源类型、初审判断、关注级别、证据状态和原文链接
+  required_checks:
+    - 关键事实必须回到论文、官方项目、仓库、监管文件或正式公告核验
+    - 区分实际结果、作者计划、研究假设和我们的推断
+    - 论文关键词必须从摘要、Introduction、方法或正文提取，不能只看标题猜测
+    - 发表状态必须从正式论文集、会议/期刊官网、DBLP、Crossref 或 OpenReview 交叉核验
+    - CCF 评级注明所依据的目录；未收录时不得把主观对标写成正式评级
+    - 作者单位、Fellow 身份和代表作必须核对可靠主页并排除同名作者
+    - 相似论文可以合并成一个趋势判断，但每篇相关论文都必须单独进入调查索引
+    - 合并弱相关内容时不得抹掉相互矛盾的结果；存在分歧时分别说明证据和适用条件
+    - 同一事件的重复新闻和公众号报道合并为一个内容模块，但保留可核验的一手来源和必要的交叉来源
+    - 使用 OrbitServe 最新四项 contribution，不沿用旧的 co-design 定位
+    - 新闻只有在能改变研究判断时才进入周报
+  avoid:
+    - 不逐段复述摘要，不堆砌背景和术语
+    - 不把遥感精度、纯训练或普通卫星路由包装成 ChatLLM Serving 近邻
+    - 不根据标题猜测方法、结果、发表状态或开源情况
+    - 不使用显著、最优、首次等词替代可核验的证据
+
+core_topics:
+  - id: l2_dense_compute_cell
+    label: L2 密集编队与 Compute Cell
+    weight: 1.0
+    layer: L2
+    section: l2_research
+    keywords:
+      - dense satellite cluster
+      - dense satellite formation
+      - formation-flying datacenter
+      - distributed space datacenter
+      - satellite compute cell
+      - intra-cluster topology
+      - dense formation ISL
+      - 密集卫星编队
+      - 计算单元拓扑
+      - 编队内星间链路
+
+  - id: l2_collaborative_inference
+    label: L2 多星协同推理
+    weight: 0.95
+    layer: L2
+    section: l2_research
+    keywords:
+      - multi-satellite LLM inference
+      - collaborative LLM inference
+      - cross-satellite model split
+      - satellite pipeline parallelism
+      - activation compression satellite
+      - multi-satellite model placement
+      - 多星协同推理
+      - 跨星模型切分
+      - 星间流水并行
+
+  - id: l3_constellation_organization
+    label: L3 同轨多编队与星座级组织
+    weight: 1.0
+    layer: L3
+    section: l3_research
+    keywords:
+      - LEO compute constellation
+      - computing satellite constellation
+      - space cloud orchestration
+      - inter-cluster routing
+      - orbit-aware service placement
+      - constellation computing network
+      - satellite edge cloud
+      - 同轨计算编队
+      - 星座级资源编排
+      - 计算星座拓扑
+
+  - id: orbitserve_runtime
+    label: 轨道与卫星状态感知 Runtime
+    weight: 0.95
+    layer: L3
+    section: l3_research
+    keywords:
+      - orbit-aware LLM serving
+      - satellite status aware scheduling
+      - moving access handoff
+      - satellite service continuity
+      - KV cache migration satellite
+      - sunlight aware scheduling
+      - orbit-aware runtime
+      - Krios
+      - Komet
+      - HyperDrive
+      - LEOEdge
+      - SkyMemory
+      - PHOENIX
+      - satellite battery aging
+      - 轨道感知调度
+      - 星座服务连续性
+      - 星间 KV 迁移
+
+  - id: simulator_validation
+    label: 星座级仿真器、校准与数据
+    weight: 1.0
+    layer: L3
+    section: l3_research
+    keywords:
+      - satellite computing simulator
+      - constellation emulation
+      - space cloud emulator
+      - STK calibration
+      - orbit trace simulation
+      - satellite edge cloud testbed
+      - ChatLLM workload trace
+      - orbital edge computing
+      - satellite computing measurement
+      - Tiansuan constellation
+      - BUPT-1 satellite computing
+      - 星座计算仿真器
+      - 星座仿真平台
+      - 轨道轨迹校准
+
+  - id: cost_slo_dse
+    label: Cost-SLO 与受约束 DSE
+    weight: 0.95
+    layer: L3
+    section: l3_research
+    keywords:
+      - constellation design space exploration
+      - lifecycle cost SLO
+      - satellite computing architecture
+      - orbital data center cost
+      - compute constellation design
+      - cost latency frontier satellite
+      - workloads belong in orbit
+      - workload-first orbital computing
+      - orbital workload placement
+      - orbital data center economic viability
+      - LLMSpace
+      - Which Workloads Belong in Orbit
+      - When to Compute in Space
+      - satellite computing carbon footprint
+      - 星座构型搜索
+      - 生命周期成本
+      - 星座计算设计空间
+
+  - id: physical_constraints_bonus
+    label: Bonus：轨道、能源、热与硬件约束
+    weight: 0.65
+    layer: L3
+    section: l3_research
+    keywords:
+      - orbital data center thermal
+      - orbital data center
+      - orbital AI cluster
+      - spacecraft constraints
+      - economic viability
+      - thermal crosstalk
+      - thermally constrained space
+      - satellite radiative cooling
+      - space datacenter power system
+      - sunlight shadow battery scheduling
+      - radiation tolerant AI accelerator
+      - satellite lifecycle cost
+      - 在轨数据中心散热
+      - 卫星辐射散热
+      - 日照阴影电池约束
+      - 星载算力生命周期成本
+
+  - id: industry_research_signals
+    label: 产业与研究计划
+    weight: 0.75
+    layer: L3
+    section: l3_news
+    keywords:
+      - orbital data center
+      - space-based AI infrastructure
+      - computing satellite constellation
+      - in-orbit AI demonstration
+      - space datacenter prototype
+      - satellite AI infrastructure
+      - 在轨数据中心
+      - 太空 AI 基础设施
+      - 计算卫星星座
+
+adjacent_topics:
+  - 只有能改变 L2/L3 可行域、Compute Cell 组织或 OrbitServe 参数时才纳入轨道设计
+  - 只有提供功率、SOC、热约束或生命周期成本证据时才纳入能源、散热与成本研究
+  - 只有影响跨星执行或 Compute Cell 能力接口时才纳入 L1 推理引擎研究
+  - L4 轨道面、倾角和相位主要用于理论定界与小范围敏感性，不作为全局搜索主体
+  - 产业新闻必须能改变技术假设、实验计划或来源清单，普通融资和市场宣传不纳入
+
+# 历史文献基线只用于判断新颖性、相邻工作与证据边界，不会像 paper_watchlist
+# 一样自动提高候选分数。基线来自 2026-07-14 完成的 49 篇 V2 审计。
+literature_baseline:
+  source_snapshot: 49 篇 OrbitServe 相关论文 V2 详细证据版
+  reviewed_at: "2026-07-14"
+  strong_reference_count: 30
+  boundary_reference_count: 19
+  usage: 只用于首创防御、基线选择和适用边界核验；不能仅因命中历史基线就进入周报
+  strong_references:
+    - Efficient Memory Management for Large Language Model Serving with PagedAttention (vLLM)
+    - Kodan
+    - In-orbit Computing
+    - Toward Loosely Coupled Orchestration for the LEO Satellite Edge
+    - Don't Let Your LEO Edge Fade at Night
+    - Krios
+    - Komet
+    - HyperDrive
+    - Dirty Bits in Low-Earth Orbit
+    - Orbital Edge Computing
+    - Architecting Space Microdatacenters
+    - Space MicroDataCenters
+    - LLMSpace
+    - Orbital Data Centers
+    - When to Compute in Space
+    - Which Workloads Belong in Orbit
+    - OrbitServe-VLM
+    - PHOENIX
+    - LEOEdge
+    - "SpaceMoE: Towards Orbital General Intelligence"
+    - "SpaceMoE: Realizing Distributed Mixture-of-Experts Inference over Space Networks"
+    - Communication-Efficient Collaborative LLM Inference over LEO Satellite Networks
+    - SkyMemory
+    - SkyWalker
+    - DynamoLLM
+    - DistServe
+    - Llumnix
+    - Deciphering the Enigma of Satellite Computing with COTS Devices
+    - Toward LEO Satellite Network Systems Enabling Instantaneous Earth Observation Event Detection
+    - The Unseen Cost of Space Computing
+  boundary_references:
+    - Towards Sustainable Satellite Edge Computing
+    - QoS-Aware Resource Placement for LEO Satellite Edge Computing
+    - L2D2
+    - Cosmos
+    - A Satellite-Born Server
+    - Decentralized Brain-Inspired Learning over LEO Satellite Networks
+    - FOOL
+    - SpaceCoMP
+    - Renewables Power the Orbit
+    - Microservice Deployment in LEO Satellite Networks via Robust Reinforcement Learning
+    - Satellite Computing: A Case Study of Cloud-Native Satellites
+    - Satellite Edge Artificial Intelligence: Challenges and Opportunities
+    - Satellite Federated Fine-Tuning for Foundation Models
+    - First Verification Test of Space-Ground Collaborative Intelligence via the Tiansuan Constellation
+    - Tiansuan Constellation: An Open Research Platform
+    - Towards a Future Space-Based, Highly Scalable AI Infrastructure System
+    - Work Stealing for Large-Scale Computing on a 2D Mesh Satellite Constellation
+    - Optimal Batch Size Control for Federated Learning over LEO Satellite Networks
+    - Satellite-Ground Collaborative Large Vision-Language Model
+
+keywords:
+  include:
+    - LEO satellite computing
+    - LEO compute constellation
+    - satellite compute cell
+    - dense satellite cluster
+    - distributed space datacenter
+    - multi-satellite LLM inference
+    - space cloud orchestration
+    - orbit-aware serving
+    - satellite computing simulator
+    - orbital data center
+    - constellation design space exploration
+    - lifecycle cost SLO
+    - 密集卫星编队
+    - 多星协同推理
+    - 星座智算仿真
+    - 计算星座
+    - 在轨数据中心
+  exclude_unless_strongly_related:
+    - generic terrestrial cloud computing
+    - pure LLM kernel optimization
+    - single GPU inference optimization
+    - training-only optimization
+    - federated learning only
+    - pure remote sensing accuracy
+    - generic satellite routing without compute
+    - LLM multi-agent topology unrelated to satellites
+    - consumer satellite internet news
+
+paper_watchlist:
+  - title: "Communication-Efficient Collaborative LLM Inference over LEO Satellite Networks"
+    reason: L2 多星模型切分、流水并行和通信压缩的直接近邻
+  - title: "Designing Dense Satellite Clusters for Distributed Space-based Datacenters"
+    reason: L2 密集编队、持续可用 ISL 和数据中心拓扑设计的直接近邻
+  - title: "On an Ultra-Dense LEO-Satellite-Based Computing Network Constellation Design"
+    reason: 面向地区计算需求的计算星座构型设计近邻
+  - query: "OrbitServe-VLM satellite cluster serving"
+    reason: 固定密集卫星簇内的能量感知 VLM Serving 强近邻
+  - query: "SpaceMoE satellite mixture of experts"
+    reason: 固定星座上的模型与动态拓扑联合放置强近邻
+  - query: "SkyMemory LEO KV cache"
+    reason: 星间 KV 查找、迁移与重算边界的机制近邻
+  - title: "Krios: Scheduling Abstractions and Mechanisms for Enabling a LEO Compute Cloud"
+    reason: 移动服务区、实例预部署和状态交接的 L3 Runtime 近邻
+  - query: "PHOENIX sunlight-aware satellite task scheduling"
+    reason: 日照、阴影、电池与任务卸载的能源感知基线
+  - title: "Architecting Space Microdatacenters: A System-level Approach"
+    reason: Compute Cell 功率、硬件、散热与生命周期成本参数来源
+  - query: "Space MicroDataCenter MICRO 2023"
+    reason: 节点拆分与 ISL 连接度权衡的体系结构近邻
+  - query: "SpaceCoMP Lightspeed Data Compute for the Space Era"
+    reason: 大星座分布式计算、距离感知路由和任务匹配参考
+  - query: "LLMSpace LEO satellite LLM inference carbon footprint"
+    reason: 单星 LLM 生命周期碳排、硬件、能耗和散热假设的直接校准来源
+  - query: "LEOEdge satellite edge AI scheduling"
+    reason: 既定移动星座上的异构任务放置、队列和切换 Runtime 基线
+  - query: "SkyWalker global LLM serving"
+    reason: 全球地面 ChatLLM 负载、时区错峰、会话与前缀局部性的工作负载基线
+  - query: "DynamoLLM LLM inference clusters"
+    reason: SLO、队列、TP、频率和资源重配置的地面 Runtime 基线
+  - title: "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving"
+    reason: Prefill/Decode 分离、TTFT/TPOT 与 Goodput 定义的 L1 基线
+  - title: "Llumnix: Dynamic Scheduling for Large Language Model Serving"
+    reason: 请求和 KV 在线迁移、碎片与尾时延的 L1 Runtime 基线
+  - title: "Komet: A Serverless Platform for Low-Earth Orbit Edge Services"
+    reason: 既定 LEO 网络中服务与状态迁移代价的 L3 Runtime 参照
+  - title: "HyperDrive: Scheduling Serverless Functions in the Edge-Cloud-Space 3D Continuum"
+    reason: 可见性、链路、热、电池和 workflow SLO 联合调度的相邻基线
+  - title: "Orbital Edge Computing: Nanosatellite Constellations as a New Class of Computer System"
+    reason: 星座级物理仿真、能量与分布式处理流水线的系统基线
+  - query: "Deciphering the Enigma of Satellite Computing with COTS Devices"
+    reason: BUPT-1 实星能耗、温度、电池放电深度与弃能的校准证据
+  - query: "The Unseen Cost of Space Computing battery aging"
+    reason: 日照、放电深度、电池老化与任务调度耦合的物理约束基线
+  - title: "When to Compute in Space"
+    reason: 空天地计算位置选择、约束权重和工作负载适配性的 Characterization 参照
+  - title: "Which Workloads Belong in Orbit?"
+    reason: 判断工作负载何时适合上天的边界框架，防止泛化太空计算结论
+
+news_watchlist:
+  - organization: Google Project Suncatcher
+    url: https://blog.google/technology/research/google-project-suncatcher
+    collection_mode: automatic_rss
+    reason: 关注 TPU 卫星网络、光链路、轨道构型和原型时间表是否改变 L2/L3 参数假设
+  - organization: European Space Agency
+    url: https://www.esa.int/Enabling_Support/Space_Engineering_Technology
+    collection_mode: automatic_rss
+    reason: 关注 cognitive cloud、在轨边缘计算、AI 硬件和相关研究计划
+  - organization: Axiom Space Orbital Data Centers
+    url: https://www.axiomspace.com/newsroom
+    collection_mode: manual_official_page
+    reason: 关注 AxODC 节点、光通信、硬件合作和实际部署节点，只采纳正式公告
+  - organization: Starcloud
+    url: https://www.starcloud.com/blog
+    collection_mode: manual_official_page
+    reason: 关注 Starcloud-1 后续在轨验证、计算载荷、能源散热假设和后续星座计划
+  - organization: 国内计算卫星与在轨数据中心计划
+    query: 计算卫星星座 在轨数据中心 太空计算 官方
+    collection_mode: wechat_and_manual_verification
+    reason: 先由固定中文来源发现线索，再回到任务方、研究机构或企业正式发布核验
+
+source_pool:
+  papers:
+    - arxiv
+    - crossref
+  venues:
+    - venue_official_pages
+  # develop 当前尚未注册独立的官方动态采集器；相关线索先经 manual_inbox
+  # 回到项目官网或正式公告核验，待采集器合入后再切换为自动来源。
+  official_updates: []
+  repositories: []
+  models_and_datasets:
+    - huggingface_hub
+  wechat:
+    - wechat_jiqizhixin
+    - wechat_baai_hub
+    - wechat_ai_frontline
+    - wechat_oneflow
+    - wechat_qbitai
+    - wechat_aiera
+    - wechat_ai_tech_review
+    - wechat_xixiaoyao
+    - wechat_datafuntalk
+    - wechat_paperweekly
+  manual:
+    - manual_inbox
+  overrides:
+    arxiv:
+      categories: [cs.DC, cs.NI, cs.OS, cs.PF, cs.AR, eess.SY]
+      search_terms:
+        - LEO satellite computing
+        - collaborative LLM inference LEO satellite
+        - Communication-Efficient Collaborative LLM Inference
+        - dense satellite cluster datacenter
+        - Designing Dense Satellite Clusters
+        - dense satellite clusters distributed space-based datacenters
+        - multi-satellite LLM inference
+        - LEO compute constellation
+        - space cloud orchestration
+        - orbit-aware LLM serving
+        - satellite computing simulator
+        - orbital data center
+        - space microdatacenters
+        - LEO compute cloud
+        - LEO satellite edge service migration
+        - satellite battery aging computing
+        - satellite LLM inference carbon footprint
+        - global LLM serving workload
+        - orbital workload compute placement
+    crossref:
+      search_terms:
+        - LEO satellite computing constellation
+        - dense satellite cluster distributed datacenter
+        - multi-satellite collaborative inference
+        - satellite edge cloud orchestration
+        - orbital data center architecture
+      rows_per_query: 50
+
+# 首批账号只是种子池，不是封闭白名单。新公众号完成 WeRSS 接入和来源核验后，
+# 会被本部门自动纳入候选；未注册或无法确认账号主体的内容只能进入人工线索箱。
+source_discovery:
+  include_all_registered_wechat: true
+  allow_new_sources: true
+  seed_wechat_sources:
+    - wechat_jiqizhixin
+    - wechat_baai_hub
+    - wechat_paperweekly
+    - wechat_ai_frontline
+    - wechat_oneflow
+    - wechat_qbitai
+    - wechat_aiera
+    - wechat_ai_tech_review
+    - wechat_xixiaoyao
+    - wechat_datafuntalk
+  admission_checks:
+    - 确认公众号主体、历史文章质量和稳定更新能力
+    - 完成 WeRSS 技术接入并在 config/sources.yaml 注册独立 source_id
+    - 标注内容角色是论文解读、产业新闻、研究机构动态还是混合来源
+    - 连续观察误报率；泛科技资讯或营销号不进入固定来源池
+
+triage_policy:
+  goal: 高召回形成调查池，主周报再做强凝练；不因内容早期或表述夸张而漏掉可能改变研究判断的线索
+  high_impact_definition:
+    - 直接挑战或重合 OrbitServe 最新四项 contribution
+    - 给出会改变 L2/L3 拓扑、Runtime、仿真校准或 Cost-SLO 结论的新机制或量化结果
+    - 由重要研究机构或企业正式宣布新的在轨算力计划、原型、合作或时间表
+    - 出现反常识结果、数量级变化或可能改变实验基线的公开证据
+  escalation_rules:
+    - 高影响线索必须进入调查索引，即使证据尚不够进入主周报
+    - 表述越劲爆，越要回到论文、官网、仓库或正式公告核验；未核验时明确标成“待核验线索”
+    - 高影响且证据充分的条目优先进入主周报，不受普通来源配额挤压
+    - 不能把标题党、融资宣传或二手转述本身当成高影响证据
+
+investigation_index:
+  enabled: true
+  max_items: 30
+  layers: [L2, L3]
+  source_categories: [research, wechat, news]
+  attention_levels: [high_impact, important, watch]
+  evidence_statuses:
+    - verified_primary
+    - verified_official
+    - secondary_only
+    - unverified_claim
+  include_all_main_report_items: true
+  include_all_research_candidates: true
+  research_assessment_fields:
+    - publicationStatus
+    - venueFullName
+    - ccfRating
+    - venueLevelAssessment
+    - authorBackgroundForPreprint
+    - representativeWorksForPreprint
+    - assessmentEvidenceLinks
+  purpose: 保留通过初审但未进入精读正文的相关线索，方便研究员按结论、层级和来源追踪原文
+
+ranking:
+  global_importance:
+    venue_or_review_status: 0.20
+    system_novelty: 0.20
+    evidence_and_reproducibility: 0.20
+    trend_signal: 0.15
+    artifact_value: 0.15
+    version_significance: 0.10
+
+candidate_policy:
+  allow_strong_new_preprints: true
+  min_strong_new_preprint_relevance: 0.45
+  read_minutes:
+    accepted: 1.0
+    important_revision: 1.0
+    strong_new_preprint: 1.0
+    artifact_release: 1.0
+    authoritative_review: 1.0
+    industry_update: 1.0
+  min_codex_brief_relevance: 0.35
+
+weekly_output:
+  # develop 当前校验器允许最多 8 个正式条目；这里把额度优先留给强相关内容。
+  # 弱相关线索不计作逐条技术卡片，而是进入 grouped_digest 和调查索引。
+  target_read_minutes: 12
+  max_items: 8
+  max_wechat_items: 2
+  section_limits:
+    l2_news: 3
+    l3_news: 3
+  wechat_candidate_reserve: 10
+  must_read_min: 2
+  must_read_max: 4
+  deep_read_min: 2
+  deep_read_max: 4
+  quick_scan_min: 0
+  quick_scan_max: 0
+  relevance_bands:
+    strong_min: 0.65
+    weak_min: 0.35
+    below_weak: investigation_index_only
+  presentation_policy:
+    strong:
+      mode: detailed_cards
+      max_items: 8
+      detail_level: 中文标题＋具体内容＋一句话判断＋关键词＋发表状态/venue或作者背景＋问题/方法/结果＋证据与局限
+      selection_rule: 强相关且证据充分的内容优先逐条展开；高影响内容不受普通来源配额挤压
+    weak:
+      mode: grouped_digest
+      group_by: [layer, topic]
+      max_groups: 4
+      max_source_refs_per_group: 8
+      paragraph_guidance: 每组用一至数段说明这些工作共同在做什么、主要差异和当前可得出的判断
+      publication_context_guidance: 每组保留最能影响可信度判断的 venue 或作者背景信息，逐篇详情进入调查索引
+      keep_individual_titles_in_main: false
+      preserve_individual_links_in_index: true
+    high_impact_unverified:
+      mode: short_alert_and_index
+      guidance: 主周报只写待核验事实和为什么值得关注，不按已证实结果展开
+  reading_budget:
+    mode: soft_target
+    target_range_minutes: [10, 12]
+    allow_over_target_for_verified_high_impact: true
+    overflow_rule: 普通弱相关内容继续合并；新增强相关内容不得仅为满足时长而删除
+  grouped_by_layer: true
+  section_routing:
+    default_layer: L3
+    wechat_news_keywords:
+      - 宣布
+      - 发布
+      - 启动
+      - 计划
+      - 合作
+      - 投资
+      - 融资
+      - 建成
+      - 上线
+      - announces
+      - launch
+      - partnership
+    mapping:
+      L2:
+        research: l2_research
+        wechat: l2_wechat
+        news: l2_news
+      L3:
+        research: l3_research
+        wechat: l3_wechat
+        news: l3_news
+  sections:
+    - weekly_trends
+    - must_read
+    - l2_research
+    - l2_wechat
+    - l2_news
+    - l3_research
+    - l3_wechat
+    - l3_news
+  section_groups:
+    - id: L2
+      label: L2 · 密集编队与 Compute Cell
+      sections: [l2_research, l2_wechat, l2_news]
+    - id: L3
+      label: L3 · Compute Cell 之间与 OrbitServe
+      sections: [l3_research, l3_wechat, l3_news]
+  section_labels:
+    must_read: 本周优先关注
+    l2_research: L2 层级对应论文
+    l2_wechat: L2 · 国内微信公众号
+    l2_news: L2 · 国内外新闻与研究计划
+    l3_research: L3 层级对应论文
+    l3_wechat: L3 · 国内微信公众号
+    l3_news: L3 · 国内外新闻与研究计划
 
 activation_requirements:
-  - department_mission
-  - core_topics
-  - exclusion_boundary
-  - venue_and_source_pool
-  - project_adjacent_topics
+  - 用户确认 L2/L3 为主体、L4 为理论定界和扩展
+  - 用户已确认沿用 OrbitInfer 技术卡片结构，并允许表达稍微更口语化
+  - L2/L3 各自按研究、国内公众号、国内外新闻与计划组织
+  - 主周报之外生成带初审结论和原文链接的调查索引
+  - 内容负责人和 GitHub 审核团队已确认
+  - 产业新闻首版使用人工投递，或官方新闻采集器已完成接入
+  - 部门配置、候选导出、Python 测试和站点构建全部通过
