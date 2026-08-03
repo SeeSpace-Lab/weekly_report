@@ -19,6 +19,7 @@ from ..contracts import (
     SourceConfig,
 )
 from ..utils import isoformat, json_dumps, sha256_text, utc_now
+from .http import fetch_with_retry
 
 
 def _date_parts(value: Any) -> datetime | None:
@@ -67,17 +68,21 @@ class CrossrefCollector:
         term: str,
         window: CollectionWindow,
         rows: int,
+        offset: int = 0,
     ) -> str:
         params = urllib.parse.urlencode(
             {
                 "query.bibliographic": term,
                 "filter": (
-                    f"from-index-date:{window.start.date().isoformat()},"
-                    f"until-index-date:{window.end.date().isoformat()}"
+                    "from-index-date:"
+                    f"{window.start.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')},"
+                    "until-index-date:"
+                    f"{window.end.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')}"
                 ),
                 "sort": "indexed",
                 "order": "desc",
                 "rows": str(rows),
+                "offset": str(offset),
             }
         )
         return f"{endpoint.rstrip('/')}/works?{params}"
@@ -159,7 +164,10 @@ class CrossrefCollector:
             ],
         )
         rows = int(source.options.get("rows_per_query", 50))
+        max_pages = max(1, int(source.options.get("max_pages_per_query", 1)))
         timeout = float(source.options.get("timeout_seconds", 30))
+        max_retries = int(source.options.get("max_retries", 2))
+        retry_backoff = float(source.options.get("retry_backoff_seconds", 2))
         headers = {
             "Accept": "application/json",
             "User-Agent": str(
@@ -175,46 +183,62 @@ class CrossrefCollector:
         latest: datetime | None = None
         discovered_at = utc_now()
         for term in terms:
-            url = self._url(endpoint, str(term), window, rows)
-            try:
-                payload = json.loads(
-                    self._fetcher(url, headers, timeout).decode("utf-8")
-                )
-                records = payload.get("message", {}).get("items", [])
-                fetched += len(records)
-                for record in records:
-                    document = self._document(source, record, discovered_at)
-                    if document is None:
-                        continue
-                    event_time = (
-                        document.updated_at_source or document.published_at
+            for page in range(max_pages):
+                url = self._url(endpoint, str(term), window, rows, page * rows)
+                try:
+                    payload = json.loads(
+                        fetch_with_retry(
+                            self._fetcher,
+                            url,
+                            headers,
+                            timeout,
+                            max_retries=max_retries,
+                            backoff_seconds=retry_backoff,
+                        ).decode("utf-8")
                     )
-                    if event_time:
-                        latest = max(latest or event_time, event_time)
-                    if event_time and window.start <= event_time <= window.end:
-                        documents[document.identifiers["doi"]] = document
-            except urllib.error.HTTPError as error:
-                errors.append(
-                    CollectionError(
-                        code=(
-                            "rate_limited"
-                            if error.code in {403, 429}
-                            else "http_error"
-                        ),
-                        message=f"Crossref HTTP {error.code}",
-                        retryable=True,
-                        target=url,
+                    records = payload.get("message", {}).get("items", [])
+                    fetched += len(records)
+                    oldest: datetime | None = None
+                    for record in records:
+                        document = self._document(source, record, discovered_at)
+                        if document is None:
+                            continue
+                        event_time = (
+                            document.updated_at_source or document.published_at
+                        )
+                        if event_time:
+                            latest = max(latest or event_time, event_time)
+                            oldest = min(oldest or event_time, event_time)
+                        if event_time and window.start <= event_time <= window.end:
+                            documents[document.identifiers["doi"]] = document
+                    if len(records) < rows or (oldest and oldest < window.start):
+                        break
+                except urllib.error.HTTPError as error:
+                    errors.append(
+                        CollectionError(
+                            code=(
+                                "rate_limited"
+                                if error.code in {403, 429}
+                                else "http_error"
+                            ),
+                            message=f"Crossref HTTP {error.code}",
+                            retryable=True,
+                            target=url,
+                            details={"term": str(term), "page": page},
+                        )
                     )
-                )
-            except Exception as error:
-                errors.append(
-                    CollectionError(
-                        code=type(error).__name__,
-                        message=str(error),
-                        retryable=True,
-                        target=url,
+                    break
+                except Exception as error:
+                    errors.append(
+                        CollectionError(
+                            code=type(error).__name__,
+                            message=str(error),
+                            retryable=True,
+                            target=url,
+                            details={"term": str(term), "page": page},
+                        )
                     )
-                )
+                    break
         result = tuple(documents.values())
         if errors and result:
             status = BatchStatus.PARTIAL
@@ -235,5 +259,6 @@ class CrossrefCollector:
                 "queries": len(terms),
                 "fetched": fetched,
                 "deduplicated_in_window": len(result),
+                "max_pages_per_query": max_pages,
             },
         )

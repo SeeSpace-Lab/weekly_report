@@ -19,6 +19,7 @@ from ..contracts import (
     SourceConfig,
 )
 from ..utils import isoformat, json_dumps, sha256_text, utc_now
+from .http import fetch_with_retry
 
 
 def _value(content: dict[str, Any], key: str, default: Any = None) -> Any:
@@ -177,6 +178,8 @@ class OpenReviewCollector:
         page_size = int(source.options.get("page_size", 500))
         max_pages = int(source.options.get("max_pages", 10))
         timeout = float(source.options.get("timeout_seconds", 30))
+        max_retries = int(source.options.get("max_retries", 2))
+        retry_backoff = float(source.options.get("retry_backoff_seconds", 2))
         headers = {
             "User-Agent": str(
                 source.options.get(
@@ -203,9 +206,11 @@ class OpenReviewCollector:
         errors: list[CollectionError] = []
         latest_seen: datetime | None = None
         fetched = 0
-        try:
-            for venue in venues:
-                venue_id = venue["venue_id"] if isinstance(venue, dict) else str(venue)
+        blocked_venues = 0
+        failed_venues = 0
+        for venue in venues:
+            venue_id = venue["venue_id"] if isinstance(venue, dict) else str(venue)
+            try:
                 for page in range(max_pages):
                     url = self.build_url(
                         source,
@@ -214,7 +219,14 @@ class OpenReviewCollector:
                         page_size,
                         modified_since,
                     )
-                    payload = self._fetcher(url, headers, timeout)
+                    payload = fetch_with_retry(
+                        self._fetcher,
+                        url,
+                        headers,
+                        timeout,
+                        max_retries=max_retries,
+                        backoff_seconds=retry_backoff,
+                    )
                     body = json.loads(payload.decode("utf-8"))
                     notes = body.get("notes", [])
                     fetched += len(notes)
@@ -233,26 +245,37 @@ class OpenReviewCollector:
                             documents.append(document)
                     if len(notes) < page_size:
                         break
-        except OpenReviewBlockedError as error:
-            errors.append(
-                CollectionError(
-                    code="challenge_required",
-                    message=str(error),
-                    retryable=True,
-                    target=error.challenge_url,
+            except OpenReviewBlockedError as error:
+                blocked_venues += 1
+                errors.append(
+                    CollectionError(
+                        code="challenge_required",
+                        message=f"{venue_id}: {error}",
+                        retryable=True,
+                        target=error.challenge_url or "https://openreview.net/login",
+                        details={
+                            "venue_id": venue_id,
+                            "requires_human_verification": True,
+                        },
+                    )
                 )
-            )
-            status = BatchStatus.PARTIAL if documents else BatchStatus.BLOCKED
-        except Exception as error:
-            errors.append(
-                CollectionError(
-                    code=type(error).__name__,
-                    message=str(error),
-                    retryable=True,
-                    target=str(source.options.get("api_v2", "")),
+            except Exception as error:
+                failed_venues += 1
+                errors.append(
+                    CollectionError(
+                        code=type(error).__name__,
+                        message=f"{venue_id}: {error}",
+                        retryable=True,
+                        target=str(source.options.get("api_v2", "")),
+                        details={"venue_id": venue_id},
+                    )
                 )
-            )
-            status = BatchStatus.PARTIAL if documents else BatchStatus.ERROR
+        if errors and documents:
+            status = BatchStatus.PARTIAL
+        elif blocked_venues and blocked_venues == len(venues):
+            status = BatchStatus.BLOCKED
+        elif errors:
+            status = BatchStatus.ERROR
         else:
             status = BatchStatus.OK if documents else BatchStatus.UNCHANGED
         return CollectionBatch(
@@ -266,5 +289,7 @@ class OpenReviewCollector:
                 "venues": len(venues),
                 "fetched": fetched,
                 "in_window": len(documents),
+                "blocked_venues": blocked_venues,
+                "failed_venues": failed_venues,
             },
         )

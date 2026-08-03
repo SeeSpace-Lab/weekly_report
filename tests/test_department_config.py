@@ -30,7 +30,11 @@ class DepartmentConfigTest(unittest.TestCase):
         )
         self.assertEqual(
             {department["department_id"] for department in departments},
-            {"orbitinfer", "constellation_simulation"},
+            {
+                "orbitinfer",
+                "model_and_application",
+                "constellation_simulation",
+            },
         )
         orbitinfer = next(
             department
@@ -53,6 +57,24 @@ class DepartmentConfigTest(unittest.TestCase):
         self.assertIn(
             "power aware inference",
             sources["arxiv"].options["search_terms"],
+        )
+
+    def test_model_department_has_real_arxiv_queries(self) -> None:
+        department = load_yaml(
+            self.root
+            / "config"
+            / "departments"
+            / "model_and_algorithm.yaml"
+        )
+        sources = department_source_configs(
+            load_sources(self.sources_path), department
+        )
+        arxiv = sources["arxiv"].options
+        self.assertIn("cs.CV", arxiv["categories"])
+        self.assertIn("cs.CL", arxiv["categories"])
+        self.assertIn("visual token compression", arxiv["search_terms"])
+        self.assertNotIn(
+            "department-specific paper query", arxiv["search_terms"]
         )
 
     def test_rejects_unknown_department_source(self) -> None:

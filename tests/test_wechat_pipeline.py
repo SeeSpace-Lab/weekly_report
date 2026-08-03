@@ -31,6 +31,11 @@ RSS = """<?xml version="1.0" encoding="UTF-8"?>
 
 EMPTY_RSS = b'<?xml version="1.0"?><rss><channel></channel></rss>'
 
+FRESH_RSS = RSS.replace(
+    b"Thu, 23 Jul 2026 08:00:00 +0800",
+    b"Wed, 29 Jul 2026 08:00:00 +0800",
+)
+
 
 class WechatPipelineTest(unittest.TestCase):
     def setUp(self) -> None:
@@ -148,6 +153,74 @@ class WechatPipelineTest(unittest.TestCase):
         )
         self.assertEqual(network_batch.status.value, "error")
         self.assertEqual(network_batch.errors[0].code, "feed_network_error")
+
+    def test_stale_feed_requires_refresh_credentials(self) -> None:
+        source = SourceConfig(
+            source_id="wechat_stale",
+            name="Stale",
+            source_type="wechat",
+            connector="WechatPoolCollector",
+            tier="S_Core",
+            options={
+                "feed_url": "http://127.0.0.1:8001/feed/example.xml",
+                "account_id": "example",
+                "refresh_before_collect": True,
+                "freshness_hours": 24,
+            },
+        )
+        window = CollectionWindow(
+            datetime(2026, 7, 20, tzinfo=timezone.utc),
+            datetime(2026, 7, 30, tzinfo=timezone.utc),
+        )
+        with patch.dict(os.environ, {}, clear=True):
+            batch = WechatPoolCollector(
+                fetcher=lambda url, headers, timeout: RSS
+            ).collect(source, window)
+        self.assertEqual(batch.status.value, "partial")
+        self.assertEqual(
+            batch.errors[-1].code, "werss_refresh_credentials_required"
+        )
+        self.assertEqual(batch.stats["requires_human_action"], 1)
+
+    def test_stale_feed_is_refreshed_before_collection(self) -> None:
+        calls: list[str] = []
+
+        def fetcher(url, headers, timeout):
+            calls.append(url)
+            if "/mps/update/" in url:
+                self.assertTrue(headers["Authorization"].startswith("AK-SK "))
+                return b'{"code":0,"message":"success","data":{}}'
+            return RSS if len(calls) == 1 else FRESH_RSS
+
+        source = SourceConfig(
+            source_id="wechat_refresh",
+            name="Refresh",
+            source_type="wechat",
+            connector="WechatPoolCollector",
+            tier="S_Core",
+            options={
+                "feed_url": "http://127.0.0.1:8001/feed/example.xml",
+                "account_id": "example",
+                "refresh_before_collect": True,
+                "freshness_hours": 24,
+                "refresh_wait_seconds": 0,
+            },
+        )
+        window = CollectionWindow(
+            datetime(2026, 7, 20, tzinfo=timezone.utc),
+            datetime(2026, 7, 30, tzinfo=timezone.utc),
+        )
+        with patch.dict(
+            os.environ,
+            {"WERSS_ACCESS_KEY": "WK-test", "WERSS_SECRET_KEY": "SK-test"},
+            clear=True,
+        ):
+            batch = WechatPoolCollector(
+                fetcher=fetcher, sleeper=lambda _: None
+            ).collect(source, window)
+        self.assertEqual(batch.status.value, "ok")
+        self.assertEqual(batch.stats["refresh_triggered"], 1)
+        self.assertEqual(len(calls), 3)
 
 
 if __name__ == "__main__":

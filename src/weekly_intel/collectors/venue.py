@@ -18,6 +18,7 @@ from ..contracts import (
     SourceConfig,
 )
 from ..utils import isoformat, json_dumps, sha256_text, utc_now
+from .http import fetch_with_retry
 
 
 class _PageParser(HTMLParser):
@@ -95,6 +96,8 @@ class VenueCollector:
         run_id = str(uuid.uuid4())
         pages = source.options.get("pages", [])
         timeout = float(source.options.get("timeout_seconds", 30))
+        max_retries = int(source.options.get("max_retries", 2))
+        retry_backoff = float(source.options.get("retry_backoff_seconds", 2))
         headers = {
             "Accept": "text/html,application/xhtml+xml",
             "User-Agent": str(
@@ -107,7 +110,14 @@ class VenueCollector:
         for page in pages:
             url = str(page["url"])
             try:
-                payload = self._fetcher(url, headers, timeout)
+                payload = fetch_with_retry(
+                    self._fetcher,
+                    url,
+                    headers,
+                    timeout,
+                    max_retries=max_retries,
+                    backoff_seconds=retry_backoff,
+                )
                 decoded = payload.decode("utf-8", errors="replace")
                 parser = _PageParser()
                 parser.feed(decoded)

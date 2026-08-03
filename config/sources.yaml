@@ -8,6 +8,11 @@ sources:
     tier: S_Core
     homepage_url: https://arxiv.org/
     endpoint: https://export.arxiv.org/api/query
+    oai_endpoint: https://oaipmh.arxiv.org/oai
+    oai_fallback: true
+    oai_set: cs
+    oai_max_pages: 3
+    oai_timeout_seconds: 60
     categories: [cs.DC, cs.OS, cs.PF, cs.AR, cs.LG, cs.CL, cs.CV, cs.NI]
     search_terms:
       - large language model inference
@@ -26,7 +31,9 @@ sources:
       - power aware inference
       - inference quantization
     max_results: 200
-    timeout_seconds: 30
+    max_retries: 0
+    retry_backoff_seconds: 3
+    timeout_seconds: 20
     user_agent: weekly-intel/0.1 (OrbitInfer research survey)
     schedule: daily
 
@@ -54,6 +61,8 @@ sources:
       - {venue_id: ICML.cc/2025/Conference, venue: ICML, year: 2025}
     page_size: 100
     max_pages: 3
+    max_retries: 2
+    retry_backoff_seconds: 2
     timeout_seconds: 30
     user_agent: weekly-intel/0.1 (OrbitInfer research survey)
     token_env: OPENREVIEW_TOKEN
@@ -75,7 +84,10 @@ sources:
       - energy efficient inference
       - power aware inference
       - edge LLM inference
-    rows_per_query: 50
+    rows_per_query: 100
+    max_pages_per_query: 1
+    max_retries: 2
+    retry_backoff_seconds: 2
     timeout_seconds: 30
     user_agent: weekly-intel/0.1 (OrbitInfer research survey)
     schedule: weekly
@@ -88,6 +100,8 @@ sources:
     homepage_url: https://aaai.org/conference/aaai/
     timeout_seconds: 30
     user_agent: weekly-intel/0.1 (OrbitInfer research survey)
+    max_retries: 2
+    retry_backoff_seconds: 2
     pages:
       - {id: aaai-2027, name: AAAI 2027, category: ai, url: "https://aaai.org/conference/aaai/aaai-27/"}
       - {id: hpca-2027, name: HPCA 2027, category: architecture, url: "https://hpca-conf.org/2027/"}
@@ -174,6 +188,9 @@ sources:
     connector: WechatPoolCollector
     tier: S_Core
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: almosthuman2014
     account_id: MP_WXS_3073282833
     feed_url_env: WECHAT_FEED_JIQIZHIXIN
@@ -187,6 +204,9 @@ sources:
     connector: WechatPoolCollector
     tier: S_Core
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: BAAIHub
     account_id: MP_WXS_3598841003
     feed_url_env: WECHAT_FEED_BAAI_HUB
@@ -201,6 +221,9 @@ sources:
     connector: WechatPoolCollector
     tier: S_Core
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: paperweekly
     account_id: MP_WXS_3201788143
     feed_url_env: WECHAT_FEED_PAPERWEEKLY
@@ -215,6 +238,9 @@ sources:
     connector: WechatPoolCollector
     tier: S_Core
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: ai-front
     account_id: MP_WXS_3554086560
     feed_url_env: WECHAT_FEED_AI_FRONTLINE
@@ -228,6 +254,9 @@ sources:
     connector: WechatPoolCollector
     tier: S_Core
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: OneFlowTechnology
     account_id: MP_WXS_3598661977
     feed_url_env: WECHAT_FEED_ONEFLOW
@@ -243,6 +272,9 @@ sources:
     connector: WechatPoolCollector
     tier: A_Active
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: QbitAI
     account_id: MP_WXS_3236757533
     feed_url_env: WECHAT_FEED_QBITAI
@@ -256,6 +288,9 @@ sources:
     connector: WechatPoolCollector
     tier: A_Active
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: AI_era
     account_id: MP_WXS_3271041950
     feed_url_env: WECHAT_FEED_AIERA
@@ -269,6 +304,9 @@ sources:
     connector: WechatPoolCollector
     tier: A_Active
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: aitechtalk
     account_id: MP_WXS_3098132220
     feed_url_env: WECHAT_FEED_AI_TECH_REVIEW
@@ -282,6 +320,9 @@ sources:
     connector: WechatPoolCollector
     tier: A_Active
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: xixiaoyaoQAQ
     account_id: MP_WXS_3207765945
     feed_url_env: WECHAT_FEED_XIXIAOYAO
@@ -295,6 +336,9 @@ sources:
     connector: WechatPoolCollector
     tier: A_Active
     provider: we-mp-rss
+    refresh_before_collect: true
+    freshness_hours: 72
+    refresh_wait_seconds: 5
     account_alias: datafuntalk
     account_id: MP_WXS_3555329283
     feed_url_env: WECHAT_FEED_DATAFUNTALK

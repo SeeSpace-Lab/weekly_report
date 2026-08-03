@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 import html
+import json
 import os
 import re
+import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from dataclasses import replace
+from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from typing import Callable
 
@@ -57,8 +61,10 @@ class WechatPoolCollector:
     def __init__(
         self,
         fetcher: Callable[[str, dict[str, str], float], bytes] | None = None,
+        sleeper: Callable[[float], None] | None = None,
     ):
         self._fetcher = fetcher or self._fetch
+        self._sleeper = sleeper or time.sleep
 
     @staticmethod
     def _fetch(url: str, headers: dict[str, str], timeout: float) -> bytes:
@@ -77,6 +83,91 @@ class WechatPoolCollector:
         if base and account_id:
             return f"{base.rstrip('/')}/{account_id}.xml"
         return None
+
+    def _refresh_url(
+        self, source: SourceConfig, feed_url: str
+    ) -> str | None:
+        if source.options.get("refresh_url"):
+            return str(source.options["refresh_url"])
+        account_id = source.options.get("account_id")
+        if not account_id:
+            return None
+        api_base_env = str(
+            source.options.get("refresh_api_base_env", "WERSS_API_BASE_URL")
+        )
+        api_base = os.environ.get(api_base_env)
+        if not api_base:
+            parsed = urllib.parse.urlsplit(feed_url)
+            if parsed.scheme and parsed.netloc:
+                api_base = f"{parsed.scheme}://{parsed.netloc}/api/v1/wx"
+        if not api_base:
+            return None
+        return f"{api_base.rstrip('/')}/mps/update/{account_id}"
+
+    @staticmethod
+    def _refresh_headers(source: SourceConfig) -> dict[str, str] | None:
+        bearer_env = str(
+            source.options.get("werss_bearer_token_env", "WERSS_BEARER_TOKEN")
+        )
+        bearer = os.environ.get(bearer_env)
+        if bearer:
+            return {
+                "Accept": "application/json",
+                "Authorization": f"Bearer {bearer}",
+            }
+        key_env = str(
+            source.options.get("werss_access_key_env", "WERSS_ACCESS_KEY")
+        )
+        secret_env = str(
+            source.options.get("werss_secret_key_env", "WERSS_SECRET_KEY")
+        )
+        access_key = os.environ.get(key_env)
+        secret_key = os.environ.get(secret_env)
+        if access_key and secret_key:
+            return {
+                "Accept": "application/json",
+                "Authorization": f"AK-SK {access_key}:{secret_key}",
+            }
+        return None
+
+    @staticmethod
+    def _is_stale(
+        batch: CollectionBatch,
+        source: SourceConfig,
+        window: CollectionWindow,
+    ) -> bool:
+        if batch.stats.get("health_status") == "empty_feed":
+            return True
+        if not batch.next_cursor:
+            return True
+        try:
+            latest = datetime.fromisoformat(
+                batch.next_cursor.replace("Z", "+00:00")
+            )
+        except ValueError:
+            return True
+        if latest.tzinfo is None:
+            latest = latest.replace(tzinfo=timezone.utc)
+        freshness_hours = max(
+            1.0, float(source.options.get("freshness_hours", 72))
+        )
+        return latest < window.end - timedelta(hours=freshness_hours)
+
+    @staticmethod
+    def _with_refresh_error(
+        batch: CollectionBatch,
+        error: CollectionError,
+    ) -> CollectionBatch:
+        status = BatchStatus.PARTIAL if batch.documents else BatchStatus.BLOCKED
+        stats = dict(batch.stats)
+        stats["health_status"] = error.code
+        stats["requires_human_action"] = 1
+        return replace(
+            batch,
+            status=status,
+            errors=tuple(batch.errors) + (error,),
+            stats=stats,
+        )
 
     @staticmethod
     def _headers(source: SourceConfig) -> dict[str, str]:
@@ -257,7 +348,103 @@ class WechatPoolCollector:
                 self._headers(source),
                 float(source.options.get("timeout_seconds", 30)),
             )
-            return self.parse(payload, source, window, run_id)
+            batch = self.parse(payload, source, window, run_id)
+            if not source.options.get("refresh_before_collect", False):
+                return batch
+            if not self._is_stale(batch, source, window):
+                return batch
+            refresh_url = self._refresh_url(source, feed_url)
+            dashboard_url = str(
+                source.options.get(
+                    "werss_dashboard_url",
+                    urllib.parse.urlunsplit(
+                        (*urllib.parse.urlsplit(feed_url)[:2], "/", "", "")
+                    ),
+                )
+            )
+            refresh_headers = self._refresh_headers(source)
+            if not refresh_url or not refresh_headers:
+                return self._with_refresh_error(
+                    batch,
+                    CollectionError(
+                        code="werss_refresh_credentials_required",
+                        message=(
+                            "WeRSS feed is stale; configure WERSS_ACCESS_KEY and "
+                            "WERSS_SECRET_KEY (or WERSS_BEARER_TOKEN) to refresh it"
+                        ),
+                        retryable=False,
+                        target=dashboard_url,
+                        details={"requires_human_verification": True},
+                    ),
+                )
+            try:
+                refresh_payload = self._fetcher(
+                    refresh_url,
+                    refresh_headers,
+                    float(source.options.get("refresh_timeout_seconds", 30)),
+                )
+                response = json.loads(refresh_payload.decode("utf-8"))
+                if response.get("code", 0) != 0:
+                    raise RuntimeError(
+                        str(response.get("message") or "WeRSS refresh rejected")
+                    )
+                self._sleeper(
+                    max(0.0, float(source.options.get("refresh_wait_seconds", 5)))
+                )
+                refreshed_payload = self._fetcher(
+                    feed_url,
+                    self._headers(source),
+                    float(source.options.get("timeout_seconds", 30)),
+                )
+                refreshed = self.parse(
+                    refreshed_payload, source, window, run_id
+                )
+                if not self._is_stale(refreshed, source, window):
+                    stats = dict(refreshed.stats)
+                    stats["refresh_triggered"] = 1
+                    return replace(refreshed, stats=stats)
+                return self._with_refresh_error(
+                    refreshed,
+                    CollectionError(
+                        code="wechat_login_or_verification_required",
+                        message=(
+                            "WeRSS accepted the refresh, but the feed stayed stale; "
+                            "open WeRSS and complete WeChat QR login/verification"
+                        ),
+                        retryable=True,
+                        target=dashboard_url,
+                        details={"requires_human_verification": True},
+                    ),
+                )
+            except urllib.error.HTTPError as error:
+                return self._with_refresh_error(
+                    batch,
+                    CollectionError(
+                        code=(
+                            "werss_refresh_auth_failed"
+                            if error.code in {401, 403}
+                            else "werss_refresh_http_error"
+                        ),
+                        message=f"WeRSS refresh HTTP {error.code}",
+                        retryable=error.code not in {401, 403},
+                        target=dashboard_url,
+                        details={
+                            "http_status": error.code,
+                            "requires_human_verification": error.code in {401, 403},
+                        },
+                    ),
+                )
+            except Exception as error:
+                return self._with_refresh_error(
+                    batch,
+                    CollectionError(
+                        code="werss_refresh_failed",
+                        message=f"WeRSS refresh failed: {error}",
+                        retryable=True,
+                        target=dashboard_url,
+                        details={"requires_human_verification": True},
+                    ),
+                )
         except urllib.error.HTTPError as error:
             if error.code in {401, 403}:
                 status = BatchStatus.BLOCKED
