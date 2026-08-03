@@ -140,3 +140,13 @@ test("exports a GitHub Pages-compatible static snapshot", async () => {
   assert.match(library, /固定顶会覆盖/);
   assert.match(sources, /本周值得关注的进展/);
 });
+
+test("ships the branch-scoped public review snapshot", async () => {
+  const review = await readFile(
+    new URL("../review/index.html", import.meta.url),
+    "utf8",
+  );
+  assert.match(review, /内部审核中/);
+  assert.match(review, /\/SeeSpace-Lab\/weekly_report\//);
+  assert.match(review, /\/site\/review\/assets\//);
+});
