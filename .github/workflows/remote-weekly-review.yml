@@ -63,6 +63,12 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Verify committed public review snapshot
+        shell: bash
+        run: |
+          test -f site/review/index.html
+          grep -q "/${GITHUB_REPOSITORY}/${GITHUB_HEAD_REF}/site/review/assets/" site/review/index.html
+
       - name: Write remote review instructions
         shell: bash
         run: |
@@ -70,6 +76,7 @@ jobs:
             echo "## Remote weekly review"
             echo
             echo "- Review the rendered Markdown files in this PR."
+            echo "- Public website: https://raw.githack.com/${GITHUB_REPOSITORY}/${GITHUB_HEAD_REF}/site/review/index.html"
             echo "- Download the weekly-review-site artifact for the complete read-only website snapshot."
             echo "- Approve and merge only through this PR into develop."
             echo "- This workflow never pushes develop or main and never deploys GitHub Pages."

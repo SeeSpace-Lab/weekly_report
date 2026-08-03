@@ -63,9 +63,10 @@ npm.cmd --prefix site run build
 1. 周报任务从最新 `develop` 创建独立开发分支；不得直接修改或推送 `develop`、`main`。
 2. 采集、Codex 精读和质量门禁通过后，将 Markdown、站点 JSON、配置和必要代码提交到该分支。
 3. 只推送开发分支，并创建以 `develop` 为 base 的 Draft PR。
-4. `Build remote weekly review` 工作流运行 Python 测试、部门校验和站点静态导出，并上传只读网站与 Markdown Artifact。
-5. 研究员在 GitHub PR 中审核渲染后的 Markdown、检查工作流 Artifact，并通过 PR Review 留下批准或修改意见。
-6. 审核完成后，批准快照仍提交到同一开发分支；PR 合入 `develop`。任何脚本都不得直接 push `develop` 或 `main`。
+4. 运行 `npm.cmd --prefix site run export:review`，将 `site/review/` 明确加入同一开发分支；该目录通过公共只读 CDN 提供任何人可访问的审核网址。
+5. `Build remote weekly review` 工作流运行 Python 测试、部门校验和站点静态导出，验证公开快照，并上传只读网站与 Markdown Artifact。
+6. 研究员通过公开审核网址查看完整页面，在 GitHub PR 中留下批准或修改意见。
+7. 审核完成后，批准快照仍提交到同一开发分支；PR 合入 `develop`。任何脚本都不得直接 push `develop` 或 `main`。
 
 正式 GitHub Pages 工作流仍只接受 `approved` 快照，并由后续受控的
 `develop` → `main` 发布流程触发。远程审核工作流只构建 Artifact，不部署正式 Pages，
