@@ -18,6 +18,7 @@ from .weekly import WeeklyBuildResult, WeeklyPipelineService
 class AutomatedRunResult:
     status: str
     collection: tuple[dict[str, Any], ...]
+    human_actions: tuple[dict[str, Any], ...]
     weekly: WeeklyBuildResult
     audit_path: Path
     site_data_path: Path | None
@@ -29,6 +30,7 @@ class WeeklyOrchestrator:
         database: Database,
         sources_path: Path,
         department: dict[str, Any],
+        excluded_connectors: set[str] | None = None,
     ):
         self.database = database
         self.sources = department_source_configs(
@@ -36,6 +38,7 @@ class WeeklyOrchestrator:
             department,
         )
         self.department = department
+        self.excluded_connectors = frozenset(excluded_connectors or ())
 
     @staticmethod
     def _batch_summary(batch: CollectionBatch) -> dict[str, Any]:
@@ -66,6 +69,8 @@ class WeeklyOrchestrator:
         batches: list[CollectionBatch] = []
         for source in self.sources.values():
             if not source.enabled:
+                continue
+            if source.connector in self.excluded_connectors:
                 continue
             if source.connector == "ArxivCollector":
                 batches.append(
@@ -134,10 +139,33 @@ class WeeklyOrchestrator:
             for item in collection
             if item["status"] in {"partial", "blocked", "error"}
         ]
-        status = "degraded" if unhealthy else "ok"
+        human_action_codes = {
+            "challenge_required",
+            "werss_refresh_credentials_required",
+            "werss_refresh_auth_failed",
+            "wechat_login_or_verification_required",
+        }
+        human_actions = tuple(
+            {
+                "source_id": item["source_id"],
+                "code": error["code"],
+                "message": error["message"],
+                "target": error.get("target"),
+            }
+            for item in collection
+            for error in item["errors"]
+            if error["code"] in human_action_codes
+            or error.get("details", {}).get("requires_human_verification")
+        )
+        if human_actions:
+            status = "needs_attention"
+        else:
+            status = "degraded" if unhealthy else "ok"
         audit_directory.mkdir(parents=True, exist_ok=True)
         audit_path = audit_directory / (
-            end.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + ".json"
+            f"{self.department['department_id']}-"
+            + end.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            + ".json"
         )
         payload = {
             "status": status,
@@ -147,6 +175,7 @@ class WeeklyOrchestrator:
                 "end": window.end.isoformat(),
             },
             "collection": collection,
+            "human_actions": human_actions,
             "weekly": {
                 "issue_id": weekly.issue_id,
                 "assessed_count": weekly.assessed_count,
@@ -172,6 +201,7 @@ class WeeklyOrchestrator:
         return AutomatedRunResult(
             status=status,
             collection=collection,
+            human_actions=human_actions,
             weekly=weekly,
             audit_path=audit_path.resolve(),
             site_data_path=exported_site_data,

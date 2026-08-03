@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $departmentDataPath = Join-Path $repoRoot "site\app\department-data.json"
-$departmentData = Get-Content -LiteralPath $departmentDataPath -Raw |
+$departmentData = Get-Content -LiteralPath $departmentDataPath -Raw -Encoding UTF8 |
     ConvertFrom-Json
 $departmentEntry = $departmentData.departments |
     Where-Object {
@@ -35,16 +35,6 @@ function Test-LocalPort {
     }
 }
 
-if (-not (Test-LocalPort -Port 8010)) {
-    $apiStart = [System.Diagnostics.ProcessStartInfo]::new()
-    $apiStart.FileName = Join-Path $repoRoot ".venv\Scripts\python.exe"
-    $apiStart.Arguments = "-m weekly_intel.review_server"
-    $apiStart.WorkingDirectory = $repoRoot
-    $apiStart.UseShellExecute = $true
-    $apiStart.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-    [System.Diagnostics.Process]::Start($apiStart) | Out-Null
-}
-
 if (-not (Test-LocalPort -Port 3000)) {
     $nodeCommand = (Get-Command node.exe).Source
     $vinextCli = Join-Path $repoRoot "site\node_modules\vinext\dist\cli.js"
@@ -61,9 +51,9 @@ if (-not (Test-LocalPort -Port 3000)) {
 
 $deadline = [DateTime]::UtcNow.AddSeconds(30)
 while ([DateTime]::UtcNow -lt $deadline) {
-    if ((Test-LocalPort -Port 8010) -and (Test-LocalPort -Port 3000)) {
+    if (Test-LocalPort -Port 3000) {
         Write-Output (
-            "Local review is ready at " +
+            "Local read-only preview is ready at " +
             "http://127.0.0.1:3000/departments/$departmentSlug/"
         )
         exit 0
@@ -71,4 +61,4 @@ while ([DateTime]::UtcNow -lt $deadline) {
     Start-Sleep -Milliseconds 500
 }
 
-throw "Local review services did not become ready within 30 seconds."
+throw "Local read-only preview did not become ready within 30 seconds."

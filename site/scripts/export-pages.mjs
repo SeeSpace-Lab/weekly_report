@@ -1,9 +1,15 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const siteRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const outputRoot = join(siteRoot, "out");
+const outputRoot = resolve(
+  siteRoot,
+  process.env.PAGES_OUTPUT_DIR ?? "out",
+);
+if (outputRoot === siteRoot || !outputRoot.startsWith(`${siteRoot}${sep}`)) {
+  throw new Error("PAGES_OUTPUT_DIR must stay inside the site directory");
+}
 const clientRoot = join(siteRoot, "dist", "client");
 const repository = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "weekly_report";
 const basePath = (process.env.PAGES_BASE_PATH ?? `/${repository}`).replace(/\/$/, "");
@@ -26,7 +32,7 @@ function pagePath(route) {
 }
 
 function withBasePath(html) {
-  return html
+  let transformed = html
     .replaceAll("/assets/", "__PAGES_ASSET_PATH__")
     .replaceAll("/og.png", "__PAGES_OG_PATH__")
     .replaceAll("/favicon.svg", "__PAGES_FAVICON_PATH__")
@@ -35,6 +41,24 @@ function withBasePath(html) {
     .replaceAll("__PAGES_ASSET_PATH__", `${basePath}/assets/`)
     .replaceAll("__PAGES_OG_PATH__", `${basePath}/og.png`)
     .replaceAll("__PAGES_FAVICON_PATH__", `${basePath}/favicon.svg`);
+
+  if (process.env.PAGES_STATIC_FILE_LINKS === "true") {
+    for (const route of routes) {
+      const href = route === "/" ? `${basePath}/` : `${basePath}${route}`;
+      const staticHref =
+        route === "/"
+          ? `${basePath}/index.html`
+          : `${basePath}${route}/index.html`;
+      transformed = transformed
+        .replaceAll(`href="${href}"`, `href="${staticHref}"`)
+        .replaceAll(
+          `\\"href\\":\\"${href}\\"`,
+          `\\"href\\":\\"${staticHref}\\"`,
+        );
+    }
+  }
+
+  return transformed;
 }
 
 await rm(outputRoot, { recursive: true, force: true });

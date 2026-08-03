@@ -74,16 +74,25 @@ def assert_git_index_writable() -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--department", default="orbitinfer")
+    parser.add_argument(
+        "--confirm-pr-reviewed",
+        action="store_true",
+        help="Confirm that the development-branch PR was reviewed remotely.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    branch = current_branch()
-    if branch in {"main", "develop"}:
+    if not args.confirm_pr_reviewed:
         raise RuntimeError(
-            f"Refusing to approve directly on protected branch {branch}; "
-            "use a feature/* or fix/* branch and open a pull request."
+            "本地一键审核已停用；请先在 GitHub PR 完成远程审核，"
+            "然后显式传入 --confirm-pr-reviewed。"
+        )
+    branch = current_branch()
+    if not branch or branch in {"main", "develop"}:
+        raise RuntimeError(
+            "审核快照只能提交到独立开发分支，不得直接提交 main 或 develop。"
         )
     department = find_department(
         ROOT / "config" / "departments",
@@ -189,8 +198,9 @@ def main() -> int:
                 "departmentId": department_id,
                 "isoWeek": iso_week,
                 "synced": True,
+                "branch": branch,
                 "publicationTriggered": False,
-                "nextStep": "Open a pull request; production publication occurs after merge to main.",
+                "nextStep": "merge the reviewed PR into develop",
             },
             ensure_ascii=False,
         )

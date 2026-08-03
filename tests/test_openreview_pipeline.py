@@ -130,6 +130,31 @@ class OpenReviewPipelineTest(unittest.TestCase):
         self.assertEqual(batch.status.value, "blocked")
         self.assertEqual(batch.errors[0].code, "challenge_required")
 
+    def test_challenge_is_isolated_to_one_venue(self) -> None:
+        configured = replace(
+            openreview_source(),
+            options={
+                **openreview_source().options,
+                "venues": [
+                    {"venue_id": "ICLR.cc/2026/Conference"},
+                    {"venue_id": "MLSys.org/2026/Conference"},
+                ],
+            },
+        )
+
+        def fetch(url: str, headers: dict[str, str], timeout: float) -> bytes:
+            if "ICLR.cc" in urllib.parse.unquote(url):
+                raise OpenReviewBlockedError("Challenge required")
+            return note_payload()
+
+        batch = OpenReviewCollector(fetcher=fetch).collect(
+            configured, self.window
+        )
+        self.assertEqual(batch.status.value, "partial")
+        self.assertEqual(len(batch.documents), 1)
+        self.assertEqual(batch.stats["blocked_venues"], 1)
+        self.assertEqual(batch.errors[0].details["venue_id"], "ICLR.cc/2026/Conference")
+
     def test_openreview_merges_with_arxiv_title_and_adds_status(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             database = Database(Path(temp_dir) / "test.db")

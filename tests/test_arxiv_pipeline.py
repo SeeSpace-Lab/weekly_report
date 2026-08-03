@@ -3,6 +3,7 @@ from __future__ import annotations
 import sqlite3
 import tempfile
 import unittest
+import urllib.error
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -30,6 +31,25 @@ ATOM_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
   </entry>
 </feed>
 """
+
+OAI_PAYLOAD = b"""<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/">
+  <ListRecords>
+    <record>
+      <header><identifier>oai:arXiv.org:2607.54321</identifier></header>
+      <metadata>
+        <arXiv xmlns="http://arxiv.org/OAI/arXiv/">
+          <id>2607.54321</id><created>2026-07-24</created>
+          <authors><author><keyname>Example</keyname><forenames>Alice</forenames></author></authors>
+          <title>Efficient LLM Inference Runtime</title>
+          <categories>cs.DC cs.LG</categories>
+          <abstract>KV cache scheduling for language model serving.</abstract>
+        </arXiv>
+      </metadata>
+    </record>
+    <resumptionToken></resumptionToken>
+  </ListRecords>
+</OAI-PMH>"""
 
 
 def source() -> SourceConfig:
@@ -75,6 +95,55 @@ class ArxivPipelineTest(unittest.TestCase):
         self.assertIn("search_query=", url)
         self.assertIn("LLM+inference", url)
         self.assertIn("cat%3Acs.DC", url)
+
+    def test_rate_limit_is_retried(self) -> None:
+        attempts = 0
+        sleeps: list[float] = []
+
+        def fetch(url, headers, timeout):
+            nonlocal attempts
+            attempts += 1
+            if attempts == 1:
+                raise urllib.error.HTTPError(
+                    url, 429, "Too Many Requests", {"Retry-After": "0"}, None
+                )
+            return ATOM_TEMPLATE.format(
+                version=2, updated="2026-07-24T09:30:00Z"
+            ).encode()
+
+        batch = ArxivCollector(fetcher=fetch, sleeper=sleeps.append).collect(
+            replace(source(), options={**source().options, "max_retries": 2}),
+            self.window,
+        )
+        self.assertEqual(batch.status.value, "ok")
+        self.assertEqual(attempts, 2)
+        self.assertEqual(sleeps, [0.0])
+
+    def test_oai_fallback_is_used_after_api_rate_limit(self) -> None:
+        requested: list[str] = []
+
+        def fetch(url, headers, timeout):
+            requested.append(url)
+            if "/api/query" in url:
+                raise urllib.error.HTTPError(
+                    url, 429, "Too Many Requests", {}, None
+                )
+            return OAI_PAYLOAD
+
+        configured = replace(
+            source(),
+            options={
+                **source().options,
+                "search_terms": ["LLM inference"],
+                "oai_fallback": True,
+                "max_retries": 0,
+            },
+        )
+        batch = ArxivCollector(fetcher=fetch).collect(configured, self.window)
+        self.assertEqual(batch.status.value, "ok")
+        self.assertEqual(batch.stats["provider_mode"], "oai_fallback")
+        self.assertEqual(batch.documents[0].identifiers["arxiv"], "2607.54321")
+        self.assertEqual(len(requested), 2)
 
     def test_versions_and_idempotency(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

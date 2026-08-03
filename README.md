@@ -56,28 +56,23 @@ npm.cmd --prefix site ci
 npm.cmd --prefix site run build
 ```
 
-## 本地审核与 GitHub Pages
+## GitHub 远程审核与 Pages 发布
 
-Codex 计划任务只更新本地审核站，不自动公开。研究员完成逐条审阅并将整期状态设为
-`approved` 后，本地审核按钮重新导出网页数据并把审核快照提交到仓库。该次推送自动触发
-`Publish approved report to GitHub Pages`，工作流再次核验状态后生成纯静态快照并部署。
-手动触发入口仍然保留，供自动发布失败时重试。
+周报审核以 GitHub Pull Request 为唯一入口，不再依赖维护者电脑上的本地审核服务：
 
-本地部门页提供“确认本期周报”按钮。按钮只会在所有精读卡片均由 Codex 生成、包含证据且
-置信度不低于 `0.60` 时通过质量门禁。确认后会批准正文条目、将整期状态改为
-`approved`、重新构建本地站并把审核快照推送到
-GitHub；仅当这次推送包含已批准的周报快照时，Pages 才会自动发布。
+1. 周报任务从最新 `develop` 创建独立开发分支；不得直接修改或推送 `develop`、`main`。
+2. 采集、Codex 精读和质量门禁通过后，将 Markdown、站点 JSON、配置和必要代码提交到该分支。
+3. 只推送开发分支，并创建以 `develop` 为 base 的 Draft PR。
+4. 运行 `npm.cmd --prefix site run export:review`，将 `site/review/` 明确加入同一开发分支；该目录通过公共只读 CDN 提供任何人可访问的审核网址。
+5. `Build remote weekly review` 工作流运行 Python 测试、部门校验和站点静态导出，验证公开快照，并上传只读网站与 Markdown Artifact。
+6. 研究员通过公开审核网址查看完整页面，在 GitHub PR 中留下批准或修改意见。
+7. 审核完成后，批准快照仍提交到同一开发分支；PR 合入 `develop`。任何脚本都不得直接 push `develop` 或 `main`。
 
-GitHub Pages 构建时只导出已批准或已发布的历史周报，并将当前批准快照显示为“已发布”。
-本地审核页面会显示审核通过以及 Pages 正在构建发布。
+正式 GitHub Pages 工作流仍只接受 `approved` 快照，并由后续受控的
+`develop` → `main` 发布流程触发。远程审核工作流只构建 Artifact，不部署正式 Pages，
+从而保证草稿审核与公开发布相互隔离。
 
-```powershell
-powershell.exe -ExecutionPolicy Bypass -File scripts\start_local_review.ps1
-```
-
-访问 `http://127.0.0.1:3000/departments/orbitinfer/`。
-
-指定其他部门时：
+本地站点仅用于开发调试，是只读预览，不提供批准或推送按钮：
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File `

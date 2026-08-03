@@ -118,7 +118,7 @@ PR 中的 **Validate department configuration** 会自动：
 2. 所有 Actions 检查通过；
 3. 维护人将功能分支合入 `develop`；
 4. 按公司发布节奏，由维护人通过 PR 将 `develop` 合入 `main`；
-5. 本地自动任务在生成周报前同步 `origin/main`，然后读取新部门配置。
+5. 自动任务在生成周报前同步 `origin/develop`，再从该基线创建任务专属开发分支。
 
 合入 `develop` 只代表配置通过集成审核；进入 `main` 后才成为本地自动任务使用的
 正式配置。任何 GitHub Actions Secret、Token、Cookie、内网地址或账号密码都不能
@@ -678,7 +678,7 @@ activation_requirements:
 
 每周一 08:00，“多部门研发周报”会：
 
-1. 确认本地工作区干净，并快进同步公司仓库 `origin/main`；
+1. 同步公司仓库 `origin/develop`，并从该基线创建任务专属开发分支；
 2. 校验所有部门 YAML；
 3. 同步部门目录和页面；
 4. 读取全部 `enabled: true` 的部门；
@@ -687,8 +687,8 @@ activation_requirements:
 7. 为每个部门生成独立候选包和分析文件；
 8. 导入中文精读并保持状态为 `review`；
 9. 统一运行 Python 测试、站点构建和 Pages 静态导出；
-10. 启动本地审核页面；
-11. 不自动点击审核，不提交、不推送、不发布。
+10. 提交到任务专属开发分支，只推送该分支并向 `develop` 创建 Draft PR；
+11. 由研究员在 GitHub PR 和只读站点 Artifact 中远程审核，不自动批准或发布。
 
 如果本地存在未提交改动，自动任务必须停止并报告，不能通过 reset、覆盖文件或强制
 合并来获取远端配置。这样 GitHub 上已进入 `main` 的部门配置才是下一次生成任务的
@@ -712,7 +712,7 @@ $departmentFile = "config\departments\satellite_network.yaml"
   --output runs\codex\satellite_network-brief.json
 ```
 
-启动该部门审核页面：
+如需开发调试，可启动该部门只读页面；正式审核仍在 GitHub PR：
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass `
@@ -806,7 +806,7 @@ status: active
 - [ ] 内容负责人和 GitHub 审核团队已填写；
 - [ ] 完成后设置 `enabled: true`、`status: active`；
 - [ ] GitHub PR 的 **Validate department configuration** 已通过；
-- [ ] 周报最终仍由研究员在本地审核页面确认。
+- [ ] 周报最终由研究员在面向 `develop` 的 GitHub PR 中远程审核。
 
 ## 23. 相关文件
 

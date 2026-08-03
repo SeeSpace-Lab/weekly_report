@@ -160,6 +160,18 @@ class DepartmentAssessmentAgent:
             for item in department.get("paper_watchlist", [])
             if isinstance(item, dict)
         ]
+        candidate_policy = department.get("candidate_policy", {})
+        self.allow_strong_new_preprints = bool(
+            candidate_policy.get("allow_strong_new_preprints", False)
+        )
+        self.min_strong_new_preprint_relevance = float(
+            candidate_policy.get("min_strong_new_preprint_relevance", 0.65)
+        )
+        self.strong_new_preprint_minutes = float(
+            candidate_policy.get("read_minutes", {}).get(
+                "strong_new_preprint", 2.0
+            )
+        )
 
     def assess_row(self, row: sqlite3.Row) -> AssessmentResult:
         text = normalize_title(
@@ -212,6 +224,14 @@ class DepartmentAssessmentAgent:
             and row["source_tier"] in {"S_Core", "S_Watch"}
         )
         authoritative_review = subscribed_review and relevance >= 0.4
+        strong_new_preprint = (
+            self.allow_strong_new_preprints
+            and row["item_type"] == "paper"
+            and not accepted
+            and not important_revision
+            and relevance >= self.min_strong_new_preprint_relevance
+            and not exclusion_hits
+        )
         official_venue_event = row["item_type"] == "venue_event"
         importance = min(
             1.0,
@@ -257,6 +277,9 @@ class DepartmentAssessmentAgent:
         elif authoritative_review and relevance >= 0.4:
             recommendation = "recommended"
             minutes = 1.5
+        elif strong_new_preprint:
+            recommendation = "recommended"
+            minutes = self.strong_new_preprint_minutes
         elif official_venue_event:
             # Conference home-page changes are collected as evidence. They do
             # not belong in the weekly report unless they resolve to an
@@ -302,7 +325,9 @@ class DepartmentAssessmentAgent:
             reasons.append(f"检测到{version_count}个版本")
         elif max_version_number > 1:
             reasons.append(f"当前为arXiv v{max_version_number}重要修订候选")
-        if not accepted and not important_revision:
+        if strong_new_preprint:
+            reasons.append("属于部门允许纳入的高相关新预印本")
+        elif not accepted and not important_revision:
             if artifact_release:
                 reasons.append("属于官方框架、Benchmark或数据集更新")
             elif authoritative_review:

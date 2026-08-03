@@ -188,6 +188,11 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     run_weekly.add_argument("--iso-week")
+    run_weekly.add_argument(
+        "--skip-wechat",
+        action="store_true",
+        help="Build the issue without collecting configured WeChat sources.",
+    )
     run_weekly.add_argument("--output", type=Path)
     run_weekly.add_argument(
         "--sources", type=Path, default=root / "config" / "sources.yaml"
@@ -696,7 +701,12 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 0
         result = WeeklyOrchestrator(
-            database, args.sources, department
+            database,
+            args.sources,
+            department,
+            excluded_connectors=(
+                {"WechatPoolCollector"} if args.skip_wechat else None
+            ),
         ).run(
             end,
             args.days,
@@ -711,6 +721,7 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "status": result.status,
                     "collection": result.collection,
+                    "human_actions": result.human_actions,
                     "issue_id": result.weekly.issue_id,
                     "output": str(result.weekly.output_path),
                     "audit": str(result.audit_path),
