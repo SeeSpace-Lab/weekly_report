@@ -267,10 +267,12 @@ h2 { margin: 0; font-size: clamp(30px, 4vw, 52px); letter-spacing: -.045em; }
 }
 .approvalAction { text-align: right; }
 .approvalAction > div { display: flex; justify-content: flex-end; gap: 8px; }
-.approvalAction button {
+.approvalAction button,
+.approvalAction .approvalLinkButton {
   border: 1px solid var(--signal); padding: 12px 18px;
   color: var(--ink); background: var(--signal); cursor: pointer;
   font-size: var(--font-small); font-weight: 800;
+  display: inline-block; text-decoration: none;
 }
 .approvalAction button:disabled { cursor: wait; opacity: .6; }
 .approvalAction .secondaryButton {

@@ -1,0 +1,76 @@
+name: Build remote weekly review
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - "config/**"
+      - "outputs/**"
+      - "site/**"
+      - "src/**"
+      - "tests/**"
+      - "schemas/**"
+      - "pyproject.toml"
+      - ".github/workflows/remote-weekly-review.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Validate Python pipeline and department configuration
+        run: |
+          python -m pip install -e .
+          weekly-intel validate-departments
+          python -m unittest discover -s tests -v
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Build read-only review snapshot
+        working-directory: site
+        run: |
+          npm ci
+          npm run export:pages
+          node --test tests/rendered-html.test.mjs
+
+      - name: Upload review website artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-review-site-pr-${{ github.event.pull_request.number || github.run_number }}
+          path: site/out
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Markdown reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-review-reports-pr-${{ github.event.pull_request.number || github.run_number }}
+          path: outputs/**/*.md
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Write remote review instructions
+        shell: bash
+        run: |
+          {
+            echo "## Remote weekly review"
+            echo
+            echo "- Review the rendered Markdown files in this PR."
+            echo "- Download the weekly-review-site artifact for the complete read-only website snapshot."
+            echo "- Approve and merge only through this PR into develop."
+            echo "- This workflow never pushes develop or main and never deploys GitHub Pages."
+          } >> "$GITHUB_STEP_SUMMARY"

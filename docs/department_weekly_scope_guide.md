@@ -109,7 +109,7 @@
   --department config\departments\<department_id>.yaml
 ```
 
-本地审核页面：
+本地只读调试页面：
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass `
@@ -117,7 +117,9 @@ powershell.exe -ExecutionPolicy Bypass `
   -Department <department_id>
 ```
 
-地址为 `http://127.0.0.1:3000/departments/<page.slug>/`。
+地址为 `http://127.0.0.1:3000/departments/<page.slug>/`。正式审核必须在该部门
+开发分支面向 `develop` 的 GitHub Pull Request 中完成；PR 工作流会上传完整只读
+站点 Artifact 和 Markdown 报告。
 
 ## 五、启用前检查表
 
