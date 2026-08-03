@@ -149,4 +149,5 @@ test("ships the branch-scoped public review snapshot", async () => {
   assert.match(review, /内部审核中/);
   assert.match(review, /\/SeeSpace-Lab\/weekly_report\//);
   assert.match(review, /\/site\/review\/assets\//);
+  assert.match(review, /\/departments\/orbitinfer\/index\.html/);
 });

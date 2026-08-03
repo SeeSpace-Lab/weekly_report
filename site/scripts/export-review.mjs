@@ -18,6 +18,7 @@ if (!branch || branch === "main" || branch === "develop") {
 const repository = process.env.GITHUB_REPOSITORY ?? "SeeSpace-Lab/weekly_report";
 process.env.PAGES_OUTPUT_DIR = "review";
 process.env.PAGES_BASE_PATH = `/${repository}/${branch}/site/review`;
+process.env.PAGES_STATIC_FILE_LINKS = "true";
 
 await import(`./export-pages.mjs?review=${Date.now()}`);
 
