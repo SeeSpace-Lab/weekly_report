@@ -1,0 +1,81 @@
+{
+  "_framework-CXnKph_e.js": {
+    "file": "assets/framework-CXnKph_e.js",
+    "name": "framework",
+    "imports": [
+      "_rolldown-runtime-S-ySWqyJ.js"
+    ]
+  },
+  "_rolldown-runtime-S-ySWqyJ.js": {
+    "file": "assets/rolldown-runtime-S-ySWqyJ.js",
+    "name": "rolldown-runtime"
+  },
+  "app/archive/page.tsx": {
+    "file": "assets/page-Ba8CppH5.js",
+    "name": "page",
+    "src": "app/archive/page.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-S-ySWqyJ.js",
+      "_framework-CXnKph_e.js"
+    ]
+  },
+  "app/components/DepartmentReport.tsx": {
+    "file": "assets/DepartmentReport-C8p3KtoN.js",
+    "name": "DepartmentReport",
+    "src": "app/components/DepartmentReport.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-S-ySWqyJ.js",
+      "_framework-CXnKph_e.js"
+    ]
+  },
+  "app/library/page.tsx": {
+    "file": "assets/page-CLYKYVz_.js",
+    "name": "page",
+    "src": "app/library/page.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-S-ySWqyJ.js",
+      "_framework-CXnKph_e.js"
+    ]
+  },
+  "app/sources/page.tsx": {
+    "file": "assets/page-BF3uhU_j.js",
+    "name": "page",
+    "src": "app/sources/page.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_framework-CXnKph_e.js"
+    ]
+  },
+  "node_modules/vinext/dist/shims/layout-segment-context.js": {
+    "file": "assets/layout-segment-context-d5ZQwPRx.js",
+    "name": "layout-segment-context",
+    "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-S-ySWqyJ.js",
+      "virtual:vinext-app-browser-entry",
+      "_framework-CXnKph_e.js"
+    ]
+  },
+  "virtual:vinext-app-browser-entry": {
+    "file": "assets/index-Cyg89nrr.js",
+    "name": "index",
+    "src": "virtual:vinext-app-browser-entry",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-S-ySWqyJ.js",
+      "_framework-CXnKph_e.js"
+    ],
+    "dynamicImports": [
+      "app/library/page.tsx",
+      "node_modules/vinext/dist/shims/layout-segment-context.js",
+      "app/archive/page.tsx",
+      "app/components/DepartmentReport.tsx",
+      "virtual:vinext-app-browser-entry",
+      "app/sources/page.tsx"
+    ]
+  }
+}
