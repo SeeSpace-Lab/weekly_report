@@ -185,9 +185,9 @@
       "oneSentenceZh": "把 KV Cache 切成可按需映射的块，减少显存碎片和重复占用，成为现代 LLM Serving 的基础内存抽象。",
       "whyItMattersZh": "后续连续批处理、调度和 KV Cache 分层工作大多以它为系统基线，虽然超出两年窗口，仍作为著名论文保留。",
       "famousException": true,
-      "latestUpdatedAt": null,
-      "versionCount": 0,
-      "latestChange": null,
+      "latestUpdatedAt": "2026-08-02T19:59:39.362000+00:00",
+      "versionCount": 1,
+      "latestChange": "unknown",
       "interpretations": []
     },
     {

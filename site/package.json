@@ -9,6 +9,7 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "export:pages": "npm run build && node scripts/export-pages.mjs",
+    "export:review": "npm run build && node scripts/export-review.mjs",
     "start": "vinext start",
     "test": "npm run export:pages && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern out --ignore-pattern .next --ignore-pattern .wrangler",
