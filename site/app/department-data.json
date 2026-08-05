@@ -148,7 +148,7 @@
           "isoWeek": "2026-W31",
           "windowStart": "2026-07-26T16:00:00+00:00",
           "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-          "status": "review",
+          "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 28.0,
           "itemCount": 8
@@ -479,7 +479,7 @@
             "isoWeek": "2026-W31",
             "windowStart": "2026-07-26T16:00:00+00:00",
             "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-            "status": "review",
+            "status": "approved",
             "targetReadMinutes": 30,
             "estimatedReadMinutes": 28.0,
             "itemCount": 8
@@ -1313,7 +1313,7 @@
           "isoWeek": "2026-W31",
           "windowStart": "2026-07-26T16:00:00+00:00",
           "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-          "status": "review",
+          "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 28.0,
           "itemCount": 8
@@ -1624,7 +1624,7 @@
             "isoWeek": "2026-W31",
             "windowStart": "2026-07-26T16:00:00+00:00",
             "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-            "status": "review",
+            "status": "approved",
             "targetReadMinutes": 30,
             "estimatedReadMinutes": 28.0,
             "itemCount": 8
@@ -2193,7 +2193,7 @@
           "isoWeek": "2026-W31",
           "windowStart": "2026-07-26T16:00:00+00:00",
           "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-          "status": "draft",
+          "status": "approved",
           "targetReadMinutes": 12,
           "estimatedReadMinutes": 0,
           "itemCount": 0
@@ -2212,7 +2212,7 @@
             "isoWeek": "2026-W31",
             "windowStart": "2026-07-26T16:00:00+00:00",
             "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-            "status": "draft",
+            "status": "approved",
             "targetReadMinutes": 12,
             "estimatedReadMinutes": 0,
             "itemCount": 0
