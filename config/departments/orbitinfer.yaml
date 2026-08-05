@@ -2,6 +2,7 @@ department_id: orbitinfer
 name: 星载大模型推理引擎
 version: "0.1"
 enabled: true
+status: active
 timezone: Asia/Shanghai
 
 page:
@@ -17,7 +18,7 @@ page:
     Benchmark 与数据集进展。
 
 owners:
-  content_owner: 星载大模型推理引擎研究组
+  content_owner: 郭立栋
   github_team: weekly-report-reviewers
   reviewer_label: orbitinfer-research-review
 

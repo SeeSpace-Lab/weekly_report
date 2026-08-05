@@ -30,7 +30,11 @@ class DepartmentConfigTest(unittest.TestCase):
         )
         self.assertEqual(
             {department["department_id"] for department in departments},
-            {"orbitinfer", "constellation_simulation"},
+            {
+                "orbitinfer",
+                "constellation_simulation",
+                "model_and_application",
+            },
         )
         orbitinfer = next(
             department

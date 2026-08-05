@@ -4,10 +4,11 @@ department_id: model_and_application
 name: 模型应用
 version: "0.1"
 enabled: true
+status: active
 timezone: Asia/Shanghai
 
 page:
-  order: 3
+  order: 2
   slug: model_and_application
   brand_mark: MA
   eyebrow: MODEL AND APPLICATION WEEKLY
@@ -162,11 +163,7 @@ keywords:
 
 # 可填写具体论文标题，或需要持续跟踪的精确查询短语。
 # 命中清单会提高部门相关性，但仍必须满足本周有更新和证据充分。
-paper_watchlist:
-  - title: "Exact Paper Title"
-    reason: 与当前项目基线直接相关
-  - query: "precise benchmark or method name"
-    reason: 跟踪关键方法的新版本、代码或数据集
+paper_watchlist: []
 
 # 只引用 config/sources.yaml 中已经注册的 source_id。
 # 新公众号必须先在共享来源目录和 WeRSS 中完成一次技术接入。
