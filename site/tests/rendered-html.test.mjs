@@ -84,6 +84,14 @@ test("ships structured report, library and interaction controls", async () => {
     readFile(new URL("../app/library-data.json", import.meta.url), "utf8"),
     readFile(new URL("../app/source-data.json", import.meta.url), "utf8"),
   ]);
+  const approvalPanel = await readFile(
+    new URL("../app/components/ApprovalPanel.tsx", import.meta.url),
+    "utf8",
+  );
+  const remoteReviewWorkflow = await readFile(
+    new URL("../../.github/workflows/remote-weekly-review.yml", import.meta.url),
+    "utf8",
+  );
   const departmentPayload = JSON.parse(departmentDataText);
   const orbitinfer = departmentPayload.departments.find(
     (department) => department.id === "orbitinfer",
@@ -112,6 +120,10 @@ test("ships structured report, library and interaction controls", async () => {
   assert.match(page, /setActiveSection/);
   assert.match(page, /setQuery/);
   assert.match(page, /target="_blank"/);
+  assert.match(approvalPanel, /base%3Amain/);
+  assert.match(approvalPanel, /合并 main/);
+  assert.match(remoteReviewWorkflow, /branches: \[main\]/);
+  assert.match(remoteReviewWorkflow, /into main/);
   assert.ok(libraryPayload.papers.length >= 8);
   assert.equal(sourcePayload.accounts.length, 7);
   assert.ok(sourcePayload.accounts.every((account) => account.articles.length > 0));

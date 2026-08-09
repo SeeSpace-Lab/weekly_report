@@ -5,7 +5,7 @@ type ApprovalPanelProps = {
 };
 
 const REVIEW_PULL_REQUESTS =
-  "https://github.com/SeeSpace-Lab/weekly_report/pulls?q=is%3Apr+is%3Aopen+base%3Adevelop";
+  "https://github.com/SeeSpace-Lab/weekly_report/pulls?q=is%3Apr+is%3Aopen+base%3Amain";
 
 export default function ApprovalPanel({
   departmentId,
@@ -28,11 +28,11 @@ export default function ApprovalPanel({
     <aside className="approvalPanel">
       <div>
         <span>REMOTE REVIEW</span>
-        <strong>{isoWeek} GitHub 远程审核</strong>
+        <strong>{isoWeek} GitHub 远程审核 · 合并 main</strong>
         <p>
           本页面是只读草稿。代码和周报只能从独立开发分支提交，并通过面向
-          develop 的 Pull Request 审核；页面不会直接推送受保护分支或发布
-          GitHub Pages。
+          main 的 Pull Request 审核。负责人完成审核并合并 PR 后，GitHub
+          Pages 发布工作流会自动启动。
         </p>
       </div>
       <div className="approvalAction">
@@ -42,7 +42,7 @@ export default function ApprovalPanel({
           target="_blank"
           rel="noreferrer"
         >
-          前往 GitHub PR 审核
+          前往 GitHub PR 审核并合并 main
         </a>
       </div>
     </aside>

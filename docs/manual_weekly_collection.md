@@ -24,7 +24,7 @@
 | 配置修改和新增部门 | GitHub PR | `feature/* → develop → main` |
 | 论文和公众号采集 | 本地电脑 | 依赖本地数据库、网络和 WeRSS |
 | Agent 精读与写作 | 本地 Codex | 不调用仓库外的模型 API Key |
-| 研究员审核 | 本地审核页面 | 审核前不得公开 |
+| 研究员审核 | 公开只读快照 + GitHub PR | 审核通过后合并到 `main` |
 | 静态站点部署 | GitHub Actions | 只接受已经批准并进入仓库的快照 |
 
 GitHub Actions 当前不能代替完整的本地采集和 Agent 精读。仅有 GitHub 网页访问权限，
@@ -240,12 +240,13 @@ PR、Agent 对话或仓库文件中。
 
 ## 10. 审核和发布边界
 
-完成本文档流程后，周报状态应为 `review`。只有指定研究员可以确认内容并将其改为
-`approved`。
+完成本文档流程后，周报状态应为 `review`。自动任务只推送独立开发分支并创建面向
+`main` 的 PR；只有指定研究员完成远程审核并合并 PR，才视为批准。
 
-GitHub Actions 中的 **Publish approved report to GitHub Pages** 只用于部署已经
-批准且已经进入仓库的快照。手动点击 **Run workflow** 不会执行采集、Agent 精读或
-研究员审核，也不能发布 `review` 状态的内容。
+GitHub Actions 中的 **Build remote weekly review** 会校验 PR、构建只读审核快照并
+上传 Artifact。PR 正文和站点按钮提供公开审核网址。合并到 `main` 后，
+**Publish approved report to GitHub Pages** 才会部署进入仓库的快照。手动点击
+**Run workflow** 不会执行采集、Agent 精读或研究员审核，也不能发布 `review` 状态的内容。
 
 手动重试部署时必须明确填写：
 
@@ -253,9 +254,8 @@ GitHub Actions 中的 **Publish approved report to GitHub Pages** 只用于部�
 - `department`：部门 ID；
 - `issue`：已批准的 ISO 周次，例如 `2026-W30`。
 
-如果仓库发布流程、分支保护或审核脚本与公司
-`feature/* → develop → main` 规范不一致，应停止发布并联系仓库维护人，不得通过
-直接推送受保护分支绕过审核。
+周报 PR 的目标分支为 `main`；自动任务不得直接推送或合并 `main`。部门配置仍按
+仓库既有的 `feature/* → develop → main` 规则维护。
 
 ## 11. 相关文档
 
