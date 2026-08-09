@@ -140,7 +140,14 @@ class Repository:
         self, raw_document_id: str, document: CollectedDocument
     ) -> None:
         item_id = None
-        for scheme in ("doi", "arxiv", "openreview_forum", "venue_paper"):
+        for scheme in (
+            "doi",
+            "arxiv",
+            "openreview_forum",
+            "openalex",
+            "ieee_article_number",
+            "venue_paper",
+        ):
             value = document.identifiers.get(scheme)
             if not value:
                 continue
@@ -214,6 +221,8 @@ class Repository:
                 "doi",
                 "arxiv",
                 "openreview_forum",
+                "openalex",
+                "ieee_article_number",
                 "github",
                 "huggingface",
                 "venue_paper",

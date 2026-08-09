@@ -33,9 +33,14 @@ mission: >-
 core_topics:
   - id: l2_dense_compute_cell
     label: L2 密集编队与 Compute Cell
+    layer: L2
     weight: 1.0
-    section: primary_topic
+    section: l2_research
     keywords:
+      - satellite cluster
+      - satellite formation
+      - formation flying
+      - inter-satellite link
       - dense satellite cluster
       - dense satellite formation
       - formation-flying datacenter
@@ -49,9 +54,13 @@ core_topics:
 
   - id: l2_collaborative_inference
     label: L2 多星协同推理
+    layer: L2
     weight: 0.95
-    section: primary_topic
+    section: l2_research
     keywords:
+      - satellite inference
+      - distributed inference satellite
+      - split computing satellite
       - multi-satellite LLM inference
       - collaborative LLM inference
       - cross-satellite model split
@@ -64,9 +73,16 @@ core_topics:
 
   - id: l3_constellation_organization
     label: L3 同轨多编队与星座级组织
+    layer: L3
     weight: 1.0
-    section: primary_topic
+    section: l3_research
     keywords:
+      - satellite computing
+      - orbital computing
+      - space computing
+      - LEO edge computing
+      - satellite edge computing
+      - compute constellation
       - LEO compute constellation
       - computing satellite constellation
       - space cloud orchestration
@@ -80,9 +96,14 @@ core_topics:
 
   - id: orbitserve_runtime
     label: 轨道与卫星状态感知 Runtime
+    layer: L3
     weight: 0.95
-    section: primary_topic
+    section: l3_research
     keywords:
+      - satellite task scheduling
+      - satellite service migration
+      - satellite task offloading
+      - satellite handover
       - orbit-aware LLM serving
       - satellite status aware scheduling
       - moving access handoff
@@ -103,9 +124,17 @@ core_topics:
 
   - id: simulator_validation
     label: 星座级仿真器、校准与数据
+    layer: L3
     weight: 1.0
-    section: secondary_topic
+    section: l3_research
     keywords:
+      - in-orbit edge computing
+      - onboard edge computing
+      - earth observation satellite computing
+      - constellation simulator
+      - satellite network simulation
+      - constellation simulation
+      - orbital simulation
       - satellite computing simulator
       - constellation emulation
       - space cloud emulator
@@ -123,9 +152,13 @@ core_topics:
 
   - id: cost_slo_dse
     label: Cost-SLO 与受约束 DSE
+    layer: L3
     weight: 0.95
-    section: primary_topic
+    section: l3_research
     keywords:
+      - space data center
+      - space datacenter
+      - orbital data center
       - constellation design space exploration
       - lifecycle cost SLO
       - satellite computing architecture
@@ -146,8 +179,9 @@ core_topics:
 
   - id: physical_constraints_bonus
     label: Bonus：轨道、能源、热与硬件约束
+    layer: L3
     weight: 0.65
-    section: secondary_topic
+    section: l3_research
     keywords:
       - orbital data center thermal
       - orbital data center
@@ -168,8 +202,9 @@ core_topics:
 
   - id: industry_research_signals
     label: 产业与研究计划
+    layer: L3
     weight: 0.75
-    section: secondary_topic
+    section: l3_news
     keywords:
       - orbital data center
       - space-based AI infrastructure
@@ -190,6 +225,20 @@ adjacent_topics:
 
 keywords:
   include:
+    - satellite computing
+    - orbital computing
+    - space computing
+    - satellite edge computing
+    - in-orbit edge computing
+    - onboard edge computing
+    - constellation simulator
+    - LEO edge computing
+    - satellite cluster
+    - inter-satellite link
+    - satellite task scheduling
+    - satellite service migration
+    - constellation simulation
+    - space data center
     - LEO satellite computing
     - LEO compute constellation
     - satellite compute cell
@@ -218,19 +267,96 @@ keywords:
     - LLM multi-agent topology unrelated to satellites
     - consumer satellite internet news
 
-paper_watchlist: []
+paper_watchlist:
+  - title: Communication-Efficient Collaborative LLM Inference over LEO Satellite Networks
+    reason: L2 多星模型切分、流水并行和通信压缩的直接近邻
+  - title: Designing Dense Satellite Clusters for Distributed Space-based Datacenters
+    reason: L2 密集编队、持续可用 ISL 和数据中心拓扑设计的直接近邻
+  - title: On an Ultra-Dense LEO-Satellite-Based Computing Network Constellation Design
+    reason: 面向地区计算需求的计算星座构型设计近邻
+  - title: Krios Scheduling Abstractions and Mechanisms for Enabling a LEO Compute Cloud
+    reason: 移动服务区、实例预部署和状态交接的 L3 Runtime 近邻
+  - title: Orbital Edge Computing Nanosatellite Constellations as a New Class of Computer System
+    reason: 星座级物理仿真、能量与分布式处理流水线的系统基线
+  - title: Which Workloads Belong in Orbit
+    reason: 判断工作负载何时适合上天的边界框架
+  - title: Orbital Data Centers Spacecraft Constraints and Economic Viability
+    reason: 功率、散热、通信与成本约束的量化参考
+
+venue_scope:
+  # CCF 级别用于辅助判断，不作为硬过滤条件；强相关的航天权威 venue 同样纳入。
+  ccf_a_or_top:
+    - [SOSP, OSDI, NSDI, USENIX ATC, EuroSys]
+    - [ISCA, MICRO, HPCA, ASPLOS]
+    - [SIGCOMM, MobiCom]
+  ccf_b_or_strong:
+    - [SoCC, ICDCS, IPDPS, HPDC, SC]
+    - [INFOCOM, SenSys, MobiSys]
+    - [ICCAD, DATE]
+  ml_systems_and_ai:
+    - [MLSys, NeurIPS, ICML, ICLR, AAAI, IJCAI]
+  space_and_communications:
+    - [IEEE Aerospace Conference, AIAA SciTech, IAC]
+    - [IEEE ICC, IEEE GLOBECOM, IEEE WCNC]
+    - [IEEE Transactions on Aerospace and Electronic Systems]
+    - [IEEE Journal on Selected Areas in Communications]
+    - [Acta Astronautica, Aerospace Science and Technology]
+  publisher_coverage:
+    - ACM Digital Library
+    - IEEE Xplore
+    - USENIX
+    - Springer Nature
+    - Elsevier
+  rule: venue 级别决定展示时的可信度说明，不覆盖内容相关性；非名单 venue 的强相关论文仍进入调查索引
+
+content_requirements:
+  require_content_and_judgment: true
+  department_implication_required: false
+  research_keyword_profile:
+    required: true
+    dimensions: [技术领域, 架构或模型, workload或应用场景, 系统约束]
+    derive_from: [标题, 摘要, Introduction, 原始来源]
+    title_only_inference_forbidden: true
+  publication_context:
+    published_paper: 说明会议或期刊全称、领域层级与 CCF 评级；无 CCF 时给出谨慎对标
+    arxiv_preprint: 说明作者单位、已核验身份、代表作与研究积累，不把 arXiv comments 当作录用证明
+  full_text_access:
+    keep_in_index_when_unavailable: true
+    unavailable_label: 待获取全文
+    metadata_only_rule: 当前没有全文权限时，仍保留题名、作者、会议或期刊、发表时间、摘要、原文链接和相关性判断
+    evidence_boundary: 只能依据已核验的题录和摘要介绍具体内容，不补写摘要中未披露的方法、实验结果或结论
+
+editorial_guidance:
+  item_structure:
+    - 具体内容
+    - 一句话判断
+    - 关键词
+    - 问题、方法与结果
+    - 发表状态或作者背景
+    - 证据与局限
+  required_checks:
+    - 公众号和新闻中的关键事实回到论文、官网或仓库核验
+    - 强相关内容逐条展开，弱相关内容按主题合并
+    - 所有论文候选在调查索引中保留题名和原文链接
+    - 检索到但当前无法访问全文的论文标注“待获取全文”，不因权限不足从调查索引中删除
+  avoid:
+    - 只写判断、不交代原文具体内容
+    - 根据标题猜测方法、结果或录用状态
+    - 为凑篇数纳入泛化卫星通信或普通 AI 新闻
 
 source_pool:
   papers:
     - arxiv
+    - openreview
     - crossref
+    - openalex
+    - ieee_xplore
   venues:
     - venue_official_pages
   # develop 当前尚未注册独立的官方动态采集器；相关线索先经 manual_inbox
   # 回到项目官网或正式公告核验，待采集器合入后再切换为自动来源。
   repositories: []
-  models_and_datasets:
-    - huggingface_hub
+  models_and_datasets: []
   wechat:
     - wechat_jiqizhixin
     - wechat_baai_hub
@@ -246,35 +372,75 @@ source_pool:
     - manual_inbox
   overrides:
     arxiv:
-      categories: [cs.DC, cs.NI, cs.OS, cs.PF, cs.AR, eess.SY]
+      categories: [cs.DC, cs.NI, cs.OS, cs.PF, cs.AR, cs.LG, cs.CL, eess.SY]
+      max_results: 100
+      timeout_seconds: 60
       search_terms:
-        - LEO satellite computing
-        - collaborative LLM inference LEO satellite
-        - Communication-Efficient Collaborative LLM Inference
-        - dense satellite cluster datacenter
-        - Designing Dense Satellite Clusters
-        - dense satellite clusters distributed space-based datacenters
-        - multi-satellite LLM inference
-        - LEO compute constellation
-        - space cloud orchestration
-        - orbit-aware LLM serving
-        - satellite computing simulator
-        - orbital data center
-        - space microdatacenters
-        - LEO compute cloud
-        - LEO satellite edge service migration
-        - satellite battery aging computing
-        - satellite LLM inference carbon footprint
-        - global LLM serving workload
-        - orbital workload compute placement
+        - satellite computing
+        - orbital computing
+        - satellite edge computing
+        - LEO edge computing
+        - compute constellation
+        - satellite cluster
+        - satellite task scheduling
+        - satellite network simulation
+        - constellation simulation
+        - space data center
     crossref:
       search_terms:
+        - satellite computing
+        - orbital computing
+        - satellite edge computing
+        - LEO edge computing
+        - computing satellite constellation
+        - space data center
         - LEO satellite computing constellation
         - dense satellite cluster distributed datacenter
         - multi-satellite collaborative inference
         - satellite edge cloud orchestration
         - orbital data center architecture
-      rows_per_query: 50
+      rows_per_query: 100
+      max_pages: 8
+    openalex:
+      search_terms:
+        - satellite computing
+        - orbital computing
+        - in-orbit edge computing
+        - satellite edge computing
+        - LEO compute cloud
+        - computing satellite constellation
+        - distributed space data center
+        - satellite task scheduling
+        - satellite service migration
+        - constellation simulation
+        - inter-satellite distributed computing
+      per_page: 100
+      max_pages: 2
+    ieee_xplore:
+      search_terms:
+        - satellite computing
+        - orbital computing
+        - satellite edge computing
+        - LEO edge computing
+        - computing satellite constellation
+        - space data center
+        - satellite task scheduling
+        - satellite network simulation
+      max_records: 200
+
+candidate_policy:
+  allow_strong_new_preprints: true
+  min_strong_new_preprint_relevance: 0.45
+  # 强弱两档都严格使用同一自然周；弱档可以来自论文、公众号或新闻。
+  min_supplemental_relevance: 0.25
+  min_codex_brief_relevance: 0.25
+  supplemental_section: related_updates_index
+  read_minutes:
+    accepted: 4.0
+    important_revision: 2.0
+    strong_new_preprint: 2.5
+    authoritative_review: 1.5
+    supplemental: 2.5
 
 ranking:
   global_importance:
@@ -287,7 +453,8 @@ ranking:
 
 weekly_output:
   target_read_minutes: 30
-  max_items: 8
+  minimum_read_minutes: 18
+  max_items: 12
   max_wechat_items: 3
   wechat_candidate_reserve: 8
   must_read_min: 3
@@ -299,15 +466,33 @@ weekly_output:
   sections:
     - weekly_trends
     - must_read
-    - primary_topic
-    - secondary_topic
-    - frameworks_benchmarks_datasets
-    - department_relevance
+    - l2_research
+    - l2_wechat
+    - l2_news
+    - l3_research
+    - l3_wechat
+    - l3_news
+    - related_updates_index
+  section_routing:
+    default_layer: L3
+    mapping:
+      L2:
+        research: l2_research
+        wechat: l2_wechat
+        news: l2_news
+      L3:
+        research: l3_research
+        wechat: l3_wechat
+        news: l3_news
   section_labels:
-    must_read: 本周必读
-    primary_topic: 核心主题
-    secondary_topic: 次核心主题
-    department_relevance: 部门专项意义
+    must_read: 本周优先关注
+    l2_research: L2 层级对应论文
+    l2_wechat: L2 · 国内微信公众号
+    l2_news: L2 · 国内外新闻与研究计划
+    l3_research: L3 层级对应论文
+    l3_wechat: L3 · 国内微信公众号
+    l3_news: L3 · 国内外新闻与研究计划
+    related_updates_index: 相关内容补充与调查索引
 
 activation_requirements:
   - 用户确认 L2/L3 为主体、L4 为理论定界和扩展

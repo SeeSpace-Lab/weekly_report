@@ -171,11 +171,56 @@ def validate_department(
     output = department.get("weekly_output", {})
     max_items = int(output.get("max_items", 8))
     target_minutes = int(output.get("target_read_minutes", 30))
-    if not 1 <= max_items <= 8:
-        raise ValueError(f"{label}: weekly_output.max_items must be 1-8")
+    if not 1 <= max_items <= 20:
+        raise ValueError(f"{label}: weekly_output.max_items must be 1-20")
     if not 1 <= target_minutes <= 30:
         raise ValueError(
             f"{label}: weekly_output.target_read_minutes must be 1-30"
+        )
+    candidate_policy = department.get("candidate_policy", {})
+    if not isinstance(candidate_policy, dict):
+        raise ValueError(f"{label}: candidate_policy must be a mapping")
+    allow_preprints = candidate_policy.get(
+        "allow_strong_new_preprints",
+        False,
+    )
+    if not isinstance(allow_preprints, bool):
+        raise ValueError(
+            f"{label}: candidate_policy.allow_strong_new_preprints "
+            "must be true or false"
+        )
+    for field in (
+        "min_strong_new_preprint_relevance",
+        "min_supplemental_relevance",
+        "min_codex_brief_relevance",
+    ):
+        value = candidate_policy.get(field)
+        if value is None:
+            continue
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not 0 <= float(value) <= 1
+        ):
+            raise ValueError(
+                f"{label}: candidate_policy.{field} must be between 0 and 1"
+            )
+    minimum_minutes = int(output.get("minimum_read_minutes", 1))
+    if not 1 <= minimum_minutes <= target_minutes:
+        raise ValueError(
+            f"{label}: weekly_output.minimum_read_minutes must be "
+            "between 1 and target_read_minutes"
+        )
+    read_minutes = candidate_policy.get("read_minutes", {})
+    if not isinstance(read_minutes, dict) or any(
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or float(value) <= 0
+        for value in read_minutes.values()
+    ):
+        raise ValueError(
+            f"{label}: candidate_policy.read_minutes must contain "
+            "positive numbers"
         )
     sections = output.get("sections", [])
     if not isinstance(sections, list) or "must_read" not in sections:
@@ -195,6 +240,30 @@ def validate_department(
             f"{label}: topic sections missing from weekly_output.sections: "
             + ", ".join(missing_topic_sections)
         )
+    section_routing = output.get("section_routing", {})
+    if section_routing:
+        if not isinstance(section_routing, dict):
+            raise ValueError(
+                f"{label}: weekly_output.section_routing must be a mapping"
+            )
+        mapping = section_routing.get("mapping", {})
+        if not isinstance(mapping, dict):
+            raise ValueError(
+                f"{label}: weekly_output.section_routing.mapping "
+                "must be a mapping"
+            )
+        routed_sections = {
+            str(section)
+            for layer in mapping.values()
+            if isinstance(layer, dict)
+            for section in layer.values()
+        }
+        undeclared = sorted(routed_sections - set(sections))
+        if undeclared:
+            raise ValueError(
+                f"{label}: section routing references undeclared sections: "
+                + ", ".join(undeclared)
+            )
     configured_sources = department_source_ids(department)
     if not configured_sources:
         raise ValueError(f"{label}: source_pool cannot be empty")

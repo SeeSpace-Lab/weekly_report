@@ -111,11 +111,15 @@ class MarkdownRenderAgent:
                 (issue_id,),
             ).fetchall()
         }
+        current_read_minutes = sum(
+            float(row["estimated_read_minutes"] or 0) for row in rows
+        )
         lines = [
             f"# {issue['title']}",
             "",
             f"> 时间窗口：{issue['window_start']} — {issue['window_end']}",
-            f"> 目标阅读时间：约 {issue['target_read_minutes']} 分钟",
+            f"> 当前内容预计阅读：约 {current_read_minutes:g} 分钟"
+            f"（预算上限 {issue['target_read_minutes']} 分钟）",
             "",
             "## 本周趋势",
             "",
@@ -142,7 +146,7 @@ class MarkdownRenderAgent:
             summary_limits = {
                 "must_read": 900,
                 "deep_read": 650,
-                "quick_scan": 180,
+                "quick_scan": 320,
                 "library_review": 280,
             }
             summary = row["display_summary"] or "暂无摘要。"
