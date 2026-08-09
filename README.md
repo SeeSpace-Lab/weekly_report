@@ -39,8 +39,8 @@ arXiv / OpenReview / Crossref / GitHub / Hugging Face
 - Python 不调用外部模型 API；Codex 本地计划任务生成中文题名、一句话摘要、问题、方法、结果和证据等结构化字段；
 - `run-weekly` 同时生成部门周报、运行审计，并更新
   `site/app/department-data.json` 中对应部门的当前期次和独立归档；
-- Codex 每周在本地项目中生成待审版本，研究员通过本地页面审核；
-- GitHub Pages 只接受状态为 `approved` 的快照；本地确认后自动触发，手动工作流保留为故障恢复入口。
+- Codex 每周在本地项目中生成待审版本，并将只读审核快照随开发分支提交；
+- 研究员通过公开快照和 GitHub Pull Request 审核，合并到 `main` 后由 Pages 工作流发布。
 
 ## 安装
 
@@ -56,20 +56,21 @@ npm.cmd --prefix site ci
 npm.cmd --prefix site run build
 ```
 
-## 本地审核与 GitHub Pages
+## GitHub 远程审核与 Pages
 
-Codex 计划任务只更新本地审核站，不自动公开。研究员完成逐条审阅并将整期状态设为
-`approved` 后，本地审核按钮重新导出网页数据并把审核快照提交到仓库。该次推送自动触发
-`Publish approved report to GitHub Pages`，工作流再次核验状态后生成纯静态快照并部署。
-手动触发入口仍然保留，供自动发布失败时重试。
+Codex 计划任务从最新 `origin/main` 创建独立开发分支，完成采集、精读、质量门禁和
+只读站点导出后，只推送该开发分支并创建面向 `main` 的 Pull Request。PR 正文和工作流摘要
+会给出公开审核网址：
 
-本地部门页提供“确认本期周报”按钮。按钮只会在所有精读卡片均由 Codex 生成、包含证据且
-置信度不低于 `0.60` 时通过质量门禁。确认后会批准正文条目、将整期状态改为
-`approved`、重新构建本地站并把审核快照推送到
-GitHub；仅当这次推送包含已批准的周报快照时，Pages 才会自动发布。
+```text
+https://raw.githack.com/SeeSpace-Lab/weekly_report/<开发分支>/site/review/index.html
+```
 
-GitHub Pages 构建时只导出已批准或已发布的历史周报，并将当前批准快照显示为“已发布”。
-本地审核页面会显示审核通过以及 Pages 正在构建发布。
+负责人打开该网址查看周报，点击页面中的“前往 GitHub PR 审核并合并 main”按钮，进入对应的
+GitHub PR 审核流程。负责人完成审核并合并 PR 后，`Publish approved report to GitHub Pages`
+会由 `main` 的推送自动触发；任务本身不会自动合并 PR 或直接推送 `main`。
+
+本地页面仅用于开发调试，不再承担正式审核：
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File scripts\start_local_review.ps1
