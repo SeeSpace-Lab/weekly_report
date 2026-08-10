@@ -88,9 +88,9 @@ powershell.exe -ExecutionPolicy Bypass -File `
 
 部门配置以公司 GitHub 仓库为唯一来源。拥有仓库 Write 权限的部门负责人可以直接
 在 GitHub 网页中复制 `config/departments/_template.yaml`，创建
-`config/departments/<department_id>.yaml`，然后从自己的 `feature/*` 分支向
-`develop` 发起 Pull Request。PR 会自动校验全部部门配置并构建站点；负责人不需要
-访问本仓库维护人的电脑，也不需要安装 Python、Node.js 或 Codex。
+`config/departments/<department_id>.yaml` 并提交到 `main`。main 更新后 GitHub
+Actions 会自动校验全部部门配置并构建站点；负责人不需要访问本仓库维护人的电脑，
+也不需要安装 Python、Node.js 或 Codex。检查失败时必须在 main 上立即修正。
 
 每个部门只维护一个 YAML，在其中填写研究使命、核心与邻近主题、排除边界、论文
 检索式、重点会议、公众号、论文跟踪清单、阅读预算和审核责任。共享来源的连接端点

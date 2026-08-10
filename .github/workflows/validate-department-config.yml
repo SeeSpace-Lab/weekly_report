@@ -1,8 +1,8 @@
 name: Validate department configuration
 
 on:
-  pull_request:
-    branches: [develop]
+  push:
+    branches: [main]
     paths:
       - "config/departments/**"
       - "config/sources.yaml"
@@ -44,7 +44,7 @@ jobs:
           cache: npm
           cache-dependency-path: site/package-lock.json
 
-      - name: Build site with proposed configuration
+      - name: Build site with committed configuration
         working-directory: site
         run: |
           npm ci

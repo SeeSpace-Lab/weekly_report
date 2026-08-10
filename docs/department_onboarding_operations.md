@@ -6,7 +6,7 @@
 [`SeeSpace-Lab/weekly_report`](https://github.com/SeeSpace-Lab/weekly_report)
 为唯一来源。其他部门负责人不需要访问维护人的本地工作区，也不需要安装 Codex、
 Python 或 Node.js；拥有仓库 Write 权限后，可以直接通过 GitHub 网页创建部门 YAML
-并发起 Pull Request。
+并提交到 `main`。
 
 在以下前提下，新增部门只需要在 GitHub 中复制并编辑一个部门 YAML：
 
@@ -45,16 +45,15 @@ Pages 路由或新的站点构建脚本。
 - 开启公司要求的 2FA；
 - 知道本部门的 `department_id`，例如 `satellite_network`。
 
-Write 权限足以创建功能分支和 Pull Request，不需要 Organization Owner 或仓库
-Admin 权限。
+Write 权限足以直接修改 `main`，不需要 Organization Owner 或仓库 Admin 权限。
 
 ### 2.2 在 GitHub 网页复制模板
 
 1. 打开
-   [`config/departments/_template.yaml`](https://github.com/SeeSpace-Lab/weekly_report/blob/develop/config/departments/_template.yaml)；
+   [`config/departments/_template.yaml`](https://github.com/SeeSpace-Lab/weekly_report/blob/main/config/departments/_template.yaml)；
 2. 点击 **Raw**，复制文件全部内容；
 3. 回到
-   [`config/departments`](https://github.com/SeeSpace-Lab/weekly_report/tree/develop/config/departments)；
+   [`config/departments`](https://github.com/SeeSpace-Lab/weekly_report/tree/main/config/departments)；
 4. 点击 **Add file → Create new file**；
 5. 在当前目录下将文件名填写为 `<department_id>.yaml`，例如
    `satellite_network.yaml`；确认页面顶部最终显示的完整路径是
@@ -73,8 +72,7 @@ enabled: false
 status: scope_pending
 ```
 
-未合并的 GitHub 分支不会被本地周报自动任务读取。保持禁用还能避免配置在尚未确认
-完整时被误启用。
+保持禁用可以避免配置在尚未确认完整时被自动任务误启用。
 
 ### 2.4 填写完整后启用
 
@@ -85,44 +83,34 @@ enabled: true
 status: active
 ```
 
-Pull Request 合入 `develop`，并随后由维护人将 `develop` 合入 `main` 后，下一次
-本地自动任务同步公司仓库时会发现并运行该部门。
+配置提交到 `main` 且校验通过后，下一次本地自动任务同步公司仓库时会发现并运行
+该部门。
 
-### 2.5 提交功能分支并创建 PR
+### 2.5 直接提交 main
 
-在页面底部选择 **Create a new branch for this commit and start a pull request**，
-分支名使用：
-
-```text
-feature/department-<department_id>
-```
-
-然后点击 **Propose changes**，创建目标为 `develop` 的 Pull Request，并指定仓库
-维护人或 `owners.github_team` 对应团队审核。
+在页面底部选择 **Commit directly to the main branch**，填写清晰的提交说明并点击
+**Commit changes**。不要创建功能分支。
 
 ### 2.6 等待 GitHub Actions 校验
 
-PR 中的 **Validate department configuration** 会自动：
+main 更新后 **Validate department configuration** 会自动：
 
 1. 校验字段、标识、主题、篇数、阅读时间和来源 ID；
 2. 运行部门配置单元测试；
 3. 根据新配置生成部门页面数据；
 4. 构建站点，确认配置可以正常渲染。
 
-检查失败时不要合并。打开失败的 Job 查看错误，在 GitHub 网页继续编辑同一分支，
-修复后检查会自动重跑。部门负责人不需要在本地执行校验命令。
+检查失败时打开失败的 Job 查看错误，并直接在 main 修复；修复后检查会自动重跑。
+部门负责人不需要在本地执行校验命令。
 
-### 2.7 审核、合并与生效
+### 2.7 校验与生效
 
-1. 至少一名 Reviewer 审核并 Approve；
-2. 所有 Actions 检查通过；
-3. 维护人将功能分支合入 `develop`；
-4. 按公司发布节奏，由维护人通过 PR 将 `develop` 合入 `main`；
-5. 本地自动任务在生成周报前同步 `origin/main`，然后读取新部门配置。
+1. 确认 **Validate department configuration** 通过；
+2. 本地自动任务在生成周报前同步 `origin/main`，然后读取新部门配置；
+3. 如果检查失败，立即修正 main，不能等待下一次周报任务兜底。
 
-合入 `develop` 只代表配置通过集成审核；进入 `main` 后才成为本地自动任务使用的
-正式配置。任何 GitHub Actions Secret、Token、Cookie、内网地址或账号密码都不能
-写入部门 YAML、Issue 或 PR 评论。
+进入 `main` 后即成为本地自动任务使用的正式配置。任何 GitHub Actions Secret、
+Token、Cookie、内网地址或账号密码都不能写入部门 YAML、Issue 或提交说明。
 
 ## 3. YAML 顶层组件
 
@@ -239,7 +227,7 @@ owners:
 ```
 
 - `content_owner`：对范围、选题和内容正确性负责；
-- `github_team`：在公司 GitHub 中负责 PR 审核的团队；
+- `github_team`：在公司 GitHub 中负责仓库维护和校验失败处理的团队；
 - `reviewer_label`：写入本地审核记录的稳定标签。
 
 内容负责人不需要是公司 GitHub 组织管理员。公司管理员只需一次性配置仓库权限、
@@ -685,14 +673,13 @@ activation_requirements:
 5. 按部门来源池独立采集和形成候选；
 6. 按部门使命、主题和排除范围独立筛选；
 7. 为每个部门生成独立候选包和分析文件；
-8. 导入中文精读并保持状态为 `review`；
-9. 统一运行 Python 测试、站点构建和 Pages 静态导出；
-10. 启动本地审核页面；
-11. 不自动点击审核，不提交、不推送、不发布。
+8. 导入中文精读并执行自动质量门禁；
+9. 门禁通过后将本期状态更新为 `approved`；
+10. 统一运行 Python 测试、站点构建和 Pages 静态导出；
+11. 使用明确文件清单提交并直接推送 `main`，触发 GitHub Pages 发布。
 
-如果本地存在未提交改动，自动任务必须停止并报告，不能通过 reset、覆盖文件或强制
-合并来获取远端配置。这样 GitHub 上已进入 `main` 的部门配置才是下一次生成任务的
-输入，同时不会破坏尚未审核的本地周报。
+如果本地存在冲突的已跟踪改动，自动任务必须停止并报告，不能通过 reset、覆盖文件
+或强制合并来获取远端配置。无关的本地服务、缓存和人工收件箱继续保留。
 
 如果某部门本期已经 `approved` 或 `published`，自动任务会保护该期内容并跳过，
 不会覆盖已批准选择。
@@ -805,8 +792,8 @@ status: active
 - [ ] `target_read_minutes <= 30`；
 - [ ] 内容负责人和 GitHub 审核团队已填写；
 - [ ] 完成后设置 `enabled: true`、`status: active`；
-- [ ] GitHub PR 的 **Validate department configuration** 已通过；
-- [ ] 周报最终仍由研究员在本地审核页面确认。
+- [ ] main 的 **Validate department configuration** 已通过；
+- [ ] 自动周报通过质量门禁后已直接推送 main 并触发 Pages。
 
 ## 23. 相关文件
 

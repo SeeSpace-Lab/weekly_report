@@ -4,7 +4,7 @@
 
 本文档说明公司成员如何从
 [`SeeSpace-Lab/weekly_report`](https://github.com/SeeSpace-Lab/weekly_report)
-取得正式配置，在每周一自动任务之外手动生成一份待审核周报。
+取得正式配置，在每周一自动任务之外手动生成并发布一份周报。
 
 这里的“手动生成”包括：
 
@@ -12,20 +12,21 @@
 2. 从固定来源池采集最近一个完整自然周的更新；
 3. 形成候选池；
 4. 由 Agent 核验原始来源并生成中文精读；
-5. 导入分析结果并构建本地审核页面。
+5. 导入分析结果，通过自动质量门禁后直接提交并发布。
 
-手动生成必须停留在 `review` 状态。生成任务不得自动批准、提交、推送或发布周报。
+手动生成同样必须满足自动任务的篇数、阅读时间、中文细读、一手来源和测试门禁；
+未通过时不得提交，全部通过后更新为 `approved` 并直接推送 `main`。
 
 ## 2. GitHub 与本地环境分别负责什么
 
 | 环节 | 执行位置 | 说明 |
 |---|---|---|
 | 部门范围和来源配置 | GitHub | `main` 中的配置是正式输入 |
-| 配置修改和新增部门 | GitHub PR | `feature/* → develop → main` |
+| 配置修改和新增部门 | GitHub main | 直接提交 `main`，随后检查 Actions |
 | 论文和公众号采集 | 本地电脑 | 依赖本地数据库、网络和 WeRSS |
 | Agent 精读与写作 | 本地 Codex | 不调用仓库外的模型 API Key |
-| 研究员审核 | 本地审核页面 | 审核前不得公开 |
-| 静态站点部署 | GitHub Actions | 只接受已经批准并进入仓库的快照 |
+| 自动质量门禁 | 本地 Codex | 未通过不得提交或发布 |
+| 静态站点部署 | GitHub Actions | 只接受门禁通过并标记为 approved 的快照 |
 
 GitHub Actions 当前不能代替完整的本地采集和 Agent 精读。仅有 GitHub 网页访问权限，
 但没有本地运行环境的成员，可以修改部门配置或重试已批准快照的部署，不能生成新一期
@@ -38,7 +39,7 @@ GitHub Actions 当前不能代替完整的本地采集和 Agent 精读。仅有 
 - 已加入公司 GitHub Organization 或获得仓库访问权限；
 - 能读取仓库；需要修改配置时至少拥有 Write 权限；
 - 已按公司要求开启 2FA；
-- 不直接向 `main` 或 `develop` 推送。
+- 按仓库现行规则直接向 `main` 推送，不再创建功能分支或 Pull Request。
 
 ### 3.2 本地软件
 
@@ -134,11 +135,11 @@ status: active
    方法、结果或录用状态。
 9. 生成 runs/codex/<department_id>-analysis.json，并按仓库的数据结构导入。
    最多 8 项，总阅读时间不超过 30 分钟；证据不足时删除条目，不降低门槛。
-10. 运行 Python 测试和站点构建，然后启动该部门的本地审核页面。
-11. 最终必须停留在 review 状态。不得点击审核通过，不得 commit、push、创建发布
-    PR 或触发 GitHub Pages。
+10. 运行 Python 测试和站点构建，机械核验所有核心部门的篇数与精读卡。
+11. 全部门通过后运行 `approve-and-export`，确认本期状态均为 `approved`；然后使用
+    明确文件清单提交并直接推送 `main`，触发 GitHub Pages。
 12. 最后报告：部门、ISO 周次、采集状态、候选数、入选数、总阅读时间、来源失败、
-    质量门禁和本地审核地址。
+    质量门禁、main 提交和 GitHub Pages 状态。
 
 如果部门是 orbitinfer，先完整阅读并遵守
 skills/orbitinfer-weekly-survey/SKILL.md。
@@ -216,7 +217,7 @@ docker start weekly-report-werss
 ```
 
 公众号授权失效时需要由获授权人员重新扫码。不得把 Cookie 或 Token 发到 Issue、
-PR、Agent 对话或仓库文件中。
+Agent 对话、提交说明或仓库文件中。
 
 ### OpenReview 出现验证挑战
 
@@ -238,14 +239,14 @@ PR、Agent 对话或仓库文件中。
 先检查来源是否真的采集成功、时间窗口内是否有重要更新。不能为了凑满篇数降低证据
 门槛。
 
-## 10. 审核和发布边界
+## 10. 质量门禁和发布边界
 
-完成本文档流程后，周报状态应为 `review`。只有指定研究员可以确认内容并将其改为
-`approved`。
+采集和精读完成后，周报先保持 `review`。只有篇数、阅读时间、中文细读、一手来源、
+置信度和测试全部通过，才运行 `approve-and-export` 将其改为 `approved`。
 
 GitHub Actions 中的 **Publish approved report to GitHub Pages** 只用于部署已经
 批准且已经进入仓库的快照。手动点击 **Run workflow** 不会执行采集、Agent 精读或
-研究员审核，也不能发布 `review` 状态的内容。
+自动质量门禁，也不能发布 `review` 状态的内容。
 
 手动重试部署时必须明确填写：
 
@@ -253,9 +254,8 @@ GitHub Actions 中的 **Publish approved report to GitHub Pages** 只用于部�
 - `department`：部门 ID；
 - `issue`：已批准的 ISO 周次，例如 `2026-W30`。
 
-如果仓库发布流程、分支保护或审核脚本与公司
-`feature/* → develop → main` 规范不一致，应停止发布并联系仓库维护人，不得通过
-直接推送受保护分支绕过审核。
+如果仓库发布流程、分支保护或质量门禁脚本与“直接推送 main”规则不一致，应停止
+发布并联系仓库维护人，不得通过跳过测试或伪造 `approved` 状态绕过门禁。
 
 ## 11. 相关文档
 

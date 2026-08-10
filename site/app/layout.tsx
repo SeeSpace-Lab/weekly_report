@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const title = "观宇芯算研发部周报";
-const description = "2026-W32 研发周报公开只读审核：16 条精选研究情报与一手来源核验";
+const description = "观宇芯算研发部每周技术情报、论文精读与一手来源核验";
 const socialImage =
-  "https://guanyu-weekly-w32-review.dccctrue.chatgpt.site/og-w32-v2.png";
+  "https://seespace-lab.github.io/og.png";
 
 export const metadata: Metadata = {
   title,

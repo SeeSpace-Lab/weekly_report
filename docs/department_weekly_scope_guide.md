@@ -13,9 +13,9 @@
 
 新增部门时，部门负责人应在公司 GitHub 网页中从
 `config/departments/_template.yaml` 创建自己的
-`config/departments/<department_id>.yaml`，从 `feature/*` 分支向 `develop`
-发起 Pull Request。填写期间保持 `enabled: false`；完整填写后设置为
-`enabled: true`，由 GitHub Actions 自动验证。
+`config/departments/<department_id>.yaml` 并直接提交到 `main`。填写期间保持
+`enabled: false`；完整填写后设置为 `enabled: true`，由 GitHub Actions 在 main
+更新后自动验证；验证失败时必须立即修正。
 
 ## 二、范围必须回答的六个问题
 
@@ -82,19 +82,18 @@
 - `weekly_output.sections` 必须包含 `must_read`。
 - 自定义板块必须同时配置 `section_labels`。
 - `owners.content_owner` 对调研范围和内容正确性负责。
-- `owners.github_team` 对公司仓库中的合并和发布负责；不要求内容负责人拥有组织
+- `owners.github_team` 对公司仓库维护、校验失败处理和发布负责；不要求内容负责人拥有组织
   管理员权限。
 
 ## 四、GitHub 启用步骤
 
-1. 在 GitHub 打开 `develop` 分支的 `config/departments/_template.yaml`；
+1. 在 GitHub 打开 `main` 分支的 `config/departments/_template.yaml`；
 2. 复制内容并在 `config/departments` 目录通过
    **Add file → Create new file** 新建 `<department_id>.yaml`；
 3. 完成配置并设置 `enabled: true`、`status: active`；
-4. 提交到 `feature/department-<department_id>` 分支；
-5. 向 `develop` 发起 Pull Request；
-6. 等待 **Validate department configuration** 通过和 Reviewer Approve；
-7. 由维护人合入 `develop`，再按发布节奏将 `develop` 合入 `main`。
+4. 选择 **Commit directly to the main branch** 并提交；
+5. 等待 **Validate department configuration** 通过；
+6. 检查失败时直接在 main 修正，检查通过后配置立即生效。
 
 部门负责人不需要使用维护人的本地路径，也不需要在本地安装或运行校验工具。以下
 命令仅供维护人员在需要立即试运行时使用。
