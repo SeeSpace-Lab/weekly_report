@@ -37,7 +37,8 @@ def test_openalex_keeps_paywalled_acm_ieee_metadata(monkeypatch) -> None:
     collector = OpenAlexCollector(lambda *_: json.dumps({"results": [record], "meta": {}}).encode())
     batch = collector.collect(source("openalex", "OpenAlexCollector", search_terms=["satellite computing"], max_pages=1), WINDOW)
     assert batch.status == BatchStatus.OK
-    assert batch.documents[0].metadata["access_status"] == "待获取全文"
+    assert batch.documents[0].metadata["access_status"] == "待获取全文｜基于摘要初筛"
+    assert batch.documents[0].metadata["evidence_status"] == "abstract_screened"
     assert batch.documents[0].metadata["publisher"] == "ACM"
 
 

@@ -108,6 +108,13 @@ class OpenAlexCollector:
             identifiers["doi"] = doi
         is_oa = bool((record.get("open_access") or {}).get("is_oa"))
         payload = dict(record)
+        abstract = _abstract(record.get("abstract_inverted_index"))
+        if best_oa.get("pdf_url"):
+            access_status = "已获取全文"
+        elif abstract:
+            access_status = "待获取全文｜基于摘要初筛"
+        else:
+            access_status = "待获取全文与摘要｜仅题目判断"
         return CollectedDocument(
             source_id=source.source_id,
             external_id=openalex_id,
@@ -118,7 +125,7 @@ class OpenAlexCollector:
             updated_at_source=_date(record.get("updated_date")),
             discovered_at=discovered_at,
             authors=authors,
-            summary=_abstract(record.get("abstract_inverted_index")),
+            summary=abstract,
             language=record.get("language"),
             identifiers=identifiers,
             metadata={
@@ -128,8 +135,11 @@ class OpenAlexCollector:
                 "publisher": source_record.get("host_organization_name"),
                 "work_type": record.get("type"),
                 "is_oa": is_oa,
-                "access_status": "full_text" if best_oa.get("pdf_url") else (
-                    "open_access" if is_oa else "待获取全文"
+                "access_status": access_status,
+                "evidence_status": (
+                    "full_text"
+                    if best_oa.get("pdf_url")
+                    else "abstract_screened" if abstract else "title_only"
                 ),
                 "pdf_url": best_oa.get("pdf_url"),
                 "cited_by_count": record.get("cited_by_count"),

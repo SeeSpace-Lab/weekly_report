@@ -50,6 +50,15 @@ class IeeeXploreCollector:
             identifiers["doi"] = doi
         access_type = str(record.get("access_type") or record.get("accessType") or "").strip()
         payload = dict(record)
+        abstract = str(record.get("abstract") or "").strip() or None
+        is_open = "open" in access_type.casefold()
+        access_status = (
+            "已获取全文"
+            if is_open
+            else "待获取全文｜基于摘要初筛"
+            if abstract
+            else "待获取全文与摘要｜仅题目判断"
+        )
         return CollectedDocument(
             source_id=source.source_id,
             external_id=article_number,
@@ -60,7 +69,7 @@ class IeeeXploreCollector:
             updated_at_source=_date(record.get("publication_date")),
             discovered_at=discovered_at,
             authors=authors,
-            summary=record.get("abstract"),
+            summary=abstract,
             language="en",
             identifiers=identifiers,
             metadata={
@@ -70,7 +79,12 @@ class IeeeXploreCollector:
                 "publisher": "IEEE",
                 "content_type": record.get("content_type"),
                 "access_type": access_type,
-                "access_status": "open_access" if "open" in access_type.casefold() else "待获取全文",
+                "access_status": access_status,
+                "evidence_status": (
+                    "full_text"
+                    if is_open
+                    else "abstract_screened" if abstract else "title_only"
+                ),
             },
             raw_payload=payload,
             content_hash=sha256_text(json_dumps(payload)),

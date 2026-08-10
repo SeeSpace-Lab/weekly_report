@@ -323,8 +323,10 @@ content_requirements:
   full_text_access:
     keep_in_index_when_unavailable: true
     unavailable_label: 待获取全文
-    metadata_only_rule: 当前没有全文权限时，仍保留题名、作者、会议或期刊、发表时间、摘要、原文链接和相关性判断
-    evidence_boundary: 只能依据已核验的题录和摘要介绍具体内容，不补写摘要中未披露的方法、实验结果或结论
+    abstract_available_label: 待获取全文｜基于摘要初筛
+    title_only_label: 待获取全文与摘要｜仅题目判断
+    metadata_only_rule: 当前没有全文权限时，仍保留题目、作者、会议或期刊、发表时间、摘要、原文链接和相关性判断
+    evidence_boundary: 只能依据已核验的题目和摘要介绍具体内容，不补写摘要中未披露的方法、实验结果或结论
 
 editorial_guidance:
   item_structure:
