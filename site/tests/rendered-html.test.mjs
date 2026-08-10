@@ -46,6 +46,8 @@ test("server-renders the OrbitInfer department report", async () => {
   assert.match(html, /本周趋势雷达/);
   assert.match(html, /\d+<\/strong><span>精选条目/);
   assert.match(html, /查看一手来源/);
+  assert.match(html, /https:\/\/github\.com\/SeeSpace-Lab\/weekly_report\/pull\/13/);
+  assert.match(html, /前往 GitHub PR 审核并合并 main/);
   assert.match(html, /class="oneSentence"/);
   assert.match(html, /<dt>问题<\/dt>/);
   assert.match(html, /class="translatedTitle">/);

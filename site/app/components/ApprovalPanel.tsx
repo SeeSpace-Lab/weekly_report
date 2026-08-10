@@ -4,8 +4,8 @@ type ApprovalPanelProps = {
   isoWeek: string;
 };
 
-const REVIEW_PULL_REQUESTS =
-  "https://github.com/SeeSpace-Lab/weekly_report/pulls?q=is%3Apr+is%3Aopen+base%3Amain+in%3Atitle";
+const REVIEW_PULL_REQUEST =
+  "https://github.com/SeeSpace-Lab/weekly_report/pull/13";
 
 export default function ApprovalPanel({
   departmentId,
@@ -38,7 +38,7 @@ export default function ApprovalPanel({
       <div className="approvalAction">
         <a
           className="approvalLinkButton"
-          href={`${REVIEW_PULL_REQUESTS}+${encodeURIComponent(isoWeek)}`}
+          href={REVIEW_PULL_REQUEST}
           target="_blank"
           rel="noreferrer"
         >
