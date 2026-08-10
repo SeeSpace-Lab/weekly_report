@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       issue: ${{ steps.issue.outputs.issue }}
+      publish: ${{ steps.issue.outputs.publish }}
     steps:
       - uses: actions/checkout@v4
 
@@ -45,24 +46,35 @@ jobs:
         run: |
           node - <<'NODE'
           const data = require("./site/app/department-data.json");
-          const reports = data.departments.flatMap((department) =>
-            department.archive.map((report) => ({ department, report })),
-          );
-          const approved = reports.filter(({ department, report }) =>
-            report.issue.status === "approved" &&
-            (!process.env.EXPECTED_DEPARTMENT ||
-              department.id === process.env.EXPECTED_DEPARTMENT) &&
-            (!process.env.EXPECTED_ISSUE ||
-              report.issue.isoWeek === process.env.EXPECTED_ISSUE),
-          );
-          if (!approved.length) {
-            throw new Error("Refusing publication: no matching approved report");
-          }
-          const { department, report } = approved[0];
           const fs = require("node:fs");
+          const departments = data.departments.filter(
+            (department) =>
+              department.enabled &&
+              (!process.env.EXPECTED_DEPARTMENT ||
+                department.id === process.env.EXPECTED_DEPARTMENT),
+          );
+          const latestIssue = process.env.EXPECTED_ISSUE || departments
+            .map((department) => department.currentReport?.issue.isoWeek)
+            .filter(Boolean)
+            .sort()
+            .at(-1);
+          const pending = departments.filter((department) =>
+            department.currentReport?.issue.isoWeek !== latestIssue ||
+            !["approved", "published"].includes(
+              department.currentReport?.issue.status,
+            ),
+          );
+          if (!latestIssue || pending.length) {
+            console.log(
+              `Skip publication: ${latestIssue || "current issue"} is not approved for ` +
+                pending.map((department) => department.id).join(", "),
+            );
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, "publish=false\nissue=\n");
+            process.exit(0);
+          }
           fs.appendFileSync(
             process.env.GITHUB_OUTPUT,
-            `issue=${department.id}/${report.issue.isoWeek}\n`,
+            `publish=true\nissue=${latestIssue}\n`,
           );
           NODE
         env:
@@ -71,6 +83,7 @@ jobs:
 
   build:
     needs: verify
+    if: ${{ needs.verify.outputs.publish == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -97,6 +110,7 @@ jobs:
 
   deploy:
     needs: [verify, build]
+    if: ${{ always() && needs.verify.outputs.publish == 'true' && needs.build.result == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
