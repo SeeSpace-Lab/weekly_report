@@ -113,6 +113,7 @@
       },
       "weeklyOutput": {
         "target_read_minutes": 30,
+        "min_items": 8,
         "max_items": 8,
         "max_wechat_items": 3,
         "wechat_candidate_reserve": 8,
@@ -148,7 +149,7 @@
           "isoWeek": "2026-W32",
           "windowStart": "2026-08-02T16:00:00+00:00",
           "windowEnd": "2026-08-09T15:59:59.999999+00:00",
-          "status": "review",
+          "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 30.0,
           "itemCount": 8
@@ -471,7 +472,7 @@
             "isoWeek": "2026-W32",
             "windowStart": "2026-08-02T16:00:00+00:00",
             "windowEnd": "2026-08-09T15:59:59.999999+00:00",
-            "status": "review",
+            "status": "approved",
             "targetReadMinutes": 30,
             "estimatedReadMinutes": 30.0,
             "itemCount": 8
@@ -1594,6 +1595,7 @@
       },
       "weeklyOutput": {
         "target_read_minutes": 30,
+        "min_items": 8,
         "max_items": 8,
         "max_wechat_items": 3,
         "wechat_candidate_reserve": 8,
@@ -1627,7 +1629,7 @@
           "isoWeek": "2026-W32",
           "windowStart": "2026-08-02T16:00:00+00:00",
           "windowEnd": "2026-08-09T15:59:59.999999+00:00",
-          "status": "review",
+          "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 30.0,
           "itemCount": 8
@@ -1951,7 +1953,7 @@
             "isoWeek": "2026-W32",
             "windowStart": "2026-08-02T16:00:00+00:00",
             "windowEnd": "2026-08-09T15:59:59.999999+00:00",
-            "status": "review",
+            "status": "approved",
             "targetReadMinutes": 30,
             "estimatedReadMinutes": 30.0,
             "itemCount": 8
@@ -2811,6 +2813,7 @@
       },
       "weeklyOutput": {
         "target_read_minutes": 30,
+        "min_items": 0,
         "max_items": 8,
         "max_wechat_items": 3,
         "wechat_candidate_reserve": 8,
@@ -2843,7 +2846,7 @@
           "isoWeek": "2026-W32",
           "windowStart": "2026-08-02T16:00:00+00:00",
           "windowEnd": "2026-08-09T15:59:59.999999+00:00",
-          "status": "review",
+          "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 0,
           "itemCount": 0
@@ -2862,7 +2865,7 @@
             "isoWeek": "2026-W32",
             "windowStart": "2026-08-02T16:00:00+00:00",
             "windowEnd": "2026-08-09T15:59:59.999999+00:00",
-            "status": "review",
+            "status": "approved",
             "targetReadMinutes": 30,
             "estimatedReadMinutes": 0,
             "itemCount": 0
