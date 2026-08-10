@@ -46,8 +46,9 @@ test("server-renders the OrbitInfer department report", async () => {
   assert.match(html, /本周趋势雷达/);
   assert.match(html, /\d+<\/strong><span>精选条目/);
   assert.match(html, /查看一手来源/);
-  assert.match(html, /https:\/\/github\.com\/SeeSpace-Lab\/weekly_report\/pull\/13/);
-  assert.match(html, /前往 GitHub PR 审核并合并 main/);
+  assert.match(html, /公开只读审核/);
+  assert.match(html, /不会写入 GitHub/);
+  assert.doesNotMatch(html, /github\.com\/SeeSpace-Lab\/weekly_report\/pull\/13/);
   assert.match(html, /class="oneSentence"/);
   assert.match(html, /<dt>问题<\/dt>/);
   assert.match(html, /class="translatedTitle">/);
@@ -97,6 +98,18 @@ test("ships structured report, library and interaction controls", async () => {
   assert.equal(departmentPayload.departments.length, 3);
   assert.equal(orbitinfer.enabled, true);
   assert.equal(payload.issue.isoWeek, "2026-W32");
+  assert.equal(payload.issue.itemCount, 8);
+  const modelDepartment = departmentPayload.departments.find(
+    (department) => department.id === "model_and_application",
+  );
+  assert.equal(modelDepartment.currentReport.issue.itemCount, 8);
+  assert.equal(
+    departmentPayload.departments.reduce(
+      (total, department) => total + department.currentReport.issue.itemCount,
+      0,
+    ),
+    16,
+  );
   const renderedItemCount = payload.sections.reduce(
     (count, section) => count + section.items.length,
     0,

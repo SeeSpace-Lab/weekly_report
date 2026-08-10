@@ -263,10 +263,16 @@ class CodexWeeklyHandoff:
         if issue["status"] in {"approved", "published"}:
             raise ValueError("approved or published issue cannot be replaced")
         selections = payload.get("selections")
-        if not isinstance(selections, list) or not selections:
-            raise ValueError("selections cannot be empty")
+        if not isinstance(selections, list):
+            raise ValueError("selections must be an array")
         output_config = self.department.get("weekly_output", {})
         max_items = int(output_config.get("max_items", 8))
+        min_items = int(output_config.get("min_items", 1))
+        if len(selections) < min_items:
+            raise ValueError(
+                f"selections below min_items={min_items}: "
+                f"got {len(selections)}"
+            )
         if len(selections) > max_items:
             raise ValueError(f"selections exceeds max_items={max_items}")
         allowed_sections = set(output_config.get("sections", []))

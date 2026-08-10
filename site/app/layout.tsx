@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const title = "观宇芯算研发部周报";
-const description = "面向研发部门的自动化技术情报、论文库与公众号研究雷达";
+const description = "2026-W32 研发周报公开只读审核：16 条精选研究情报与一手来源核验";
+const socialImage =
+  "https://guanyu-weekly-w32-review.dccctrue.chatgpt.site/og-w32-v2.png";
 
 export const metadata: Metadata = {
   title,
@@ -11,13 +13,13 @@ export const metadata: Metadata = {
     title,
     description,
     type: "website",
-    images: [{ url: "/og.png", width: 1536, height: 1024 }],
+    images: [{ url: socialImage, width: 1536, height: 1024 }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og.png"],
+    images: [socialImage],
   },
 };
 

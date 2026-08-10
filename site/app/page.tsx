@@ -26,16 +26,21 @@ const reportData = primaryDepartment?.currentReport ?? null;
 
 export default function PortalHome() {
   const collectedSources = sourceData.accounts.filter(
-    (account) => account.articles.length > 0,
+    (account) => account.inWindow > 0,
   );
-  const weeklyItemCount = reportData
-    ? reportData.sections
+  const weeklyItemCount = departments.reduce((departmentTotal, department) => {
+    const report = department.currentReport;
+    if (!report) return departmentTotal;
+    return (
+      departmentTotal +
+      report.sections
         .filter(
           (section) =>
             !["venue_updates", "library_review"].includes(section.id),
         )
         .reduce((total, section) => total + section.items.length, 0)
-    : 0;
+    );
+  }, 0);
   const date = (value: string) => value.slice(0, 10).replaceAll("-", ".");
 
   return (
@@ -85,7 +90,7 @@ export default function PortalHome() {
           <div><strong>{departments.length}</strong><span>部门入口</span></div>
           <div><strong>{weeklyItemCount}</strong><span>本周精选</span></div>
           <div><strong>{libraryData.papers.length}</strong><span>固定论文库</span></div>
-          <div><strong>{collectedSources.length}</strong><span>已采集公众号</span></div>
+          <div><strong>{collectedSources.length}</strong><span>本周公众号</span></div>
         </div>
       </section>
 

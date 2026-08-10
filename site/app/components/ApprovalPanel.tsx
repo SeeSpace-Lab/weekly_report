@@ -4,9 +4,6 @@ type ApprovalPanelProps = {
   isoWeek: string;
 };
 
-const REVIEW_PULL_REQUEST =
-  "https://github.com/SeeSpace-Lab/weekly_report/pull/13";
-
 export default function ApprovalPanel({
   departmentId,
   status,
@@ -28,22 +25,16 @@ export default function ApprovalPanel({
     <aside className="approvalPanel">
       <div>
         <span>REMOTE REVIEW</span>
-        <strong>{isoWeek} GitHub 远程审核</strong>
+        <strong>{isoWeek} 公开只读审核</strong>
         <p>
-          本页面是只读草稿。代码和周报只能从独立开发分支提交，并通过面向
-          main 的 Pull Request 审核；页面不会直接推送受保护分支或发布
-          GitHub Pages。
+          本页面仅用于负责人远程查看本期草稿，不会写入 GitHub、创建 Pull
+          Request、修改审核状态或触发正式发布。审核意见请反馈给周报维护人。
         </p>
       </div>
       <div className="approvalAction">
-        <a
-          className="approvalLinkButton"
-          href={REVIEW_PULL_REQUEST}
-          target="_blank"
-          rel="noreferrer"
-        >
-          前往 GitHub PR 审核并合并 main
-        </a>
+        <span className="approvalLinkButton" aria-label="只读审核快照">
+          只读审核快照
+        </span>
       </div>
     </aside>
   );
