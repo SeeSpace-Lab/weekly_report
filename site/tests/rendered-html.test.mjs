@@ -76,7 +76,7 @@ test("renders the library, source pool, archive and second department", async ()
   assert.doesNotMatch(sourceHtml, /DataFunTalk/);
   const archiveHtml = await archive.text();
   assert.match(archiveHtml, /历史周报/);
-  assert.match(archiveHtml, /2026-W31/);
+  assert.match(archiveHtml, /2026-W30/);
   assert.match(await department.text(), /L2/);
 });
 
