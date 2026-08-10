@@ -9,7 +9,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-05T08:29:46.931913+00:00",
+      "checkedAt": "2026-08-10T00:15:58.217638+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -58,10 +58,10 @@
       "homepageUrl": null,
       "accountAlias": "paperweekly",
       "contentRole": "paper_interpretation",
-      "health": "unexpected_error",
-      "runStatus": "error",
-      "checkedAt": "2026-08-05T08:29:12.699763+00:00",
-      "feedEntries": 0,
+      "health": "no_recent_update",
+      "runStatus": "unchanged",
+      "checkedAt": "2026-08-10T00:17:16.265067+00:00",
+      "feedEntries": 30,
       "inWindow": 0,
       "articles": [
         {
@@ -111,7 +111,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-05T08:28:48.926255+00:00",
+      "checkedAt": "2026-08-10T00:15:03.562807+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -150,7 +150,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-05T08:29:07.161177+00:00",
+      "checkedAt": "2026-08-10T00:16:48.341893+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -199,10 +199,10 @@
       "homepageUrl": null,
       "accountAlias": "aitechtalk",
       "contentRole": "trend_discovery",
-      "health": "unexpected_error",
-      "runStatus": "error",
-      "checkedAt": "2026-08-05T08:29:12.678452+00:00",
-      "feedEntries": 0,
+      "health": "no_recent_update",
+      "runStatus": "unchanged",
+      "checkedAt": "2026-08-10T00:16:04.287177+00:00",
+      "feedEntries": 30,
       "inWindow": 0,
       "articles": [
         {
@@ -252,7 +252,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-05T08:29:37.190122+00:00",
+      "checkedAt": "2026-08-10T00:14:57.811347+00:00",
       "feedEntries": 25,
       "inWindow": 0,
       "articles": [
@@ -303,7 +303,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-05T08:28:59.510685+00:00",
+      "checkedAt": "2026-08-10T00:17:07.133309+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [

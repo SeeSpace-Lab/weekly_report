@@ -2,6 +2,329 @@
   "issues": [
     {
       "issue": {
+        "id": "9148b50d-0cb2-4d91-8c57-56b842c64fb6",
+        "departmentId": "model_and_application",
+        "title": "模型应用周报 · 2026-W32",
+        "isoWeek": "2026-W32",
+        "windowStart": "2026-08-02T16:00:00+00:00",
+        "windowEnd": "2026-08-09T15:59:59.999999+00:00",
+        "status": "review",
+        "targetReadMinutes": 30,
+        "estimatedReadMinutes": 30.0,
+        "itemCount": 8
+      },
+      "trends": [
+        "本周有32项相关进展，集中在多模态模型。",
+        "本周有1项相关进展，集中在Token压缩。"
+      ],
+      "sections": [
+        {
+          "id": "department_relevance",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "AgentPatch: Coarse-to-Fine Weak-Task Repair for Merging Agentic Multimodal Large Language Models",
+              "url": "https://arxiv.org/abs/2608.06699",
+              "reason": "该 W32 新稿关注多个专用多模态 Agent 合并时的弱任务丢失，回应模型应用组对通用 Agent 架构和能力整合的需求。",
+              "summary": "**中文标题：** AgentPatch：粗到细修复合并后 Agentic 多模态模型的弱任务\n\n**AgentPatch 先选稳定合并骨干，再恢复弱任务独有残差和行为关键动作，生成无需路由或集成的单一静态检查点。**\n\n不同工具和环境训练出的 Agentic MLLM 难以合成通用模型；直接合并会不对称地损失弱任务能力，并遗忘决定长程执行成败的关键动作。\n\n训练无关框架先确定稳定骨干，用 Weak-Task Unique Residual Recovery 恢复被稀释的任务信号，再以 Agent 引导的关键行为补丁修复决定性动作，同时保护其他能力。\n\n摘要报告在六个 Agent 与多模态基准上，AgentPatch 可改善多种合并骨干，在恢复弱任务的同时更好保留搜索和 Agentic 视觉处理能力，并输出单一静态模型。",
+              "implication": "若部门需要整合遥感、工具调用和视觉交互等专用 Agent，可把弱任务保持和关键动作遗忘作为合并验收指标。",
+              "readMinutes": 3.0,
+              "publishedAt": "2026-08-07T01:52:45+00:00",
+              "updatedAt": "2026-08-07T01:52:45+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "AgentPatch：粗到细修复合并后 Agentic 多模态模型的弱任务",
+                "oneSentenceZh": "AgentPatch 先选稳定合并骨干，再恢复弱任务独有残差和行为关键动作，生成无需路由或集成的单一静态检查点。",
+                "problemZh": "不同工具和环境训练出的 Agentic MLLM 难以合成通用模型；直接合并会不对称地损失弱任务能力，并遗忘决定长程执行成败的关键动作。",
+                "methodZh": "训练无关框架先确定稳定骨干，用 Weak-Task Unique Residual Recovery 恢复被稀释的任务信号，再以 Agent 引导的关键行为补丁修复决定性动作，同时保护其他能力。",
+                "resultZh": "摘要报告在六个 Agent 与多模态基准上，AgentPatch 可改善多种合并骨干，在恢复弱任务的同时更好保留搜索和 Agentic 视觉处理能力，并输出单一静态模型。",
+                "contributions": [
+                  "形式化 Agentic 多模态模型合并中的弱任务与关键行为遗忘问题",
+                  "结合任务残差恢复与关键行为补丁进行粗到细修复",
+                  "无需路由或模型集成即可得到单一静态检查点"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要描述两类合并失效及两阶段修复结构",
+                  "摘要声明覆盖六个 Agentic 和多模态基准，并提供公开代码"
+                ],
+                "limitations": [
+                  "摘要未给出六个基准的逐项数值和模型规模变化",
+                  "所谓训练无关修复仍需评估合并与补丁构造的内存和离线计算成本"
+                ],
+                "confidence": 0.7,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        },
+        {
+          "id": "frameworks_benchmarks_datasets",
+          "items": [
+            {
+              "position": 1,
+              "role": "must_read",
+              "itemType": "paper",
+              "title": "RSVideo: Are Your Vision-Language Models Ready for Remote Sensing Videos?",
+              "url": "https://arxiv.org/abs/2608.02039",
+              "reason": "该 W32 新稿同时提供遥感视频数据集、固定评测和针对小目标时空聚焦的训练方法，补齐模型应用组遥感视频能力评估缺口。",
+              "summary": "**中文标题：** RSVideo：现有视觉语言模型准备好理解遥感视频了吗？\n\n**RSVideo-10K 与 RSVideo-Bench 系统评估连续遥感视频理解，并用强化学习选择跨帧问题相关区域、压制冗余背景 Token。**\n\n现有遥感多模态模型主要处理单张图像或稀疏时间点，缺少连续视频中小目标、短暂状态和场景约束空间关系的统一评测。\n\n工作构建覆盖无人机和卫星视频的数据集与 17 类任务评测，并提出面向小目标的时空聚焦强化学习框架，在多帧中选择问题相关区域、减少背景冗余。\n\n数据集含 10,773 个实例、147 万帧和 17.02 小时视频；基准含 2,731 个测试实例。方法在 InternVL3.5-14B 上最高提升 9.01 个百分点，Qwen3.6-27B 达到 40.63% 最高准确率。",
+              "implication": "可把 RSVideo-Bench 纳入遥感 VLM 固定评测，并用其小目标时空聚焦机制验证压缩是否损害短时目标证据。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-08-03T10:34:42+00:00",
+              "updatedAt": "2026-08-04T02:55:12+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "RSVideo：现有视觉语言模型准备好理解遥感视频了吗？",
+                "oneSentenceZh": "RSVideo-10K 与 RSVideo-Bench 系统评估连续遥感视频理解，并用强化学习选择跨帧问题相关区域、压制冗余背景 Token。",
+                "problemZh": "现有遥感多模态模型主要处理单张图像或稀疏时间点，缺少连续视频中小目标、短暂状态和场景约束空间关系的统一评测。",
+                "methodZh": "工作构建覆盖无人机和卫星视频的数据集与 17 类任务评测，并提出面向小目标的时空聚焦强化学习框架，在多帧中选择问题相关区域、减少背景冗余。",
+                "resultZh": "数据集含 10,773 个实例、147 万帧和 17.02 小时视频；基准含 2,731 个测试实例。方法在 InternVL3.5-14B 上最高提升 9.01 个百分点，Qwen3.6-27B 达到 40.63% 最高准确率。",
+                "contributions": [
+                  "建立连续遥感视频理解的公开数据集与固定基准",
+                  "覆盖感知和推理两级、七类能力组与 17 项任务",
+                  "提出问题相关的跨帧小目标聚焦和背景 Token 抑制方法"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要给出数据规模、任务划分和 26 个开源模型的评测范围",
+                  "摘要给出 9.01 个百分点最高增益和 40.63% 最高准确率"
+                ],
+                "limitations": [
+                  "40.63% 的最高准确率说明遥感视频理解仍有很大能力缺口",
+                  "需要进一步核验卫星与无人机子集的分布、许可和实际部署计算量"
+                ],
+                "confidence": 0.77,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "SABRE: Scalable and Automated Benchmarking of VLMs under Stress",
+              "url": "https://arxiv.org/abs/2608.07435",
+              "reason": "该 W32 新稿提供可持续生成 VLM 压力测试的流水线，而非一次性固定榜单，适合部门建立模型迭代回归测试。",
+              "summary": "**中文标题：** SABRE：可扩展、可自动刷新的 VLM 压力测试生成流水线\n\n**SABRE 把 Markdown 测试说明转换为结构化规格、生成或编辑图像和问答，并用模型过滤加人工复核持续刷新困难样本。**\n\nVLM 更新速度远快于基准建设；人工制作既可回答、又受控且能击穿当前模型的压力样本成本很高，固定基准也容易快速饱和。\n\n流水线从 Test Primer 自动生成规格、图像和问答，先剔除过滤模型可解的候选，再由人工核验有效性、修正标注并对局部图像进行修复。\n\nSABRE-Prior 含 600 张图像和 1,000 个问题，覆盖上下文、材质、属性和语言诱导四类测试；六个 VLM 的宏平均准确率为 17.8%–31.3%，平均 22.6%。",
+              "implication": "可将部门关注的遥感小目标、压缩伪影和 Agent 视觉 grounding 写成 Test Primer，持续生成版本回归压力集。",
+              "readMinutes": 3.0,
+              "publishedAt": "2026-08-07T17:21:04+00:00",
+              "updatedAt": "2026-08-07T17:21:04+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "SABRE：可扩展、可自动刷新的 VLM 压力测试生成流水线",
+                "oneSentenceZh": "SABRE 把 Markdown 测试说明转换为结构化规格、生成或编辑图像和问答，并用模型过滤加人工复核持续刷新困难样本。",
+                "problemZh": "VLM 更新速度远快于基准建设；人工制作既可回答、又受控且能击穿当前模型的压力样本成本很高，固定基准也容易快速饱和。",
+                "methodZh": "流水线从 Test Primer 自动生成规格、图像和问答，先剔除过滤模型可解的候选，再由人工核验有效性、修正标注并对局部图像进行修复。",
+                "resultZh": "SABRE-Prior 含 600 张图像和 1,000 个问题，覆盖上下文、材质、属性和语言诱导四类测试；六个 VLM 的宏平均准确率为 17.8%–31.3%，平均 22.6%。",
+                "contributions": [
+                  "把压力测试设计规格自动转成可评测的图像问答样本",
+                  "组合模型过滤、人工复核和局部修复控制样本质量",
+                  "展示同一流水线可扩展到先验、计数和空间压力测试"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要给出 SABRE-Prior 的样本规模、四类测试和六模型结果",
+                  "摘要明确说明目标是可复用、可刷新的压力测试框架而非固定基准"
+                ],
+                "limitations": [
+                  "生成式测试仍依赖过滤模型与人工复核，规模扩大后成本和偏差需要量化",
+                  "合成或编辑图像上的压力结果不必然等同于真实业务分布"
+                ],
+                "confidence": 0.73,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        },
+        {
+          "id": "primary_topic",
+          "items": [
+            {
+              "position": 1,
+              "role": "must_read",
+              "itemType": "paper",
+              "title": "Messages, Not Tokens: Grounded Coresets for Faithful VLM Compression",
+              "url": "https://arxiv.org/abs/2608.02134",
+              "reason": "这是 W32 新稿，直接挑战逐 Token Top-K 的压缩范式，并给出从消息保持出发的可解释 coreset 构造，和模型应用组的多模态压缩主线高度一致。",
+              "summary": "**中文标题：** 不是保留 Token，而是保留消息：忠实 VLM 压缩的 Grounded Coreset\n\n**GMC 联合覆盖查询、外观与坐标证据，并把被删除 Token 的有符号消息搬运到保留代表上，再恢复原生注意力计算。**\n\n高分辨率图像产生的长视觉 Token 序列会贯穿解码器并占用提示 KV Cache，而独立 Top-K 容易重复覆盖显著区域、漏掉稀疏互补证据。\n\n论文把压缩拆成代表载体选择和群体消息实现两部分：选择覆盖查询 grounding、外观和坐标模式的代表，再将删除状态传输到原始多模态位置上的代表，物理压缩后继续原生注意力。\n\n摘要报告在 Qwen2.5-VL-7B 上，GMC-H2 减少 80.2% 视觉 Token 时保留 97.78% 的 Full-relative 平均能力，GMC-L16 达到 100.36%。",
+              "implication": "可将消息保持型 coreset 作为遥感大图和端侧 VLM 的新压缩基线，同时测量任务精度、首 Token 时延和提示 KV 占用。",
+              "readMinutes": 5.0,
+              "publishedAt": "2026-08-03T12:23:06+00:00",
+              "updatedAt": "2026-08-03T12:23:06+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "不是保留 Token，而是保留消息：忠实 VLM 压缩的 Grounded Coreset",
+                "oneSentenceZh": "GMC 联合覆盖查询、外观与坐标证据，并把被删除 Token 的有符号消息搬运到保留代表上，再恢复原生注意力计算。",
+                "problemZh": "高分辨率图像产生的长视觉 Token 序列会贯穿解码器并占用提示 KV Cache，而独立 Top-K 容易重复覆盖显著区域、漏掉稀疏互补证据。",
+                "methodZh": "论文把压缩拆成代表载体选择和群体消息实现两部分：选择覆盖查询 grounding、外观和坐标模式的代表，再将删除状态传输到原始多模态位置上的代表，物理压缩后继续原生注意力。",
+                "resultZh": "摘要报告在 Qwen2.5-VL-7B 上，GMC-H2 减少 80.2% 视觉 Token 时保留 97.78% 的 Full-relative 平均能力，GMC-L16 达到 100.36%。",
+                "contributions": [
+                  "把视觉 Token 压缩重述为解码器消息的 coreset 构造",
+                  "联合查询 grounding、外观和坐标覆盖选择代表",
+                  "通过状态搬运保留被删除视觉群体的有符号消息"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要给出方法分解、Token 缩减比例和 Full-relative 指标",
+                  "摘要明确说明方法无需训练，并在多个 VLM 家族和多类基准上评估"
+                ],
+                "limitations": [
+                  "当前只核验到 arXiv 摘要，尚未逐项复核不同基准和压缩档位",
+                  "Full-relative 超过 100% 不代表所有任务均提升，仍需检查单项退化"
+                ],
+                "confidence": 0.74,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 2,
+              "role": "must_read",
+              "itemType": "paper",
+              "title": "Summarize First, Download Later: Onboard VLMs for Bandwidth-Efficient Earth Observation",
+              "url": "https://arxiv.org/abs/2608.06959",
+              "reason": "该 W32 新稿把量化 VLM、语义摘要和按需下传组合成星载遥感数据闭环，直接连接遥感模型、数据压缩与有限下行带宽。",
+              "summary": "**中文标题：** 先总结、后下载：用星载 VLM 进行带宽高效的对地观测\n\n**卫星先发送量化 VLM 生成的场景摘要，地面再用 VQA 追问确认，只有关键信息成立时才下载全分辨率影像。**\n\n高分辨率、多光谱传感器持续产生海量数据，而有限接触窗口和下行链路容量会造成关键观测延迟甚至丢失。\n\n系统采用三阶段语义交互：星端生成自然语言摘要，地面针对火灾或海事异常等目标提出视觉问答，最后仅对确认重要的场景请求原始高分辨率数据。\n\n作者在资源受限的 NVIDIA Jetson 平台完成实现；摘要称多类遥感场景实验显著降低带宽消耗，并缩短时敏任务获得有效信息的时间。",
+              "implication": "适合作为星载遥感智能压缩原型：应重点复现实测功耗、摘要漏检率、交互轮次和受限链路下的总体任务收益。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-08-07T08:35:46+00:00",
+              "updatedAt": "2026-08-07T08:35:46+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "先总结、后下载：用星载 VLM 进行带宽高效的对地观测",
+                "oneSentenceZh": "卫星先发送量化 VLM 生成的场景摘要，地面再用 VQA 追问确认，只有关键信息成立时才下载全分辨率影像。",
+                "problemZh": "高分辨率、多光谱传感器持续产生海量数据，而有限接触窗口和下行链路容量会造成关键观测延迟甚至丢失。",
+                "methodZh": "系统采用三阶段语义交互：星端生成自然语言摘要，地面针对火灾或海事异常等目标提出视觉问答，最后仅对确认重要的场景请求原始高分辨率数据。",
+                "resultZh": "作者在资源受限的 NVIDIA Jetson 平台完成实现；摘要称多类遥感场景实验显著降低带宽消耗，并缩短时敏任务获得有效信息的时间。",
+                "contributions": [
+                  "将遥感下传从批量传输改造成语义驱动的交互式筛选",
+                  "把量化星载 VLM、VQA 验证和全分辨率按需下载串成闭环",
+                  "在资源受限 Jetson 平台验证端侧实现可行性"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要明确描述三阶段协议和 Jetson 实现",
+                  "摘要报告带宽消耗与 time-to-insight 均获得改善，但未给出具体数值"
+                ],
+                "limitations": [
+                  "摘要未披露带宽节省比例、端侧时延、功耗及不同量化精度的完整数据",
+                  "自然语言摘要可能遗漏后续才被判定重要的细粒度目标，需要保底传输策略"
+                ],
+                "confidence": 0.72,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 3,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "RoRA: Role-Oriented Regional Allocation for Visual Token Pruning in MLLMs",
+              "url": "https://arxiv.org/abs/2608.07088",
+              "reason": "该 W32 新稿不仅报告高比例视觉 Token 裁剪，还给出选择开销和端到端加速，适合作为训练无关压缩的工程对照。",
+              "summary": "**中文标题：** RoRA：按角色分配区域证据的 MLLM 视觉 Token 裁剪\n\n**RoRA 把有限 Token 预算分为语义核心、互补上下文和细粒度细节，并用注意力锚定区域记录已经覆盖的对象证据。**\n\n现有训练无关裁剪方法通常只按重要性、多样性或空间覆盖选 Token，却把保留项视为同质资源，无法显式判断对象区域是否已经被覆盖。\n\n方法校准文本条件注意力与对象先验，构造注意力锚定区域；预算先保护语义核心，再在区域外补充上下文，并保留少量预算恢复区域内细节。\n\n摘要报告 LLaVA-1.5 在裁剪 88.9% 时保持 96.5% 全量性能；Qwen3-VL 在 75%–90% 裁剪率下较 D2Pruner 约高 5%。裁剪 66.7% 时端到端时间下降 24.6%，相当于 1.33 倍加速。",
+              "implication": "建议纳入训练无关视觉压缩基线，并在遥感小目标任务上重点检查三类角色预算是否真正保护稀疏证据。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-08-07T10:39:47+00:00",
+              "updatedAt": "2026-08-07T10:39:47+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "RoRA：按角色分配区域证据的 MLLM 视觉 Token 裁剪",
+                "oneSentenceZh": "RoRA 把有限 Token 预算分为语义核心、互补上下文和细粒度细节，并用注意力锚定区域记录已经覆盖的对象证据。",
+                "problemZh": "现有训练无关裁剪方法通常只按重要性、多样性或空间覆盖选 Token，却把保留项视为同质资源，无法显式判断对象区域是否已经被覆盖。",
+                "methodZh": "方法校准文本条件注意力与对象先验，构造注意力锚定区域；预算先保护语义核心，再在区域外补充上下文，并保留少量预算恢复区域内细节。",
+                "resultZh": "摘要报告 LLaVA-1.5 在裁剪 88.9% 时保持 96.5% 全量性能；Qwen3-VL 在 75%–90% 裁剪率下较 D2Pruner 约高 5%。裁剪 66.7% 时端到端时间下降 24.6%，相当于 1.33 倍加速。",
+                "contributions": [
+                  "将视觉 Token 预算显式划分为核心、上下文与细节角色",
+                  "用注意力锚定区域追踪对象证据覆盖",
+                  "同时报告选择开销、模型能力保持和端到端加速"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要给出 LLaVA 与 Qwen-VL 家族的匹配预算对比",
+                  "摘要给出 H800 上 0.7 毫秒选择开销及 24.6% 端到端时间下降"
+                ],
+                "limitations": [
+                  "硬件结果来自 NVIDIA H800，不能直接等同于端侧或星载平台收益",
+                  "摘要未呈现各任务在高裁剪率下的最差单项退化"
+                ],
+                "confidence": 0.76,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 4,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "HiSC: Hierarchical Spatial Clustering Token Compression for Efficient 3D Scene Understanding",
+              "url": "https://arxiv.org/abs/2608.04610",
+              "reason": "该 W32 新稿把多视角 3D 场景的几何结构引入视觉 Token 压缩，对重复观测多、空间覆盖要求高的遥感和具身场景有直接参考价值。",
+              "summary": "**中文标题：** HiSC：面向高效 3D 场景理解的分层空间聚类 Token 压缩\n\n**HiSC 先依据几何和语义连接合并跨视角重复区域，再在推理过程中进行簇间与簇内分层裁剪，以保持对象完整性。**\n\n多视角 3D VLM 同一物体会被重复观测，同时含有大量无信息区域；直接沿用 2D Token 裁剪容易破坏空间覆盖和细节。\n\n训练无关的 HiSC 先以空间图合并策略把物理一致区域整合成簇，再通过空间聚类裁剪在簇间和簇内分配预算，优先保持实例完整性与关键区域细节。\n\n摘要称在多类 3D 推理基准上，高裁剪率下仍保持有效表现，并实现超过 90% 的 Token 缩减而性能下降很小；代码仓库已在摘要中给出。",
+              "implication": "可在多视角遥感或具身数据上检验几何簇压缩，重点评估小目标完整性、跨视角一致性和图构建开销。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-08-05T09:15:43+00:00",
+              "updatedAt": "2026-08-05T09:15:43+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "HiSC：面向高效 3D 场景理解的分层空间聚类 Token 压缩",
+                "oneSentenceZh": "HiSC 先依据几何和语义连接合并跨视角重复区域，再在推理过程中进行簇间与簇内分层裁剪，以保持对象完整性。",
+                "problemZh": "多视角 3D VLM 同一物体会被重复观测，同时含有大量无信息区域；直接沿用 2D Token 裁剪容易破坏空间覆盖和细节。",
+                "methodZh": "训练无关的 HiSC 先以空间图合并策略把物理一致区域整合成簇，再通过空间聚类裁剪在簇间和簇内分配预算，优先保持实例完整性与关键区域细节。",
+                "resultZh": "摘要称在多类 3D 推理基准上，高裁剪率下仍保持有效表现，并实现超过 90% 的 Token 缩减而性能下降很小；代码仓库已在摘要中给出。",
+                "contributions": [
+                  "把视觉 Token 压缩从单 Token 选择提升到空间簇处理",
+                  "联合几何和语义信息合并跨视角冗余",
+                  "在推理阶段分层保留对象完整性和重要区域细节"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要明确描述 SGraM 与 SCluP 两阶段机制",
+                  "摘要报告超过 90% Token 缩减并提供公开代码地址"
+                ],
+                "limitations": [
+                  "摘要没有列出各 3D 基准的具体分数和真实端到端时延",
+                  "空间图构建依赖几何信息，其前处理成本及噪声敏感性需要实测"
+                ],
+                "confidence": 0.71,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 5,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "DiffPrune: differentiable information throttling for token pruning in vision-language models",
+              "url": "https://arxiv.org/abs/2608.01985",
+              "reason": "该 W32 新稿为可训练 Token 裁剪提供了区别于 Gumbel-Softmax 的直接信息损失学习路径，适合与训练无关方法组成对照。",
+              "summary": "**中文标题：** DiffPrune：用可微信息节流学习 VLM Token 裁剪分数\n\n**训练时不直接离散选 Token，而是按分数注入保方差噪声，让任务损失直接反映每个视觉 Token 的信息价值。**\n\n基于 Gumbel-Softmax 的松弛选择器让评分依赖近似裁剪算子的行为，分数未必直接对应删除该 Token 所造成的信息损失。\n\nDiffPrune 训练时保留所有视觉 Token，通过 Information Throttler 按评分削弱其原始信息；任务受损会推动评分器保护对应 Token，推理时再移除节流器并执行硬 Top-K。\n\n摘要报告十个 VLM 基准上保留全量模型 96.5% 的准确率，LLM prefill 加速 2.85 倍，额外推理开销仅 0.69 毫秒。",
+              "implication": "可与 GMC、RoRA 等训练无关方法形成统一基线，分开比较训练成本、prefill、总时延和遥感任务精度。",
+              "readMinutes": 3.0,
+              "publishedAt": "2026-08-03T09:46:32+00:00",
+              "updatedAt": "2026-08-03T09:46:32+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "DiffPrune：用可微信息节流学习 VLM Token 裁剪分数",
+                "oneSentenceZh": "训练时不直接离散选 Token，而是按分数注入保方差噪声，让任务损失直接反映每个视觉 Token 的信息价值。",
+                "problemZh": "基于 Gumbel-Softmax 的松弛选择器让评分依赖近似裁剪算子的行为，分数未必直接对应删除该 Token 所造成的信息损失。",
+                "methodZh": "DiffPrune 训练时保留所有视觉 Token，通过 Information Throttler 按评分削弱其原始信息；任务受损会推动评分器保护对应 Token，推理时再移除节流器并执行硬 Top-K。",
+                "resultZh": "摘要报告十个 VLM 基准上保留全量模型 96.5% 的准确率，LLM prefill 加速 2.85 倍，额外推理开销仅 0.69 毫秒。",
+                "contributions": [
+                  "让 Token 分数直接对应信息削弱带来的任务损失",
+                  "训练阶段连续节流、推理阶段硬 Top-K，避免松弛选择代理路径",
+                  "报告准确率保持、prefill 加速和评分开销"
+                ],
+                "evidence": [
+                  "arXiv 官方摘要描述信息节流器的噪声机制和训练到推理的转换",
+                  "摘要给出十个基准、96.5% 能力保持、2.85 倍 prefill 加速和 0.69 毫秒开销"
+                ],
+                "limitations": [
+                  "该方法需要训练评分器，不适合完全即插即用的部署场景",
+                  "prefill 加速不等同于整条生成链路的端到端加速"
+                ],
+                "confidence": 0.75,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "issue": {
         "id": "57cbe624-393a-48ae-bbef-856628fe93f5",
         "departmentId": "model_and_application",
         "title": "模型应用周报 · 2026-W31",

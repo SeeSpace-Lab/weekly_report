@@ -287,6 +287,7 @@ ranking:
 
 weekly_output:
   target_read_minutes: 30
+  min_items: 0
   max_items: 8
   max_wechat_items: 3
   wechat_candidate_reserve: 8

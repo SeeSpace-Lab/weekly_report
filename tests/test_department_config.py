@@ -59,6 +59,28 @@ class DepartmentConfigTest(unittest.TestCase):
             sources["arxiv"].options["search_terms"],
         )
 
+    def test_model_application_uses_real_arxiv_queries(self) -> None:
+        department = load_yaml(
+            self.root
+            / "config"
+            / "departments"
+            / "model_and_algorithm.yaml"
+        )
+        sources = department_source_configs(
+            load_sources(self.sources_path),
+            department,
+        )
+        options = sources["arxiv"].options
+        self.assertIn("cs.CV", options["categories"])
+        self.assertIn("eess.IV", options["categories"])
+        self.assertIn("vision language model", options["search_terms"])
+        self.assertIn("token pruning", options["search_terms"])
+        self.assertEqual(department["weekly_output"]["min_items"], 8)
+        self.assertNotIn(
+            "department-specific paper query",
+            options["search_terms"],
+        )
+
     def test_rejects_unknown_department_source(self) -> None:
         department = copy.deepcopy(load_yaml(self.department_path))
         department["source_pool"]["papers"].append("missing_source")
