@@ -4,9 +4,6 @@ type ApprovalPanelProps = {
   isoWeek: string;
 };
 
-const REVIEW_PULL_REQUESTS =
-  "https://github.com/SeeSpace-Lab/weekly_report/pulls?q=is%3Apr+is%3Aopen+base%3Adevelop";
-
 export default function ApprovalPanel({
   departmentId,
   status,
@@ -17,8 +14,8 @@ export default function ApprovalPanel({
       <aside className="approvalPanel approvalDone">
         <div>
           <span>APPROVAL GATE</span>
-          <strong>{isoWeek} 已审核通过</strong>
-          <p>该快照已经通过 GitHub Pull Request 审核。</p>
+          <strong>{isoWeek} 自动质量门禁已通过</strong>
+          <p>该周报已完成篇数、阅读时间、中文细读和一手来源校验，可由 main 发布。</p>
         </div>
       </aside>
     );
@@ -27,23 +24,12 @@ export default function ApprovalPanel({
   return (
     <aside className="approvalPanel">
       <div>
-        <span>REMOTE REVIEW</span>
-        <strong>{isoWeek} GitHub 远程审核</strong>
+        <span>AUTOMATED RELEASE</span>
+        <strong>{isoWeek} 等待自动质量门禁</strong>
         <p>
-          本页面是只读草稿。代码和周报只能从独立开发分支提交，并通过面向
-          develop 的 Pull Request 审核；页面不会直接推送受保护分支或发布
-          GitHub Pages。
+          周报只有通过篇数、阅读时间、中文细读、一手来源和测试门禁后，才会直接
+          提交并推送到 main；未通过时自动任务停止，不会发布不完整周报。
         </p>
-      </div>
-      <div className="approvalAction">
-        <a
-          className="approvalLinkButton"
-          href={`${REVIEW_PULL_REQUESTS}+${encodeURIComponent(departmentId)}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          前往 GitHub PR 审核
-        </a>
       </div>
     </aside>
   );

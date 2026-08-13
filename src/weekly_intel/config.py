@@ -170,9 +170,14 @@ def validate_department(
         raise ValueError(f"{label}: keywords.include cannot be empty")
     output = department.get("weekly_output", {})
     max_items = int(output.get("max_items", 8))
+    min_items = int(output.get("min_items", 1))
     target_minutes = int(output.get("target_read_minutes", 30))
     if not 1 <= max_items <= 20:
         raise ValueError(f"{label}: weekly_output.max_items must be 1-20")
+    if not 0 <= min_items <= max_items:
+        raise ValueError(
+            f"{label}: weekly_output.min_items must be 0-max_items"
+        )
     if not 1 <= target_minutes <= 30:
         raise ValueError(
             f"{label}: weekly_output.target_read_minutes must be 1-30"

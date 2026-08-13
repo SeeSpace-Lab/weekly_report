@@ -76,6 +76,39 @@ class ArxivPipelineTest(unittest.TestCase):
         self.assertIn("LLM+inference", url)
         self.assertIn("cat%3Acs.DC", url)
 
+    def test_collects_chunked_queries_and_deduplicates_results(self) -> None:
+        configured = replace(
+            source(),
+            options={
+                "categories": ["cs.CV"],
+                "search_terms": ["VLM", "token pruning", "agent"],
+                "search_terms_per_query": 2,
+                "request_delay_seconds": 0,
+            },
+        )
+        payload = ATOM_TEMPLATE.format(
+            version=2,
+            updated="2026-07-24T09:30:00Z",
+        ).encode()
+        requested_urls: list[str] = []
+
+        def fetcher(
+            url: str, headers: dict[str, str], timeout: float
+        ) -> bytes:
+            requested_urls.append(url)
+            return payload
+
+        batch = ArxivCollector(fetcher=fetcher).collect(
+            configured,
+            self.window,
+        )
+
+        self.assertEqual(len(requested_urls), 2)
+        self.assertEqual(batch.status.value, "ok")
+        self.assertEqual(len(batch.documents), 1)
+        self.assertEqual(batch.stats["in_window_before_deduplication"], 2)
+        self.assertEqual(batch.stats["in_window"], 1)
+
     def test_versions_and_idempotency(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             db = Database(Path(temp_dir) / "test.db")

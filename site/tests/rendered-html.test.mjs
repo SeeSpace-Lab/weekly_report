@@ -33,7 +33,7 @@ test("server-renders the research portal", async () => {
   assert.match(html, /按部门进入周报/);
   assert.match(html, /星载大模型/);
   assert.match(html, /星座智算/);
-  assert.match(html, /2026-W31/);
+  assert.match(html, /2026-W32/);
   assert.match(html, /周一 09:00 更新/);
   assert.match(html, /顶会与重要论文库/);
   assert.match(html, /og:image/);
@@ -46,6 +46,9 @@ test("server-renders the OrbitInfer department report", async () => {
   assert.match(html, /本周趋势雷达/);
   assert.match(html, /\d+<\/strong><span>精选条目/);
   assert.match(html, /查看一手来源/);
+  assert.match(html, /等待自动质量门禁|自动质量门禁已通过/);
+  assert.match(html, /直接|可由 main 发布/);
+  assert.doesNotMatch(html, /github\.com\/SeeSpace-Lab\/weekly_report\/pull\//);
   assert.match(html, /class="oneSentence"/);
   assert.match(html, /<dt>问题<\/dt>/);
   assert.match(html, /class="translatedTitle">/);
@@ -73,7 +76,7 @@ test("renders the library, source pool, archive and second department", async ()
   assert.doesNotMatch(sourceHtml, /DataFunTalk/);
   const archiveHtml = await archive.text();
   assert.match(archiveHtml, /历史周报/);
-  assert.match(archiveHtml, /2026-W31/);
+  assert.match(archiveHtml, /2026-W30/);
   assert.match(await department.text(), /L2/);
 });
 
@@ -94,7 +97,19 @@ test("ships structured report, library and interaction controls", async () => {
 
   assert.equal(departmentPayload.departments.length, 3);
   assert.equal(orbitinfer.enabled, true);
-  assert.equal(payload.issue.isoWeek, "2026-W31");
+  assert.equal(payload.issue.isoWeek, "2026-W32");
+  assert.equal(payload.issue.itemCount, 8);
+  const modelDepartment = departmentPayload.departments.find(
+    (department) => department.id === "model_and_application",
+  );
+  assert.equal(modelDepartment.currentReport.issue.itemCount, 8);
+  assert.equal(
+    departmentPayload.departments.reduce(
+      (total, department) => total + department.currentReport.issue.itemCount,
+      0,
+    ),
+    16,
+  );
   const renderedItemCount = payload.sections.reduce(
     (count, section) => count + section.items.length,
     0,
@@ -115,7 +130,7 @@ test("ships structured report, library and interaction controls", async () => {
   assert.ok(libraryPayload.papers.length >= 8);
   assert.equal(sourcePayload.accounts.length, 7);
   assert.ok(sourcePayload.accounts.every((account) => account.articles.length > 0));
-  assert.equal(orbitinfer.archive[0].issue.isoWeek, "2026-W31");
+  assert.equal(orbitinfer.archive[0].issue.isoWeek, "2026-W32");
 });
 
 test("exports a GitHub Pages-compatible static snapshot", async () => {

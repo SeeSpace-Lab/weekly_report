@@ -183,9 +183,43 @@ source_pool:
     - manual_inbox
   overrides:
     arxiv:
-      categories: [cs.DC]
+      categories:
+        - cs.AI
+        - cs.CL
+        - cs.CV
+        - cs.LG
+        - cs.IR
+        - cs.MM
+        - eess.IV
+        - eess.SP
+        - q-bio.BM
+        - q-bio.QM
       search_terms:
-        - department-specific paper query
+        - vision language model
+        - multimodal large language model
+        - vision language agent
+        - multimodal agent
+        - large language model agent
+        - VLM compression
+        - visual token compression
+        - token pruning
+        - token merging
+        - semantic compression
+        - learned image compression
+        - learned video compression
+        - video coding for machines
+        - image coding for machines
+        - compressed domain inference
+        - remote sensing foundation model
+        - remote sensing vision language model
+        - remote sensing agent
+        - protein language model
+        - protein foundation model
+        - generative model for protein
+        - AI for drug discovery
+      max_results: 200
+      search_terms_per_query: 4
+      request_delay_seconds: 3
     openreview:
       venues:
         - venue_id: ICLR.cc/2026/Conference
@@ -203,6 +237,7 @@ ranking:
 
 weekly_output:
   target_read_minutes: 30
+  min_items: 8
   max_items: 8
   max_wechat_items: 3
   wechat_candidate_reserve: 8

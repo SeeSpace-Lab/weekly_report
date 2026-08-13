@@ -1,53 +1,58 @@
 {
   "issue": {
-    "id": "57cbe624-393a-48ae-bbef-856628fe93f5",
-    "departmentId": "model_and_application",
-    "title": "模型应用周报 · 2026-W31",
-    "isoWeek": "2026-W31",
-    "windowStart": "2026-07-26T16:00:00+00:00",
-    "windowEnd": "2026-08-02T15:59:59.999999+00:00",
-    "status": "review",
+    "id": "332868e2-a44a-46c1-b11c-84b90cda23b6",
+    "departmentId": "orbitinfer",
+    "title": "星载大模型推理引擎周报 · 2026-W32",
+    "isoWeek": "2026-W32",
+    "windowStart": "2026-08-02T16:00:00+00:00",
+    "windowEnd": "2026-08-09T15:59:59.999999+00:00",
+    "status": "approved",
     "targetReadMinutes": 30,
-    "estimatedReadMinutes": 28.0,
+    "estimatedReadMinutes": 30.0,
     "itemCount": 8
   },
   "trends": [
-    "本周有1项相关进展，集中在多模态模型。"
+    "本周有7项相关进展，集中在LLM/VLM/MoE推理引擎。",
+    "本周有14项相关进展，集中在KV Cache与分层存储。",
+    "本周有4项相关进展，集中在量化、压缩与自适应精度。",
+    "本周有2项相关进展，集中在推理调度与资源编排。",
+    "本周有2项相关进展，集中在边缘、端侧与实时大模型。"
   ],
   "sections": [
     {
-      "id": "primary_topic",
+      "id": "inference_and_scheduling",
       "items": [
         {
           "position": 1,
           "role": "must_read",
           "itemType": "paper",
-          "title": "Cheap Probes Predict Expensive Training in 3D-CT Vision--Language Models",
-          "url": "https://arxiv.org/abs/2607.22771",
-          "reason": "用低成本 probe 代替大量 VLM 微调实验来筛选编码器和 Token 压缩组合，直接服务压缩设计空间探索。",
-          "summary": "**中文标题：** 廉价 Probe 能否预测昂贵训练：3D CT VLM 的编码器与 Token 压缩筛选\n\n**论文用冻结视觉特征上的轻量 probe 排序编码器—压缩组合，初步与完整微调结果达到约 0.95 的相关性。**\n\n3D CT VLM 同时选择视觉编码器、Token 压缩方法和预算会形成巨大的组合空间，逐个微调 LLM 的成本过高。\n\n作者构建覆盖编码器与压缩单元格的图像 grounding probe 基准，并用 scale-sanity 与 probe-separability 两道门检查属性尺度和可解码性。\n\n摘要报告已测单元格中廉价 probe 与昂贵微调排序约为 r=0.95，但作者明确将其解释为排序信号而非精确性能预测。",
-          "implication": "可把 probe 排序用于 Token 压缩预筛选，但最终候选仍需在目标任务、模型和预算上完整训练验证。",
+          "title": "Topology-Aware Data Movement for Disaggregated GPU Inference",
+          "url": "https://arxiv.org/abs/2607.28633",
+          "reason": "该工作把解耦推理中的 KV 传输明确建模为拓扑分层问题，直接对应 OrbitInfer 在异构星间链路和分层存储下的放置与传输策略。",
+          "summary": "**中文标题：** 面向解耦式 GPU 推理的拓扑感知数据搬移\n\n**系统依据 NVLink、PCIe、InfiniBand、跨数据中心网络和 CXL 层级选择传输路径，并将逐层 KV 传输与预填充重叠。**\n\nPrefill 与 Decode 分离后，每个请求都要搬移大体量 KV Cache，而统一使用 RDMA 会忽略不同 GPU 物理关系造成的数量级带宽差异。\n\n方案在启动时发现互连层级，按传输选择最合适的通道；同时使用逐层流水传输、面向 MoE 的 NVLink 域放置，以及作为共享溢出层的 CXL 3.0 内存扩展器。\n\n论文以 70B 模型每请求约 1.3GB KV 为例，分析显示逐层流水可隐藏 76%—100% 的传输时间，跨三类架构预计比统一 RDMA 降低 3—18 倍传输时延。",
+          "implication": "OrbitInfer 可把链路类型、拓扑距离和缓存层级纳入 PD 分离调度器，并用逐层传输而不是整请求搬移作为 OrbitServe 的首个对照基线。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-07-24T00:00:00+00:00",
-          "updatedAt": "2026-07-28T00:00:00+00:00",
+          "publishedAt": "2026-04-19T22:46:57+00:00",
+          "updatedAt": "2026-08-07T12:49:40+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "廉价 Probe 能否预测昂贵训练：3D CT VLM 的编码器与 Token 压缩筛选",
-            "oneSentenceZh": "论文用冻结视觉特征上的轻量 probe 排序编码器—压缩组合，初步与完整微调结果达到约 0.95 的相关性。",
-            "problemZh": "3D CT VLM 同时选择视觉编码器、Token 压缩方法和预算会形成巨大的组合空间，逐个微调 LLM 的成本过高。",
-            "methodZh": "作者构建覆盖编码器与压缩单元格的图像 grounding probe 基准，并用 scale-sanity 与 probe-separability 两道门检查属性尺度和可解码性。",
-            "resultZh": "摘要报告已测单元格中廉价 probe 与昂贵微调排序约为 r=0.95，但作者明确将其解释为排序信号而非精确性能预测。",
+            "titleZh": "面向解耦式 GPU 推理的拓扑感知数据搬移",
+            "oneSentenceZh": "系统依据 NVLink、PCIe、InfiniBand、跨数据中心网络和 CXL 层级选择传输路径，并将逐层 KV 传输与预填充重叠。",
+            "problemZh": "Prefill 与 Decode 分离后，每个请求都要搬移大体量 KV Cache，而统一使用 RDMA 会忽略不同 GPU 物理关系造成的数量级带宽差异。",
+            "methodZh": "方案在启动时发现互连层级，按传输选择最合适的通道；同时使用逐层流水传输、面向 MoE 的 NVLink 域放置，以及作为共享溢出层的 CXL 3.0 内存扩展器。",
+            "resultZh": "论文以 70B 模型每请求约 1.3GB KV 为例，分析显示逐层流水可隐藏 76%—100% 的传输时间，跨三类架构预计比统一 RDMA 降低 3—18 倍传输时延。",
             "contributions": [
-              "提出冻结特征上的低成本组合筛选流程",
-              "设计尺度健全性和可分性验证门",
-              "将完整训练预算集中到少量候选"
+              "将解耦推理的 KV 搬移统一建模为拓扑感知调度问题",
+              "组合逐层流水、MoE 放置和 CXL 溢出层三类机制",
+              "给出不同互连层级下的带宽与时延模型"
             ],
             "evidence": [
-              "arXiv 官方摘要中的方法、验证门和 r≈0.95 初步结果"
+              "arXiv v2 摘要和本地获取的论文正文给出 1.3GB/request、72 倍互连带宽差异及流水隐藏比例",
+              "正文将 3—18 倍结果明确描述为跨三类架构的投影分析"
             ],
             "limitations": [
-              "结果仍是初步研究且只覆盖已测单元格",
-              "医学 3D CT 场景能否泛化到通用 VLM 尚未验证"
+              "尚未在同时具备异构互连和 CXL 3.0 的多节点集群上完成端到端实测",
+              "星间链路的长时延、断续性和能耗约束需要重新建模，不能直接套用数据中心参数"
             ],
             "confidence": 0.76,
             "modelVersion": "codex-scheduled-task-v1"
@@ -57,34 +62,35 @@
           "position": 2,
           "role": "must_read",
           "itemType": "paper",
-          "title": "UltraViT: Latency-Optimized On-device Vision Encoder for Large Vision-Language Models",
-          "url": "https://arxiv.org/abs/2607.23373",
-          "reason": "从真实端侧时延反向设计视觉编码器，补足只压 Token 或语言模型而忽略 encoder 的常见路线。",
-          "summary": "**中文标题：** UltraViT：为端侧时延直接设计的大视觉语言模型编码器\n\n**UltraViT 用真实设备时延指导金字塔架构和异构 spatial mixer 组合，并配套两阶段生成式预训练。**\n\n端侧 LVLM 压缩常集中在视觉 Token 和小语言模型，计算量显著的视觉编码器仍沿用面向服务器的单体结构。\n\n模型以设备实测时延设计宏块级金字塔结构，再通过密集蒸馏学习空间特征，并由容量混合的冻结 LLM 提供生成式语义监督。\n\n摘要称该设计相对 encoder-centric 基线获得更高准确率，并在设备端接近 1.7 倍速度；具体设备和全量表格仍需正文复核。",
-          "implication": "模型应用组可把 encoder 本身列为压缩主变量，并以目标芯片实测时延而非 FLOPs 单独指导结构选择。",
+          "title": "Bole: Efficient Tree Speculation for Hybrid-Attention Language Models",
+          "url": "https://arxiv.org/abs/2608.01651",
+          "reason": "Bole 是本周新稿，解决混合注意力模型在树状推测解码中状态复制和串行验证的核心瓶颈，并已集成到 SGLang。",
+          "summary": "**中文标题：** Bole：混合注意力语言模型的高效树状推测解码\n\n**Bole 将线性注意力递推改写为树结构闭式计算，只保存 token 级状态因子，并在采样后重建被选中的单一路径。**\n\n现有树状推测解码围绕全注意力 KV Cache 设计，在混合注意力模型上需要逐分支遍历递归层并为每个候选节点物化完整状态，导致验证时延和瞬时显存快速增长。\n\n系统通过树结构闭式递推和专用 GPU Kernel 并行验证所有候选节点，以无损 token 因子编码状态更新，并在 SGLang 中按整批前向成本动态分配验证预算。\n\n摘要报告线性注意力树验证加速 3.4—7.7 倍、瞬时状态内存减少 82—99 倍；离线吞吐相对自回归最高 4.72 倍，在线 TTFT 和 TPOT 相对最强树推测基线最多下降 67.6% 和 49.9%。",
+          "implication": "OrbitInfer 应把递归状态而非只有 KV Cache 纳入混合注意力模型的星载内存模型，并评估状态因子化对显存峰值和批量调度的共同收益。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-07-25T00:00:00+00:00",
-          "updatedAt": "2026-07-28T00:00:00+00:00",
+          "publishedAt": "2026-08-03T03:43:14+00:00",
+          "updatedAt": "2026-08-03T03:43:14+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "UltraViT：为端侧时延直接设计的大视觉语言模型编码器",
-            "oneSentenceZh": "UltraViT 用真实设备时延指导金字塔架构和异构 spatial mixer 组合，并配套两阶段生成式预训练。",
-            "problemZh": "端侧 LVLM 压缩常集中在视觉 Token 和小语言模型，计算量显著的视觉编码器仍沿用面向服务器的单体结构。",
-            "methodZh": "模型以设备实测时延设计宏块级金字塔结构，再通过密集蒸馏学习空间特征，并由容量混合的冻结 LLM 提供生成式语义监督。",
-            "resultZh": "摘要称该设计相对 encoder-centric 基线获得更高准确率，并在设备端接近 1.7 倍速度；具体设备和全量表格仍需正文复核。",
+            "titleZh": "Bole：混合注意力语言模型的高效树状推测解码",
+            "oneSentenceZh": "Bole 将线性注意力递推改写为树结构闭式计算，只保存 token 级状态因子，并在采样后重建被选中的单一路径。",
+            "problemZh": "现有树状推测解码围绕全注意力 KV Cache 设计，在混合注意力模型上需要逐分支遍历递归层并为每个候选节点物化完整状态，导致验证时延和瞬时显存快速增长。",
+            "methodZh": "系统通过树结构闭式递推和专用 GPU Kernel 并行验证所有候选节点，以无损 token 因子编码状态更新，并在 SGLang 中按整批前向成本动态分配验证预算。",
+            "resultZh": "摘要报告线性注意力树验证加速 3.4—7.7 倍、瞬时状态内存减少 82—99 倍；离线吞吐相对自回归最高 4.72 倍，在线 TTFT 和 TPOT 相对最强树推测基线最多下降 67.6% 和 49.9%。",
             "contributions": [
-              "把真实端侧时延纳入视觉编码器架构搜索",
-              "组合异构 spatial mixer 的金字塔宏块",
-              "提出密集蒸馏加冻结 LLM 监督的两阶段预训练"
+              "推导适用于混合注意力递推层的树结构闭式计算",
+              "以 token 级因子无损压缩推测状态",
+              "把 Kernel 与 SGLang 批量验证预算协同设计"
             ],
             "evidence": [
-              "arXiv 官方摘要中的架构、训练方法和近 1.7 倍速度结果"
+              "arXiv 官方摘要给出四种模型、两类 GPU 和在线代理负载上的主要指标",
+              "摘要明确说明系统已集成 SGLang，并区分自回归基线和最强树推测基线"
             ],
             "limitations": [
-              "摘要未给出这里所需的完整设备、能耗与内存数据",
-              "宣称的 SOTA 需结合正文基线公平性判断"
+              "当前核验主要依据摘要，尚未逐表复核不同模型和批量规模的完整结果",
+              "收益依赖混合注意力状态结构，不代表全注意力模型也能获得相同提升"
             ],
-            "confidence": 0.74,
+            "confidence": 0.72,
             "modelVersion": "codex-scheduled-task-v1"
           }
         },
@@ -92,215 +98,221 @@
           "position": 3,
           "role": "must_read",
           "itemType": "paper",
-          "title": "PathSelect: Sequential Token Selection for Whole Slide Pathology",
-          "url": "https://arxiv.org/abs/2607.23631",
-          "reason": "PathSelect 给出可训练但推理时可完全移除的序列 Token 选择器，并在超长病理图像上报告大幅压缩。",
-          "summary": "**中文标题：** PathSelect：面向全切片病理图像的序列式视觉 Token 选择\n\n**该方法把 WSI Token 剪枝改写为可学习的序列选择，在冻结 SlideChat 主干下训练路由器，推理时只保留硬 Top-K scorer。**\n\nGigapixel WSI 产生极长视觉序列，静态空间采样和免训练剪枝容易丢失分散但关键的病理证据。\n\n训练阶段用保方差噪声门、可微 Soft Top-K 和对角注意力去噪器传递梯度，推理阶段移除训练插件，由 scorer 和 Hard Top-K 自适应终止。\n\n摘要报告平均仅保留 44.86 个 Token、最大 K=128，在 SlideBench TCGA 上达到 74.00% 准确率，相对未压缩平均序列约减少 36.6 倍。",
-          "implication": "该训练—部署解耦思路适合迁移到遥感大图，但应重点验证稀疏小目标和跨尺度信息是否被 scorer 漏掉。",
+          "title": "Heterogeneous LLM Serving with General-Purpose Processing-Near-Memory for Retrieval-Based Sparse Attention",
+          "url": "https://arxiv.org/abs/2608.03555",
+          "reason": "KARAT 是本周新稿，给出面向检索式稀疏注意力的 GPU—近存计算分工和微批调度，适合用于超长上下文推理的异构基线。",
+          "summary": "**中文标题：** KARAT：面向检索式稀疏注意力的通用近存计算节点\n\n**方案让 GPU 保存权重并执行投影与 MoE，让大容量 PNM 节点保存 KV 和索引并执行所有读缓存操作。**\n\n百万 token 上下文把 KV Cache 和检索索引推到 GPU 显存之外，而既有固定功能 PIM/PNM 难以同时承载不断变化的索引器和稀疏注意力算法。\n\nKARAT 以 LPDDR 大容量和通用计算覆盖检索索引器，并使用细粒度机会式微批调度隐藏专家通信，再按上下文长度重平衡两个设备侧的 token 数量。\n\n摘要报告在三种模型和真实代理轨迹上，相对 GPU-only 基线的 SLO 约束吞吐/TDP 提升 2.09—6.13 倍，对免训练稀疏注意力方法提升 1.36—3.21 倍。",
+          "implication": "OrbitInfer 可借鉴其按操作类型拆分的思路，把 KV/索引常驻节点映射为星上存储计算单元，并在仿真中加入上下文长度感知的微批平衡。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-07-26T00:00:00+00:00",
-          "updatedAt": "2026-07-28T00:00:00+00:00",
+          "publishedAt": "2026-08-04T12:25:45+00:00",
+          "updatedAt": "2026-08-04T12:25:45+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "PathSelect：面向全切片病理图像的序列式视觉 Token 选择",
-            "oneSentenceZh": "该方法把 WSI Token 剪枝改写为可学习的序列选择，在冻结 SlideChat 主干下训练路由器，推理时只保留硬 Top-K scorer。",
-            "problemZh": "Gigapixel WSI 产生极长视觉序列，静态空间采样和免训练剪枝容易丢失分散但关键的病理证据。",
-            "methodZh": "训练阶段用保方差噪声门、可微 Soft Top-K 和对角注意力去噪器传递梯度，推理阶段移除训练插件，由 scorer 和 Hard Top-K 自适应终止。",
-            "resultZh": "摘要报告平均仅保留 44.86 个 Token、最大 K=128，在 SlideBench TCGA 上达到 74.00% 准确率，相对未压缩平均序列约减少 36.6 倍。",
+            "titleZh": "KARAT：面向检索式稀疏注意力的通用近存计算节点",
+            "oneSentenceZh": "方案让 GPU 保存权重并执行投影与 MoE，让大容量 PNM 节点保存 KV 和索引并执行所有读缓存操作。",
+            "problemZh": "百万 token 上下文把 KV Cache 和检索索引推到 GPU 显存之外，而既有固定功能 PIM/PNM 难以同时承载不断变化的索引器和稀疏注意力算法。",
+            "methodZh": "KARAT 以 LPDDR 大容量和通用计算覆盖检索索引器，并使用细粒度机会式微批调度隐藏专家通信，再按上下文长度重平衡两个设备侧的 token 数量。",
+            "resultZh": "摘要报告在三种模型和真实代理轨迹上，相对 GPU-only 基线的 SLO 约束吞吐/TDP 提升 2.09—6.13 倍，对免训练稀疏注意力方法提升 1.36—3.21 倍。",
             "contributions": [
-              "将 WSI 剪枝转化为序列决策",
-              "训练可微而推理仅保留轻量 scorer",
-              "在冻结视觉编码器和 LLM 下实现大比例 Token 缩减"
+              "为检索式稀疏注意力推导通用 PNM 节点需求",
+              "提出 GPU 与 KV/索引常驻 PNM 的异构流水",
+              "用机会式调度和上下文长度重平衡减少流水空洞"
             ],
             "evidence": [
-              "arXiv 官方摘要中的 SlideBench、Token 数和准确率数据"
+              "arXiv 官方摘要给出设备分工、两种调度机制和三模型评估区间"
             ],
             "limitations": [
-              "验证集中在病理 WSI",
-              "摘要未提供不同 K 值下完整精度—时延曲线"
+              "当前核验基于摘要，PNM 硬件成本、实现面积和端到端互连开销需从正文复核",
+              "针对百万 token 检索式稀疏注意力，不能直接代表普通全注意力工作负载"
             ],
-            "confidence": 0.83,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 4,
-          "role": "must_read",
-          "itemType": "paper",
-          "title": "Mage-VL: An Efficient Codec-Native Streaming Multimodal Foundation Model",
-          "url": "https://arxiv.org/abs/2607.24904",
-          "reason": "直接利用视频编码器的运动矢量和残差能量减少视觉 Token，属于压缩域与多模态模型结合的强相关工作。",
-          "summary": "**中文标题：** Mage-VL：利用视频编解码信息的流式多模态基础模型\n\n**Mage-VL 以运动矢量和残差能量选择动态区域，在 I/P 帧间编码信息丰富的 patch，使视觉 Token 消耗降低超过 75%。**\n\n传统 VLM 对流式视频仍采用均匀采帧和高冗余视觉编码，离线推理能力强但实时感知效率不足。\n\nMage-ViT 在 16×16 patch 粒度利用 codec 的运动与残差信号选择区域，模型再以轻量事件门和因果解码器组成双系统流式架构。\n\n摘要称 Mage-VL-4B 在静态任务匹配 Qwen3-VL-4B，视频和空间推理更强，墙钟推理最多加速 3.5 倍，并超过 15B Phi-4-reasoning-vision。",
-          "implication": "这是压缩视频表征与 VLM 融合的优先复现对象，建议同时测 Token、端到端时延、任务精度和 codec 依赖。",
-          "readMinutes": 4.0,
-          "publishedAt": "2026-07-27T00:00:00+00:00",
-          "updatedAt": "2026-07-29T00:00:00+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "Mage-VL：利用视频编解码信息的流式多模态基础模型",
-            "oneSentenceZh": "Mage-VL 以运动矢量和残差能量选择动态区域，在 I/P 帧间编码信息丰富的 patch，使视觉 Token 消耗降低超过 75%。",
-            "problemZh": "传统 VLM 对流式视频仍采用均匀采帧和高冗余视觉编码，离线推理能力强但实时感知效率不足。",
-            "methodZh": "Mage-ViT 在 16×16 patch 粒度利用 codec 的运动与残差信号选择区域，模型再以轻量事件门和因果解码器组成双系统流式架构。",
-            "resultZh": "摘要称 Mage-VL-4B 在静态任务匹配 Qwen3-VL-4B，视频和空间推理更强，墙钟推理最多加速 3.5 倍，并超过 15B Phi-4-reasoning-vision。",
-            "contributions": [
-              "把 codec 侧运动与残差直接用于视觉 Token 选择",
-              "训练面向流式感知的 codec-native 视觉 tokenizer",
-              "结合事件门实现主动式流媒体理解"
-            ],
-            "evidence": [
-              "arXiv 官方摘要中的训练规模、Token 降幅和性能比较"
-            ],
-            "limitations": [
-              "最高 3.5 倍是特定配置结果",
-              "需要正文核查编码器、分辨率和硬件对比较的影响"
-            ],
-            "confidence": 0.82,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 5,
-          "role": "deep_read",
-          "itemType": "paper",
-          "title": "DocAnnot -- Accelerating the Creation of Key Information Extraction Datasets with GenAI-Powered Auto-annotation",
-          "url": "https://arxiv.org/abs/2607.24745",
-          "reason": "用 LVLM、OCR 和空间匹配自动生成文档 KIE 标注，属于可直接落地的数据生产应用。",
-          "summary": "**中文标题：** DocAnnot：用生成式 AI 加速文档关键信息抽取数据标注\n\n**DocAnnot 组合 LVLM 抽取、OCR 框定位和空间上下文匹配，将人工从逐项标注转为审核修正。**\n\n文档 KIE 训练数据依赖耗时的人工标签，尤其在版式复杂和资源有限的场景中难以快速迭代。\n\n框架先由 LVLM 提取标签值，再用 OCR 获取文字和框，并通过 SICM 联合文本匹配、空间关系与距离完成标签—值对齐。\n\n摘要报告自动标注在 CORD 和 SROIE 上 F1 为 0.679 和 0.846；仅用自动标注训练的 LayoutLMv3 在 CORD 上为 0.6765。",
-          "implication": "适合构建内部文档或遥感元数据的半自动标注流程，但质量门禁必须保留人工复核和抽样统计。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-05-08T00:00:00+00:00",
-          "updatedAt": "2026-07-29T00:00:00+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "DocAnnot：用生成式 AI 加速文档关键信息抽取数据标注",
-            "oneSentenceZh": "DocAnnot 组合 LVLM 抽取、OCR 框定位和空间上下文匹配，将人工从逐项标注转为审核修正。",
-            "problemZh": "文档 KIE 训练数据依赖耗时的人工标签，尤其在版式复杂和资源有限的场景中难以快速迭代。",
-            "methodZh": "框架先由 LVLM 提取标签值，再用 OCR 获取文字和框，并通过 SICM 联合文本匹配、空间关系与距离完成标签—值对齐。",
-            "resultZh": "摘要报告自动标注在 CORD 和 SROIE 上 F1 为 0.679 和 0.846；仅用自动标注训练的 LayoutLMv3 在 CORD 上为 0.6765。",
-            "contributions": [
-              "构建 LVLM、OCR 与空间匹配的自动标注流水线",
-              "提出 Spatially Informed Contextual Matching",
-              "验证自动标签训练下游模型的可用性"
-            ],
-            "evidence": [
-              "arXiv 官方摘要中的 CORD、SROIE 和 LayoutLMv3 数据"
-            ],
-            "limitations": [
-              "人工标注仍然更好",
-              "系统定位是减少人工工作量而非完全无人标注"
-            ],
-            "confidence": 0.84,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 6,
-          "role": "deep_read",
-          "itemType": "paper",
-          "title": "Visual Information Extraction from Documents via Classification-Guided Large Vision-Language Models",
-          "url": "https://arxiv.org/abs/2607.22723",
-          "reason": "分类后动态提示的条件计算路线，以较少监督覆盖多类型文档信息抽取，具备直接应用价值。",
-          "summary": "**中文标题：** 分类引导的大视觉语言模型文档信息抽取\n\n**该框架先判断文档类型，再以 ICL 动态注入任务知识，降低不同版式共用一个抽取器时的任务不确定性。**\n\n视觉丰富文档版式差异和污损显著，顺序 OCR 流水线脆弱，而端到端专用模型又依赖大量版式特定标注。\n\n方法把文档分类与字段抽取解耦，基于分类结果动态构造 in-context prompt，使 Qwen2.5-VL-7B 在不同证件类型上执行零样本抽取。\n\n摘要报告 16 类真实投标证件上零样本 F1 为 86.43%，监督基线为 68.08%；可选领域微调进一步达到 93.65%。",
-          "implication": "可作为多类型业务文档和遥感产品元数据抽取基线，但跨域部署前要验证分类错误对后续抽取的级联影响。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-07-22T00:00:00+00:00",
-          "updatedAt": "2026-07-28T00:00:00+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "分类引导的大视觉语言模型文档信息抽取",
-            "oneSentenceZh": "该框架先判断文档类型，再以 ICL 动态注入任务知识，降低不同版式共用一个抽取器时的任务不确定性。",
-            "problemZh": "视觉丰富文档版式差异和污损显著，顺序 OCR 流水线脆弱，而端到端专用模型又依赖大量版式特定标注。",
-            "methodZh": "方法把文档分类与字段抽取解耦，基于分类结果动态构造 in-context prompt，使 Qwen2.5-VL-7B 在不同证件类型上执行零样本抽取。",
-            "resultZh": "摘要报告 16 类真实投标证件上零样本 F1 为 86.43%，监督基线为 68.08%；可选领域微调进一步达到 93.65%。",
-            "contributions": [
-              "将文档类型分类作为抽取前置条件",
-              "用动态 ICL prompt 统一多类型 VIE",
-              "公开 Multi-VIE 代码和微调模型"
-            ],
-            "evidence": [
-              "arXiv 官方摘要中的 16 类数据、F1 与 NED 对比",
-              "作者公开的代码和 Hugging Face 模型链接"
-            ],
-            "limitations": [
-              "结果来自单一投标文档数据域",
-              "零样本提示可能依赖基础模型版本与提示模板"
-            ],
-            "confidence": 0.83,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 7,
-          "role": "deep_read",
-          "itemType": "paper",
-          "title": "Hallucinations Leave a Grounding Signature:Verifier-Guided Decoding for Selective Object Correction",
-          "url": "https://arxiv.org/abs/2607.27823",
-          "reason": "提供对象级视觉 grounding 诊断和选择性回滚，避免全局惩罚造成真实对象覆盖下降。",
-          "summary": "**中文标题：** 幻觉留下 Grounding 指纹：验证器引导的选择性对象纠错\n\n**VGD 从注意力中识别对象级 Intrinsic Grounding Signature，只对高风险对象回滚 KV cache、抑制同义词并重新生成。**\n\n输出概率反映语言合理性而非视觉支持，粗粒度幻觉抑制会同时缩短回答并损害真实对象覆盖。\n\n轻量验证器监测正在生成的对象提及，利用分布式有符号注意力模式判断 grounding 风险，高风险时回滚对应 KV 并局部再解码。\n\n摘要报告在 AMBER-G 的 rec90 设置下 CHAIR 降低 43.6% 且保留 99.6% grounded-object 覆盖，MSCOCO CHAIR_i/s 降低 37.0%/30.4%。",
-          "implication": "可将对象级验证器用于遥感和专业视觉 Agent 的输出安全层，但不能替代任务级事实核验。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-07-30T08:02:42+00:00",
-          "updatedAt": "2026-07-30T08:02:42+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "幻觉留下 Grounding 指纹：验证器引导的选择性对象纠错",
-            "oneSentenceZh": "VGD 从注意力中识别对象级 Intrinsic Grounding Signature，只对高风险对象回滚 KV cache、抑制同义词并重新生成。",
-            "problemZh": "输出概率反映语言合理性而非视觉支持，粗粒度幻觉抑制会同时缩短回答并损害真实对象覆盖。",
-            "methodZh": "轻量验证器监测正在生成的对象提及，利用分布式有符号注意力模式判断 grounding 风险，高风险时回滚对应 KV 并局部再解码。",
-            "resultZh": "摘要报告在 AMBER-G 的 rec90 设置下 CHAIR 降低 43.6% 且保留 99.6% grounded-object 覆盖，MSCOCO CHAIR_i/s 降低 37.0%/30.4%。",
-            "contributions": [
-              "提出对象级 Intrinsic Grounding Signature",
-              "设计局部 KV 回滚与同义词抑制解码",
-              "在减少幻觉同时保持 grounded 对象覆盖"
-            ],
-            "evidence": [
-              "arXiv 官方摘要中的 CHAIR 与覆盖率结果"
-            ],
-            "limitations": [
-              "当前证据集中在对象幻觉和 caption 类基准",
-              "注意力签名在其他架构和长链推理中的泛化仍需验证"
-            ],
-            "confidence": 0.81,
+            "confidence": 0.72,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }
       ]
     },
     {
-      "id": "secondary_topic",
+      "id": "kv_storage_moe_quantization",
       "items": [
         {
           "position": 1,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "StepX-Edge: An On-Device UI Vision-Language Model via Architecture-Training-Deployment Co-Design",
-          "url": "https://arxiv.org/abs/2607.22708",
-          "reason": "给出从架构、训练到量化部署的完整端侧 UI VLM 联合设计，并包含真实手机芯片数据。",
-          "summary": "**中文标题：** StepX-Edge：架构—训练—部署协同设计的端侧 UI VLM\n\n**StepX-Edge 以 0.9B 参数、UI 专用视觉编码和分阶段训练结合 PTQ/QAT，在 Snapdragon 8 Gen5 上实现端侧运行。**\n\nUI 理解同时要求 OCR、屏幕问答和元素定位精度，但移动芯片的计算、内存和功耗限制使常规模型难以部署。\n\n模型使用 UI-aware Layered Visual Encoding、渐进维度投影和五阶段课程训练，并按模块采用两阶段 PTQ 到 QAT 的差异化量化。\n\n摘要报告 W4A16+KV8 后在 Snapdragon 8 Gen5 上 TTFT 约 0.84 秒、解码 98 tok/s、峰值内存 1.4GB，量化精度损失控制在 1% 内。",
-          "implication": "可用作小型 VLM 端侧协同设计案例，重点借鉴按模块量化和真实设备指标闭环。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-07-20T00:00:00+00:00",
-          "updatedAt": "2026-07-28T00:00:00+00:00",
+          "title": "NVLLM: A 3D NAND-Centric Architecture Enabling Edge on-Device LLM Inference",
+          "url": "https://arxiv.org/abs/2604.25699",
+          "reason": "NVLLM 本周发布重要 v2 修订，把 FFN 计算下沉到 3D NAND，提供了容量受限端侧推理的激进存算一体参照。",
+          "summary": "**中文标题：** NVLLM：以 3D NAND 为中心的端侧大模型推理架构\n\n**架构在 Flash 内直接执行 FFN 点积，把注意力和 KV 调度留给轻量 CMOS 与外部 DRAM，避免权重先搬入 DRAM。**\n\n端侧单批解码受模型权重容量和带宽限制，传统 GPU 外存推理及 SSD 加速器仍需经过 DRAM 搬移权重，无法充分利用高密度 NAND。\n\nNVLLM 通过晶圆级堆叠整合多平面 3D NAND、乱序点积处理通道、ECC 和缓冲区，直接对原始 NAND 读取执行 GEMM/GEMV；KV 感知调度随上下文增长维持流水。\n\n论文在 OPT 和 LLaMA、最高 30B 参数配置上报告：相对 A800 外存推理加速 16.7—37.9 倍，相对 SSD 类设计最高 4.7 倍，CMOS 面积开销约 2.7%。",
+          "implication": "OrbitInfer 可把 NVLLM 作为高容量低带宽存储计算的上界设计，重点评估 FFN 权重下沉、ECC 和 KV 调度在星载可靠性约束下的可行性。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-04-28T14:26:22+00:00",
+          "updatedAt": "2026-08-04T17:18:30+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "StepX-Edge：架构—训练—部署协同设计的端侧 UI VLM",
-            "oneSentenceZh": "StepX-Edge 以 0.9B 参数、UI 专用视觉编码和分阶段训练结合 PTQ/QAT，在 Snapdragon 8 Gen5 上实现端侧运行。",
-            "problemZh": "UI 理解同时要求 OCR、屏幕问答和元素定位精度，但移动芯片的计算、内存和功耗限制使常规模型难以部署。",
-            "methodZh": "模型使用 UI-aware Layered Visual Encoding、渐进维度投影和五阶段课程训练，并按模块采用两阶段 PTQ 到 QAT 的差异化量化。",
-            "resultZh": "摘要报告 W4A16+KV8 后在 Snapdragon 8 Gen5 上 TTFT 约 0.84 秒、解码 98 tok/s、峰值内存 1.4GB，量化精度损失控制在 1% 内。",
+            "titleZh": "NVLLM：以 3D NAND 为中心的端侧大模型推理架构",
+            "oneSentenceZh": "架构在 Flash 内直接执行 FFN 点积，把注意力和 KV 调度留给轻量 CMOS 与外部 DRAM，避免权重先搬入 DRAM。",
+            "problemZh": "端侧单批解码受模型权重容量和带宽限制，传统 GPU 外存推理及 SSD 加速器仍需经过 DRAM 搬移权重，无法充分利用高密度 NAND。",
+            "methodZh": "NVLLM 通过晶圆级堆叠整合多平面 3D NAND、乱序点积处理通道、ECC 和缓冲区，直接对原始 NAND 读取执行 GEMM/GEMV；KV 感知调度随上下文增长维持流水。",
+            "resultZh": "论文在 OPT 和 LLaMA、最高 30B 参数配置上报告：相对 A800 外存推理加速 16.7—37.9 倍，相对 SSD 类设计最高 4.7 倍，CMOS 面积开销约 2.7%。",
             "contributions": [
-              "面向极端屏幕长宽比设计分层视觉编码",
-              "以课程训练协同提升四类 UI 能力",
-              "提供真实移动 NPU 上的量化部署指标"
+              "将 FFN 权重访问和计算下沉到 3D NAND",
+              "用页粒度访问、ECC 和乱序 PE 组成 Flash 内计算流水",
+              "结合注意力 DRAM 驻留与 KV 感知调度"
             ],
             "evidence": [
-              "arXiv 官方摘要中的基准与 Snapdragon 8 Gen5 实测指标"
+              "arXiv v2 摘要与本地获取正文提供模型范围、两类基线和面积开销",
+              "正文明确区分 NAND 内 FFN 与 CMOS/DRAM 侧注意力路径"
             ],
             "limitations": [
-              "作者表示将开源，当前需核实实际开放状态",
-              "UI 专用结果不直接代表通用多模态能力"
+              "依赖定制 3D NAND 与晶圆堆叠，不能直接部署到现成通用星载计算平台",
+              "需进一步验证 NAND 耐久性、辐射可靠性和持续推理时的热设计"
             ],
-            "confidence": 0.82,
+            "confidence": 0.78,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        },
+        {
+          "position": 2,
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "A CXL Memory Rack for Multi-Turn LLM Serving",
+          "url": "https://arxiv.org/abs/2607.18141",
+          "reason": "HyMCache 本周更新到新版本，并在真实 CXL 混合内存原型上量化 TB 级共享 KV 复用的成本—性能取舍。",
+          "summary": "**中文标题：** HyMCache：用于多轮大模型服务的 CXL 混合内存机架\n\n**系统以小容量设备 DRAM 缓存热点、以 SSD 承载 TB 级 KV，并利用前缀预取和机会式写缓冲适配多轮请求的只读、可预测、追加式访问。**\n\n多轮和代理式请求希望复用历史 KV，但 GPU HBM 和主机 DRAM 难以经济地扩展到 TB 级共享容量，纯 SSD 又难以满足时延要求。\n\nHyMCache 在 CXL 接口后组合设备 DRAM 与 SSD，根据请求前缀提前把关键 KV 读入 DRAM，并把追加写入机会式缓冲，从而用少量 DRAM 覆盖延迟敏感访问。\n\n真实 CXL-HM 原型在相同 DRAM 预算下，相对本地 LMCache 在单节点提升 3.0 倍、在 PD 分离服务提升 1.45 倍；相对 1TB 分布式 DRAM Mooncake 性能低约 30%，但 DRAM 用量减少 16 倍。",
+          "implication": "OrbitInfer 可用该结果建立 KV 共享层的成本—时延基线，并把前缀预取、写缓冲及断链恢复加入星间分层缓存实验。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-07-20T16:35:47+00:00",
+          "updatedAt": "2026-08-05T22:55:21+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "HyMCache：用于多轮大模型服务的 CXL 混合内存机架",
+            "oneSentenceZh": "系统以小容量设备 DRAM 缓存热点、以 SSD 承载 TB 级 KV，并利用前缀预取和机会式写缓冲适配多轮请求的只读、可预测、追加式访问。",
+            "problemZh": "多轮和代理式请求希望复用历史 KV，但 GPU HBM 和主机 DRAM 难以经济地扩展到 TB 级共享容量，纯 SSD 又难以满足时延要求。",
+            "methodZh": "HyMCache 在 CXL 接口后组合设备 DRAM 与 SSD，根据请求前缀提前把关键 KV 读入 DRAM，并把追加写入机会式缓冲，从而用少量 DRAM 覆盖延迟敏感访问。",
+            "resultZh": "真实 CXL-HM 原型在相同 DRAM 预算下，相对本地 LMCache 在单节点提升 3.0 倍、在 PD 分离服务提升 1.45 倍；相对 1TB 分布式 DRAM Mooncake 性能低约 30%，但 DRAM 用量减少 16 倍。",
+            "contributions": [
+              "构建面向 KV 复用的 CXL DRAM—SSD 混合内存原型",
+              "利用多轮 KV 的读多写少和追加式特征重新设计缓存管理",
+              "同时评估单聚合器和 PD 分离两种服务配置"
+            ],
+            "evidence": [
+              "arXiv 最新版本摘要和本地正文给出真实原型、LMCache 与 Mooncake 对照数据"
+            ],
+            "limitations": [
+              "CXL 机架内互连条件优于星间链路，远程 KV 层级需要替换时延与故障模型",
+              "对 Mooncake 的性能差距说明低成本层不能完全替代高带宽 DRAM"
+            ],
+            "confidence": 0.8,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        },
+        {
+          "position": 3,
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "WitCert: Sound Runtime Risk Observability and Gating for KV-Cache Quantization",
+          "url": "https://arxiv.org/abs/2607.28699",
+          "reason": "WitCert 本周更新版本把 KV 量化从离线平均分转为请求级运行时风险观测与门控，补足自适应精度方案的安全边界。",
+          "summary": "**中文标题：** WitCert：KV Cache 量化的运行时风险证书与门控\n\n**系统为每层、每头、每步计算精确与压缩注意力总变差的上界，并在风险升高时按证书或见证值选择性修复缓存。**\n\n离线基准平均分无法告诉在线服务某一个请求是否正被 KV 量化破坏，部署系统缺乏可观测、可门控的请求级质量风险指标。\n\nWitCert 提供适用于黑盒量化器的确定性带范数见证上界，以及带请求级失败预算的受控抖动 INT8 概率证书；二者接入 SGLang 后驱动风险排序和选择性修复。\n\n摘要报告门控把 hard RULER 上 raw-cast FP8 得分从 22.8 恢复到 79.7，与未压缩差异的配对区间为 +0.0 至 +0.8；认证 INT8 在同等内存下可服务 1.88 倍 KV token。",
+          "implication": "OrbitInfer 可把 WitCert 式风险计量器放在自适应 KV 精度策略之前，在内存紧张时只压缩低风险层头，并为高风险请求保留回退路径。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-07-30T11:04:45+00:00",
+          "updatedAt": "2026-08-06T10:44:15+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "WitCert：KV Cache 量化的运行时风险证书与门控",
+            "oneSentenceZh": "系统为每层、每头、每步计算精确与压缩注意力总变差的上界，并在风险升高时按证书或见证值选择性修复缓存。",
+            "problemZh": "离线基准平均分无法告诉在线服务某一个请求是否正被 KV 量化破坏，部署系统缺乏可观测、可门控的请求级质量风险指标。",
+            "methodZh": "WitCert 提供适用于黑盒量化器的确定性带范数见证上界，以及带请求级失败预算的受控抖动 INT8 概率证书；二者接入 SGLang 后驱动风险排序和选择性修复。",
+            "resultZh": "摘要报告门控把 hard RULER 上 raw-cast FP8 得分从 22.8 恢复到 79.7，与未压缩差异的配对区间为 +0.0 至 +0.8；认证 INT8 在同等内存下可服务 1.88 倍 KV token。",
+            "contributions": [
+              "给出请求级 KV 量化风险的确定性与概率上界",
+              "把风险观测和修复门控接入 SGLang 在线服务",
+              "使用 Lean 4 机器核验核心概率证书定理"
+            ],
+            "evidence": [
+              "arXiv 最新版本摘要和本地正文给出 RULER、内存容量及 SGLang 接入结果",
+              "论文明确区分自适应安全的确定性界与仅适用于非自适应查询的概率证书"
+            ],
+            "limitations": [
+              "确定性界可能偏保守，概率证书对量化器和查询适应性有明确前提",
+              "摘要中的质量恢复集中在 hard RULER，仍需覆盖目标模型和星载任务"
+            ],
+            "confidence": 0.78,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "power_reliability_edge_distributed",
+      "items": [
+        {
+          "position": 1,
+          "role": "must_read",
+          "itemType": "paper",
+          "title": "EdgeXpert: An Edge Device for Memory-Efficient LLM Inference with Mixture-of-Experts and Speculative Decoding",
+          "url": "https://arxiv.org/abs/2608.05303",
+          "reason": "EdgeXpert 是本周新稿，直接研究端侧 MoE 与推测解码组合时的外存访问矛盾，并同时报告时延和能耗结果。",
+          "summary": "**中文标题：** EdgeXpert：协同 MoE 与推测解码的端侧推理设备\n\n**系统在 Prefill 阶段复用提示级专家集合，在 Decode 阶段合并同深度候选 token 的专家通道，以减少外部存储访问。**\n\nMoE 通过稀疏激活减少单步计算，推测解码通过一次验证多个 token 减少步数，但二者组合会扩大候选 token 的专家权重并集，使外存访问重新成为瓶颈。\n\nPrefill 使用轻量编码器选出重要 token 并构造共享专家集合；Decode 按树深合并候选所需专家，只载入显著通道，再用计算校准补偿被省略通道。\n\n论文摘要称在 Samsung 28nm、800MHz 综合配置下，相对既有方案最高降低 56.3% 时延和 44.1% 能耗，同时维持接近基线的准确率。",
+          "implication": "OrbitInfer 可把专家权重外存访问量加入星载推测解码评估，重点验证提示级路由复用是否能在受限内存带宽下稳定降低能耗。",
+          "readMinutes": 3.0,
+          "publishedAt": "2026-08-05T18:03:47+00:00",
+          "updatedAt": "2026-08-05T18:03:47+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "EdgeXpert：协同 MoE 与推测解码的端侧推理设备",
+            "oneSentenceZh": "系统在 Prefill 阶段复用提示级专家集合，在 Decode 阶段合并同深度候选 token 的专家通道，以减少外部存储访问。",
+            "problemZh": "MoE 通过稀疏激活减少单步计算，推测解码通过一次验证多个 token 减少步数，但二者组合会扩大候选 token 的专家权重并集，使外存访问重新成为瓶颈。",
+            "methodZh": "Prefill 使用轻量编码器选出重要 token 并构造共享专家集合；Decode 按树深合并候选所需专家，只载入显著通道，再用计算校准补偿被省略通道。",
+            "resultZh": "论文摘要称在 Samsung 28nm、800MHz 综合配置下，相对既有方案最高降低 56.3% 时延和 44.1% 能耗，同时维持接近基线的准确率。",
+            "contributions": [
+              "指出 MoE 与推测解码组合后的专家权重访问冲突",
+              "提出提示级专家复用和深度感知专家合并",
+              "给出端侧加速器的软硬件协同设计"
+            ],
+            "evidence": [
+              "arXiv 官方摘要给出机制、28nm 综合条件和时延、能耗指标"
+            ],
+            "limitations": [
+              "结果来自芯片综合而非流片设备实测",
+              "摘要没有给出这里所需的完整模型规模、外存配置和精度退化表"
+            ],
+            "confidence": 0.7,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        },
+        {
+          "position": 2,
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "SHIELD: A Segmented Hierarchical Memory Architecture for Energy-Efficient LLM Inference on Edge NPUs",
+          "url": "https://arxiv.org/abs/2604.07396",
+          "reason": "SHIELD 本周 v2 修订从激活生命周期和 BF16 位敏感度降低 eDRAM 刷新能源，直接关联星载 NPU 的功耗与可靠性约束。",
+          "summary": "**中文标题：** SHIELD：面向端侧 NPU 的分段分层 eDRAM\n\n**方案分离 BF16 的符号、指数和尾数，对瞬时 QO 尾数关闭刷新、对持久 KV 尾数放宽刷新，以利用不同生命周期和误差敏感度。**\n\n端侧 NPU 需要高密度 eDRAM 保存激活与 KV，但周期刷新消耗显著能量；既有研究更多优化持久 KV，忽略短生命周期 QO 激活的可容错性。\n\nSHIELD 按数据类型和 BF16 字段分段管理 eDRAM：保护高敏感符号和指数，对瞬时 Query/Output 尾数不刷新，对长期 KV 尾数使用更宽松刷新周期。\n\n摘要与正文报告相对标准刷新基线降低 35% eDRAM 刷新能源，并在 WikiText-2、PIQA 和 ARC-Easy 上保持准确率。",
+          "implication": "OrbitInfer 应把激活类型和位级可靠性加入存储能耗模型，并在辐射注错条件下重新测定 QO 与 KV 的可放宽刷新范围。",
+          "readMinutes": 3.0,
+          "publishedAt": "2026-04-08T08:23:45+00:00",
+          "updatedAt": "2026-08-05T07:48:43+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "SHIELD：面向端侧 NPU 的分段分层 eDRAM",
+            "oneSentenceZh": "方案分离 BF16 的符号、指数和尾数，对瞬时 QO 尾数关闭刷新、对持久 KV 尾数放宽刷新，以利用不同生命周期和误差敏感度。",
+            "problemZh": "端侧 NPU 需要高密度 eDRAM 保存激活与 KV，但周期刷新消耗显著能量；既有研究更多优化持久 KV，忽略短生命周期 QO 激活的可容错性。",
+            "methodZh": "SHIELD 按数据类型和 BF16 字段分段管理 eDRAM：保护高敏感符号和指数，对瞬时 Query/Output 尾数不刷新，对长期 KV 尾数使用更宽松刷新周期。",
+            "resultZh": "摘要与正文报告相对标准刷新基线降低 35% eDRAM 刷新能源，并在 WikiText-2、PIQA 和 ARC-Easy 上保持准确率。",
+            "contributions": [
+              "联合利用激活生命周期与 BF16 位级敏感度",
+              "为 QO 与 KV 设计差异化刷新策略",
+              "在多模型和多任务上验证能耗—精度边界"
+            ],
+            "evidence": [
+              "arXiv v2 摘要和本地正文明确给出 35% 刷新能源降幅及三个验证任务"
+            ],
+            "limitations": [
+              "指标聚焦 eDRAM 刷新部分，不等同于整机总能耗下降 35%",
+              "辐射环境可能改变允许的刷新松弛和位错误边界"
+            ],
+            "confidence": 0.76,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }
