@@ -1,24 +1,102 @@
 {
   "issue": {
-    "id": "332868e2-a44a-46c1-b11c-84b90cda23b6",
+    "id": "d2e57ca6-815b-4fe2-ae1d-fba9d1e9be5c",
     "departmentId": "orbitinfer",
-    "title": "星载大模型推理引擎周报 · 2026-W32",
-    "isoWeek": "2026-W32",
-    "windowStart": "2026-08-02T16:00:00+00:00",
-    "windowEnd": "2026-08-09T15:59:59.999999+00:00",
+    "title": "星载大模型推理引擎周报 · 2026-W33",
+    "isoWeek": "2026-W33",
+    "windowStart": "2026-08-09T16:00:00+00:00",
+    "windowEnd": "2026-08-16T15:59:59.999999+00:00",
     "status": "approved",
     "targetReadMinutes": 30,
     "estimatedReadMinutes": 30.0,
     "itemCount": 8
   },
   "trends": [
-    "本周有7项相关进展，集中在LLM/VLM/MoE推理引擎。",
-    "本周有14项相关进展，集中在KV Cache与分层存储。",
-    "本周有4项相关进展，集中在量化、压缩与自适应精度。",
-    "本周有2项相关进展，集中在推理调度与资源编排。",
-    "本周有2项相关进展，集中在边缘、端侧与实时大模型。"
+    "本周有5项相关进展，集中在推理调度与资源编排。",
+    "本周有8项相关进展，集中在LLM/VLM/MoE推理引擎。",
+    "本周有7项相关进展，集中在KV Cache与分层存储。",
+    "本周有2项相关进展，集中在边缘、端侧与实时大模型。",
+    "本周有1项相关进展，集中在量化、压缩与自适应精度。"
   ],
   "sections": [
+    {
+      "id": "frameworks_benchmarks_datasets",
+      "items": [
+        {
+          "position": 1,
+          "role": "must_read",
+          "itemType": "framework",
+          "title": "vllm-project/vllm",
+          "url": "https://github.com/vllm-project/vllm/releases/tag/v0.27.0",
+          "reason": "本周正式发布的推理框架大版本同时覆盖模型支持、KV 分层、量化、容错和异构硬件，直接影响近期引擎基线选择。",
+          "summary": "**中文标题：** vLLM v0.27.0：面向新一代模型、分层 KV 与弹性专家并行的整栈更新\n\n**vLLM v0.27.0 用一个大版本同时落地 Kimi K3、分层 KV 卸载、弹性专家并行和多项内核优化，是本周最值得跟进的工程基线更新。**\n\n快速演进的混合注意力、MoE 与超长上下文模型要求推理框架同时解决首请求编译、KV 分层、分离式部署、容错和多硬件后端适配，单点补丁难以形成可用整栈。\n\n该版本整合 Kimi K3 全栈支持、FlashAttention 4 的 FP8 KV 与 256 维头支持、新 JIT 预热、通用 P2P 次级 KV 层、可插拔淘汰策略、NIXL 分离式推理、弹性 EP 准备以及 Rust gRPC 控制面。\n\n官方发布说明列出 561 个提交、242 位贡献者；DeepSeek-V4 路径报告若干内核级或端到端改进，包括跳过空启动约 2 倍内核提升、工作区复用带来 3.9% 端到端 TTFT 改进及节省 448 MiB PP 缓冲。",
+          "implication": "应把分层 KV、弹性 EP 与预热路径拆成 OrbitInfer 的对照特性清单，并在受限功耗、有限内存和链路波动条件下复测，而不是直接继承数据中心默认参数。",
+          "readMinutes": 3.0,
+          "publishedAt": "2026-07-14T08:51:20+00:00",
+          "updatedAt": "2026-08-10T21:18:11+00:00",
+          "status": "Official release: v0.27.0",
+          "deepRead": {
+            "titleZh": "vLLM v0.27.0：面向新一代模型、分层 KV 与弹性专家并行的整栈更新",
+            "oneSentenceZh": "vLLM v0.27.0 用一个大版本同时落地 Kimi K3、分层 KV 卸载、弹性专家并行和多项内核优化，是本周最值得跟进的工程基线更新。",
+            "problemZh": "快速演进的混合注意力、MoE 与超长上下文模型要求推理框架同时解决首请求编译、KV 分层、分离式部署、容错和多硬件后端适配，单点补丁难以形成可用整栈。",
+            "methodZh": "该版本整合 Kimi K3 全栈支持、FlashAttention 4 的 FP8 KV 与 256 维头支持、新 JIT 预热、通用 P2P 次级 KV 层、可插拔淘汰策略、NIXL 分离式推理、弹性 EP 准备以及 Rust gRPC 控制面。",
+            "resultZh": "官方发布说明列出 561 个提交、242 位贡献者；DeepSeek-V4 路径报告若干内核级或端到端改进，包括跳过空启动约 2 倍内核提升、工作区复用带来 3.9% 端到端 TTFT 改进及节省 448 MiB PP 缓冲。",
+            "contributions": [
+              "将新模型、注意力内核、量化和多硬件支持集中到同一正式版本",
+              "把 KV 次级层、分离式推理和弹性专家并行推进到可组合的运行时能力",
+              "补充首请求预热、容错控制面与多项可观测性接口"
+            ],
+            "evidence": [
+              "GitHub 官方 release 标记 v0.27.0 于 2026-08-10 发布，并列出 561 个提交和 242 位贡献者。",
+              "官方 release 明确列出 FP8 KV、分层卸载、NIXL P/D、弹性 EP、故障容错框架以及对应 PR。",
+              "性能数字均来自官方 release 对具体 PR 的汇总，不把它们解释为统一工作负载下的独立复现实验。"
+            ],
+            "limitations": [
+              "这是框架发布说明而非受控横向评测，不同百分比来自不同模型、硬件与 PR。",
+              "PyTorch 2.13 等依赖升级属于破坏性环境变化，星载或边缘目标需要重新验证兼容性和镜像体积。"
+            ],
+            "confidence": 0.86,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        },
+        {
+          "position": 2,
+          "role": "must_read",
+          "itemType": "framework",
+          "title": "NVIDIA/TensorRT-LLM",
+          "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc24",
+          "reason": "官方预发布版在本周给出大量模型与低精度支持，同时公开列出严重稳定性和精度风险，适合用于上线前反向门禁设计。",
+          "summary": "**中文标题：** TensorRT-LLM v1.3.0rc24：功能扩展与高风险已知问题并存\n\n**TensorRT-LLM 新预发布版的价值不仅在新增能力，更在官方集中披露 CUDA Graph、低精度 MoE、KV 传输和混合模型启动等关键失败模式。**\n\n高性能推理栈在叠加 torch.compile、CUDA Graph、多流 MTP、低精度 MoE 和高并发分离式 KV 传输后容易出现初始化崩溃、静默精度损失或异步非法访存。\n\n该候选是 NVIDIA 官方签名的预发布版本；周报从 release 的功能清单与 Known Issues 双向审阅，重点抽取可转化为回归测试的组合条件，而不是只罗列新增模型。\n\n官方页面确认版本于 2026-08-12 发布并签名；已知问题包括 torch.compile 与 CUDA Graph 组合失败、SM120 上 MLA+MTP 异步崩溃、低精度多 GPU MoE 严重精度下降以及 Python NIXL/UCX 高并发 KV 传输崩溃。",
+          "implication": "OrbitInfer 应把这些失败组合转成最小回归矩阵，尤其覆盖图执行、MTP、KVCacheManagerV2、低精度 MoE 与高并发 P/D 传输。",
+          "readMinutes": 3.0,
+          "publishedAt": "2026-07-22T22:41:15+00:00",
+          "updatedAt": "2026-08-12T08:46:46+00:00",
+          "status": "Official release: v1.3.0rc24",
+          "deepRead": {
+            "titleZh": "TensorRT-LLM v1.3.0rc24：功能扩展与高风险已知问题并存",
+            "oneSentenceZh": "TensorRT-LLM 新预发布版的价值不仅在新增能力，更在官方集中披露 CUDA Graph、低精度 MoE、KV 传输和混合模型启动等关键失败模式。",
+            "problemZh": "高性能推理栈在叠加 torch.compile、CUDA Graph、多流 MTP、低精度 MoE 和高并发分离式 KV 传输后容易出现初始化崩溃、静默精度损失或异步非法访存。",
+            "methodZh": "该候选是 NVIDIA 官方签名的预发布版本；周报从 release 的功能清单与 Known Issues 双向审阅，重点抽取可转化为回归测试的组合条件，而不是只罗列新增模型。",
+            "resultZh": "官方页面确认版本于 2026-08-12 发布并签名；已知问题包括 torch.compile 与 CUDA Graph 组合失败、SM120 上 MLA+MTP 异步崩溃、低精度多 GPU MoE 严重精度下降以及 Python NIXL/UCX 高并发 KV 传输崩溃。",
+            "contributions": [
+              "给出可追溯签名的推理框架候选版本",
+              "公开跨编译、图执行、量化、KV 管理与分离式传输的组合风险",
+              "为部署前故障注入和兼容性矩阵提供直接测试输入"
+            ],
+            "evidence": [
+              "GitHub 官方 release 显示 v1.3.0rc24 于 2026-08-12 发布，提交签名已验证。",
+              "Known Issues 逐项列出 allocator assertion、illegal memory access、accuracy loss、startup failure 和 NIXL/UCX crash 等现象。"
+            ],
+            "limitations": [
+              "这是 rc 预发布版，不应作为生产基线直接替换稳定版本。",
+              "官方问题描述没有给出全部复现脚本与修复时间，需在目标 GPU 和模型组合上自行确认。"
+            ],
+            "confidence": 0.84,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        }
+      ]
+    },
     {
       "id": "inference_and_scheduling",
       "items": [
@@ -26,106 +104,35 @@
           "position": 1,
           "role": "must_read",
           "itemType": "paper",
-          "title": "Topology-Aware Data Movement for Disaggregated GPU Inference",
-          "url": "https://arxiv.org/abs/2607.28633",
-          "reason": "该工作把解耦推理中的 KV 传输明确建模为拓扑分层问题，直接对应 OrbitInfer 在异构星间链路和分层存储下的放置与传输策略。",
-          "summary": "**中文标题：** 面向解耦式 GPU 推理的拓扑感知数据搬移\n\n**系统依据 NVLink、PCIe、InfiniBand、跨数据中心网络和 CXL 层级选择传输路径，并将逐层 KV 传输与预填充重叠。**\n\nPrefill 与 Decode 分离后，每个请求都要搬移大体量 KV Cache，而统一使用 RDMA 会忽略不同 GPU 物理关系造成的数量级带宽差异。\n\n方案在启动时发现互连层级，按传输选择最合适的通道；同时使用逐层流水传输、面向 MoE 的 NVLink 域放置，以及作为共享溢出层的 CXL 3.0 内存扩展器。\n\n论文以 70B 模型每请求约 1.3GB KV 为例，分析显示逐层流水可隐藏 76%—100% 的传输时间，跨三类架构预计比统一 RDMA 降低 3—18 倍传输时延。",
-          "implication": "OrbitInfer 可把链路类型、拓扑距离和缓存层级纳入 PD 分离调度器，并用逐层传输而不是整请求搬移作为 OrbitServe 的首个对照基线。",
+          "title": "MemSpec: Memory-Aware Runtime for Adaptive Draft Scheduling in Speculative Decoding on Edge Devices",
+          "url": "https://arxiv.org/abs/2608.10362",
+          "reason": "论文在 Jetson Orin Nano 上处理受限内存下的自适应草稿模型切换，是星载边缘推理最贴近的本周系统证据之一。",
+          "summary": "**中文标题：** MemSpec：让草稿选择服从边缘设备的实际驻留集合\n\n**MemSpec 把草稿效果预测与执行解耦，通过主动维护驻留工作集减少草稿模型切换加载开销。**\n\n自适应推测解码会根据输入和生成阶段切换草稿模型，但在内存紧张的边缘设备上，最优草稿往往不驻留，模型加载开销抵消接受率收益。\n\n系统用轻量预测器根据提示和生成上下文估计草稿有效性，再由内存感知调度器主动维护 resident working set，使选择结果与可执行草稿集合协调。\n\n论文在 Jetson Orin Nano 上报告，相比先进的 bandit 自适应方法，稳态生成吞吐平均提高 40.7%，并接近 oracle 上界；官方页标注工作发表于 LCTES 2026。",
+          "implication": "应在 OrbitInfer 中把草稿模型视为受驻留容量约束的可调度对象，并记录切换加载、接受率与能耗三者的联合收益。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-04-19T22:46:57+00:00",
-          "updatedAt": "2026-08-07T12:49:40+00:00",
+          "publishedAt": "2026-08-11T01:41:37+00:00",
+          "updatedAt": "2026-08-11T01:41:37+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "面向解耦式 GPU 推理的拓扑感知数据搬移",
-            "oneSentenceZh": "系统依据 NVLink、PCIe、InfiniBand、跨数据中心网络和 CXL 层级选择传输路径，并将逐层 KV 传输与预填充重叠。",
-            "problemZh": "Prefill 与 Decode 分离后，每个请求都要搬移大体量 KV Cache，而统一使用 RDMA 会忽略不同 GPU 物理关系造成的数量级带宽差异。",
-            "methodZh": "方案在启动时发现互连层级，按传输选择最合适的通道；同时使用逐层流水传输、面向 MoE 的 NVLink 域放置，以及作为共享溢出层的 CXL 3.0 内存扩展器。",
-            "resultZh": "论文以 70B 模型每请求约 1.3GB KV 为例，分析显示逐层流水可隐藏 76%—100% 的传输时间，跨三类架构预计比统一 RDMA 降低 3—18 倍传输时延。",
+            "titleZh": "MemSpec：让草稿选择服从边缘设备的实际驻留集合",
+            "oneSentenceZh": "MemSpec 把草稿效果预测与执行解耦，通过主动维护驻留工作集减少草稿模型切换加载开销。",
+            "problemZh": "自适应推测解码会根据输入和生成阶段切换草稿模型，但在内存紧张的边缘设备上，最优草稿往往不驻留，模型加载开销抵消接受率收益。",
+            "methodZh": "系统用轻量预测器根据提示和生成上下文估计草稿有效性，再由内存感知调度器主动维护 resident working set，使选择结果与可执行草稿集合协调。",
+            "resultZh": "论文在 Jetson Orin Nano 上报告，相比先进的 bandit 自适应方法，稳态生成吞吐平均提高 40.7%，并接近 oracle 上界；官方页标注工作发表于 LCTES 2026。",
             "contributions": [
-              "将解耦推理的 KV 搬移统一建模为拓扑感知调度问题",
-              "组合逐层流水、MoE 放置和 CXL 溢出层三类机制",
-              "给出不同互连层级下的带宽与时延模型"
+              "揭示草稿选择与草稿驻留不一致这一边缘瓶颈",
+              "提出预测引导的主动驻留工作集管理",
+              "在真实受限边缘设备上报告端到端吞吐结果"
             ],
             "evidence": [
-              "arXiv v2 摘要和本地获取的论文正文给出 1.3GB/request、72 倍互连带宽差异及流水隐藏比例",
-              "正文将 3—18 倍结果明确描述为跨三类架构的投影分析"
+              "arXiv 官方摘要给出机制、Jetson Orin Nano 平台和 40.7% 平均吞吐提升。",
+              "官方页给出 LCTES 2026 论文集与关联 DOI。"
             ],
             "limitations": [
-              "尚未在同时具备异构互连和 CXL 3.0 的多节点集群上完成端到端实测",
-              "星间链路的长时延、断续性和能耗约束需要重新建模，不能直接套用数据中心参数"
+              "摘要未给出功耗、峰值内存和所有草稿组合细节。",
+              "Jetson 结果不能直接代表辐射环境或更弱星载算力平台。"
             ],
-            "confidence": 0.76,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 2,
-          "role": "must_read",
-          "itemType": "paper",
-          "title": "Bole: Efficient Tree Speculation for Hybrid-Attention Language Models",
-          "url": "https://arxiv.org/abs/2608.01651",
-          "reason": "Bole 是本周新稿，解决混合注意力模型在树状推测解码中状态复制和串行验证的核心瓶颈，并已集成到 SGLang。",
-          "summary": "**中文标题：** Bole：混合注意力语言模型的高效树状推测解码\n\n**Bole 将线性注意力递推改写为树结构闭式计算，只保存 token 级状态因子，并在采样后重建被选中的单一路径。**\n\n现有树状推测解码围绕全注意力 KV Cache 设计，在混合注意力模型上需要逐分支遍历递归层并为每个候选节点物化完整状态，导致验证时延和瞬时显存快速增长。\n\n系统通过树结构闭式递推和专用 GPU Kernel 并行验证所有候选节点，以无损 token 因子编码状态更新，并在 SGLang 中按整批前向成本动态分配验证预算。\n\n摘要报告线性注意力树验证加速 3.4—7.7 倍、瞬时状态内存减少 82—99 倍；离线吞吐相对自回归最高 4.72 倍，在线 TTFT 和 TPOT 相对最强树推测基线最多下降 67.6% 和 49.9%。",
-          "implication": "OrbitInfer 应把递归状态而非只有 KV Cache 纳入混合注意力模型的星载内存模型，并评估状态因子化对显存峰值和批量调度的共同收益。",
-          "readMinutes": 4.0,
-          "publishedAt": "2026-08-03T03:43:14+00:00",
-          "updatedAt": "2026-08-03T03:43:14+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "Bole：混合注意力语言模型的高效树状推测解码",
-            "oneSentenceZh": "Bole 将线性注意力递推改写为树结构闭式计算，只保存 token 级状态因子，并在采样后重建被选中的单一路径。",
-            "problemZh": "现有树状推测解码围绕全注意力 KV Cache 设计，在混合注意力模型上需要逐分支遍历递归层并为每个候选节点物化完整状态，导致验证时延和瞬时显存快速增长。",
-            "methodZh": "系统通过树结构闭式递推和专用 GPU Kernel 并行验证所有候选节点，以无损 token 因子编码状态更新，并在 SGLang 中按整批前向成本动态分配验证预算。",
-            "resultZh": "摘要报告线性注意力树验证加速 3.4—7.7 倍、瞬时状态内存减少 82—99 倍；离线吞吐相对自回归最高 4.72 倍，在线 TTFT 和 TPOT 相对最强树推测基线最多下降 67.6% 和 49.9%。",
-            "contributions": [
-              "推导适用于混合注意力递推层的树结构闭式计算",
-              "以 token 级因子无损压缩推测状态",
-              "把 Kernel 与 SGLang 批量验证预算协同设计"
-            ],
-            "evidence": [
-              "arXiv 官方摘要给出四种模型、两类 GPU 和在线代理负载上的主要指标",
-              "摘要明确说明系统已集成 SGLang，并区分自回归基线和最强树推测基线"
-            ],
-            "limitations": [
-              "当前核验主要依据摘要，尚未逐表复核不同模型和批量规模的完整结果",
-              "收益依赖混合注意力状态结构，不代表全注意力模型也能获得相同提升"
-            ],
-            "confidence": 0.72,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 3,
-          "role": "must_read",
-          "itemType": "paper",
-          "title": "Heterogeneous LLM Serving with General-Purpose Processing-Near-Memory for Retrieval-Based Sparse Attention",
-          "url": "https://arxiv.org/abs/2608.03555",
-          "reason": "KARAT 是本周新稿，给出面向检索式稀疏注意力的 GPU—近存计算分工和微批调度，适合用于超长上下文推理的异构基线。",
-          "summary": "**中文标题：** KARAT：面向检索式稀疏注意力的通用近存计算节点\n\n**方案让 GPU 保存权重并执行投影与 MoE，让大容量 PNM 节点保存 KV 和索引并执行所有读缓存操作。**\n\n百万 token 上下文把 KV Cache 和检索索引推到 GPU 显存之外，而既有固定功能 PIM/PNM 难以同时承载不断变化的索引器和稀疏注意力算法。\n\nKARAT 以 LPDDR 大容量和通用计算覆盖检索索引器，并使用细粒度机会式微批调度隐藏专家通信，再按上下文长度重平衡两个设备侧的 token 数量。\n\n摘要报告在三种模型和真实代理轨迹上，相对 GPU-only 基线的 SLO 约束吞吐/TDP 提升 2.09—6.13 倍，对免训练稀疏注意力方法提升 1.36—3.21 倍。",
-          "implication": "OrbitInfer 可借鉴其按操作类型拆分的思路，把 KV/索引常驻节点映射为星上存储计算单元，并在仿真中加入上下文长度感知的微批平衡。",
-          "readMinutes": 4.0,
-          "publishedAt": "2026-08-04T12:25:45+00:00",
-          "updatedAt": "2026-08-04T12:25:45+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "KARAT：面向检索式稀疏注意力的通用近存计算节点",
-            "oneSentenceZh": "方案让 GPU 保存权重并执行投影与 MoE，让大容量 PNM 节点保存 KV 和索引并执行所有读缓存操作。",
-            "problemZh": "百万 token 上下文把 KV Cache 和检索索引推到 GPU 显存之外，而既有固定功能 PIM/PNM 难以同时承载不断变化的索引器和稀疏注意力算法。",
-            "methodZh": "KARAT 以 LPDDR 大容量和通用计算覆盖检索索引器，并使用细粒度机会式微批调度隐藏专家通信，再按上下文长度重平衡两个设备侧的 token 数量。",
-            "resultZh": "摘要报告在三种模型和真实代理轨迹上，相对 GPU-only 基线的 SLO 约束吞吐/TDP 提升 2.09—6.13 倍，对免训练稀疏注意力方法提升 1.36—3.21 倍。",
-            "contributions": [
-              "为检索式稀疏注意力推导通用 PNM 节点需求",
-              "提出 GPU 与 KV/索引常驻 PNM 的异构流水",
-              "用机会式调度和上下文长度重平衡减少流水空洞"
-            ],
-            "evidence": [
-              "arXiv 官方摘要给出设备分工、两种调度机制和三模型评估区间"
-            ],
-            "limitations": [
-              "当前核验基于摘要，PNM 硬件成本、实现面积和端到端互连开销需从正文复核",
-              "针对百万 token 检索式稀疏注意力，不能直接代表普通全注意力工作负载"
-            ],
-            "confidence": 0.72,
+            "confidence": 0.8,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }
@@ -138,35 +145,35 @@
           "position": 1,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "NVLLM: A 3D NAND-Centric Architecture Enabling Edge on-Device LLM Inference",
-          "url": "https://arxiv.org/abs/2604.25699",
-          "reason": "NVLLM 本周发布重要 v2 修订，把 FFN 计算下沉到 3D NAND，提供了容量受限端侧推理的激进存算一体参照。",
-          "summary": "**中文标题：** NVLLM：以 3D NAND 为中心的端侧大模型推理架构\n\n**架构在 Flash 内直接执行 FFN 点积，把注意力和 KV 调度留给轻量 CMOS 与外部 DRAM，避免权重先搬入 DRAM。**\n\n端侧单批解码受模型权重容量和带宽限制，传统 GPU 外存推理及 SSD 加速器仍需经过 DRAM 搬移权重，无法充分利用高密度 NAND。\n\nNVLLM 通过晶圆级堆叠整合多平面 3D NAND、乱序点积处理通道、ECC 和缓冲区，直接对原始 NAND 读取执行 GEMM/GEMV；KV 感知调度随上下文增长维持流水。\n\n论文在 OPT 和 LLaMA、最高 30B 参数配置上报告：相对 A800 外存推理加速 16.7—37.9 倍，相对 SSD 类设计最高 4.7 倍，CMOS 面积开销约 2.7%。",
-          "implication": "OrbitInfer 可把 NVLLM 作为高容量低带宽存储计算的上界设计，重点评估 FFN 权重下沉、ECC 和 KV 调度在星载可靠性约束下的可行性。",
+          "title": "Beyond Capacity: Scalable MoE LLM Inference via High-Bandwidth Flash with Direct GPU and HBM Paths",
+          "url": "https://arxiv.org/abs/2608.14333",
+          "reason": "新论文直接讨论大规模 MoE 专家权重如何跨 HBF、HBM 与 GPU 双路径输送，对受容量约束的专家放置很有启发。",
+          "summary": "**中文标题：** Beyond Capacity：用 HBF 直达与 HBM 中继双路径扩展 MoE 推理\n\n**论文让 HBF 驻留专家分别走 GPU 直达和经 HBM 基座中继两条并行路径，并以前瞻专家判定隐藏读取延迟。**\n\nMoE 专家权重规模增长快于 HBM 容量，而传统 HBF 方案仍把权重经 HBM 送入 GPU，浪费了额外直连并形成共享中继瓶颈。\n\n系统把完整专家静态分配到直达或中继路径，两路并发传输且不复制权重；提前预测后续专家以重叠 HBF 读取与前序计算，并分离不可变专家流量和可变 KV 流量。\n\n作者使用事件驱动连续批处理模拟器和实测 GPU 计算延迟评估；摘要确认双路径提高聚合专家输送带宽，但具体端到端收益仍需结合正文配置解读。",
+          "implication": "可把双路径专家输送抽象为 OrbitInfer 的分层专家预取策略，但必须增加路径故障、功率封顶和预测错误成本。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-04-28T14:26:22+00:00",
-          "updatedAt": "2026-08-04T17:18:30+00:00",
+          "publishedAt": "2026-08-14T14:22:21+00:00",
+          "updatedAt": "2026-08-14T14:22:21+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "NVLLM：以 3D NAND 为中心的端侧大模型推理架构",
-            "oneSentenceZh": "架构在 Flash 内直接执行 FFN 点积，把注意力和 KV 调度留给轻量 CMOS 与外部 DRAM，避免权重先搬入 DRAM。",
-            "problemZh": "端侧单批解码受模型权重容量和带宽限制，传统 GPU 外存推理及 SSD 加速器仍需经过 DRAM 搬移权重，无法充分利用高密度 NAND。",
-            "methodZh": "NVLLM 通过晶圆级堆叠整合多平面 3D NAND、乱序点积处理通道、ECC 和缓冲区，直接对原始 NAND 读取执行 GEMM/GEMV；KV 感知调度随上下文增长维持流水。",
-            "resultZh": "论文在 OPT 和 LLaMA、最高 30B 参数配置上报告：相对 A800 外存推理加速 16.7—37.9 倍，相对 SSD 类设计最高 4.7 倍，CMOS 面积开销约 2.7%。",
+            "titleZh": "Beyond Capacity：用 HBF 直达与 HBM 中继双路径扩展 MoE 推理",
+            "oneSentenceZh": "论文让 HBF 驻留专家分别走 GPU 直达和经 HBM 基座中继两条并行路径，并以前瞻专家判定隐藏读取延迟。",
+            "problemZh": "MoE 专家权重规模增长快于 HBM 容量，而传统 HBF 方案仍把权重经 HBM 送入 GPU，浪费了额外直连并形成共享中继瓶颈。",
+            "methodZh": "系统把完整专家静态分配到直达或中继路径，两路并发传输且不复制权重；提前预测后续专家以重叠 HBF 读取与前序计算，并分离不可变专家流量和可变 KV 流量。",
+            "resultZh": "作者使用事件驱动连续批处理模拟器和实测 GPU 计算延迟评估；摘要确认双路径提高聚合专家输送带宽，但具体端到端收益仍需结合正文配置解读。",
             "contributions": [
-              "将 FFN 权重访问和计算下沉到 3D NAND",
-              "用页粒度访问、ECC 和乱序 PE 组成 Flash 内计算流水",
-              "结合注意力 DRAM 驻留与 KV 感知调度"
+              "提出无需专家复制的 HBF 双路径权重输送组织",
+              "用提前专家判定隐藏远端读取时延",
+              "把专家权重与 KV 流量分离管理以降低相互干扰"
             ],
             "evidence": [
-              "arXiv v2 摘要与本地获取正文提供模型范围、两类基线和面积开销",
-              "正文明确区分 NAND 内 FFN 与 CMOS/DRAM 侧注意力路径"
+              "arXiv 一手摘要明确说明论文于 2026-08-14 首次提交。",
+              "摘要逐项描述 direct path、relay path、whole-expert assignment 与 early expert determination。"
             ],
             "limitations": [
-              "依赖定制 3D NAND 与晶圆堆叠，不能直接部署到现成通用星载计算平台",
-              "需进一步验证 NAND 耐久性、辐射可靠性和持续推理时的热设计"
+              "结论主要来自模拟器加实测算子延迟，并非完整 HBF 硬件系统实测。",
+              "星载链路、辐射容错和功耗封装约束未在摘要中体现。"
             ],
-            "confidence": 0.78,
+            "confidence": 0.72,
             "modelVersion": "codex-scheduled-task-v1"
           }
         },
@@ -174,34 +181,35 @@
           "position": 2,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "A CXL Memory Rack for Multi-Turn LLM Serving",
-          "url": "https://arxiv.org/abs/2607.18141",
-          "reason": "HyMCache 本周更新到新版本，并在真实 CXL 混合内存原型上量化 TB 级共享 KV 复用的成本—性能取舍。",
-          "summary": "**中文标题：** HyMCache：用于多轮大模型服务的 CXL 混合内存机架\n\n**系统以小容量设备 DRAM 缓存热点、以 SSD 承载 TB 级 KV，并利用前缀预取和机会式写缓冲适配多轮请求的只读、可预测、追加式访问。**\n\n多轮和代理式请求希望复用历史 KV，但 GPU HBM 和主机 DRAM 难以经济地扩展到 TB 级共享容量，纯 SSD 又难以满足时延要求。\n\nHyMCache 在 CXL 接口后组合设备 DRAM 与 SSD，根据请求前缀提前把关键 KV 读入 DRAM，并把追加写入机会式缓冲，从而用少量 DRAM 覆盖延迟敏感访问。\n\n真实 CXL-HM 原型在相同 DRAM 预算下，相对本地 LMCache 在单节点提升 3.0 倍、在 PD 分离服务提升 1.45 倍；相对 1TB 分布式 DRAM Mooncake 性能低约 30%，但 DRAM 用量减少 16 倍。",
-          "implication": "OrbitInfer 可用该结果建立 KV 共享层的成本—时延基线，并把前缀预取、写缓冲及断链恢复加入星间分层缓存实验。",
+          "title": "MoE Expert Execution in Disaggregated LLM Serving with a High-Bandwidth ReRAM Near-Memory Architecture",
+          "url": "https://arxiv.org/abs/2608.13962",
+          "reason": "论文把分离式 Attention/FFN 服务与 ReRAM 近存专家执行结合，提供了容量、带宽密度与路由倾斜联合优化样例。",
+          "summary": "**中文标题：** ReRAM 近存专家池：为分离式 MoE 服务恢复稀疏路由占用率\n\n**该工作用 ReRAM 本地高带宽读、局部多播池化和共激活感知放置缓解 MoE 专家并集膨胀与路由倾斜。**\n\n在 Attention-FFN 分离后，解码 SLO 限制批量，而稀疏路由扩大激活专家并集并造成冷专家资源空闲，使 FFN 池难以同时获得权重带宽密度与高占用率。\n\n设计将专家权重驻留在 ReRAM 近存阵列后，以有界核内多播池化、共激活感知放置和负载感知取权重恢复占用，并按诱导需求配置各级通信。\n\n作者报告 side-4 pooling 将占用率从 0.328 提至 0.519；在等峰值计算下相对 H20 的单 token FFN 池延迟降低 9.5 倍、权重搬运能耗降低 20 倍，系统解码 TPOT 改进范围依模型为 1.25 至 10.4 倍。",
+          "implication": "对星载 MoE，应把占用率恢复和权重搬运能耗纳入专家放置目标，并优先验证局部共享能否在有限互连下取得类似效果。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-07-20T16:35:47+00:00",
-          "updatedAt": "2026-08-05T22:55:21+00:00",
+          "publishedAt": "2026-08-14T05:12:50+00:00",
+          "updatedAt": "2026-08-14T05:12:50+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "HyMCache：用于多轮大模型服务的 CXL 混合内存机架",
-            "oneSentenceZh": "系统以小容量设备 DRAM 缓存热点、以 SSD 承载 TB 级 KV，并利用前缀预取和机会式写缓冲适配多轮请求的只读、可预测、追加式访问。",
-            "problemZh": "多轮和代理式请求希望复用历史 KV，但 GPU HBM 和主机 DRAM 难以经济地扩展到 TB 级共享容量，纯 SSD 又难以满足时延要求。",
-            "methodZh": "HyMCache 在 CXL 接口后组合设备 DRAM 与 SSD，根据请求前缀提前把关键 KV 读入 DRAM，并把追加写入机会式缓冲，从而用少量 DRAM 覆盖延迟敏感访问。",
-            "resultZh": "真实 CXL-HM 原型在相同 DRAM 预算下，相对本地 LMCache 在单节点提升 3.0 倍、在 PD 分离服务提升 1.45 倍；相对 1TB 分布式 DRAM Mooncake 性能低约 30%，但 DRAM 用量减少 16 倍。",
+            "titleZh": "ReRAM 近存专家池：为分离式 MoE 服务恢复稀疏路由占用率",
+            "oneSentenceZh": "该工作用 ReRAM 本地高带宽读、局部多播池化和共激活感知放置缓解 MoE 专家并集膨胀与路由倾斜。",
+            "problemZh": "在 Attention-FFN 分离后，解码 SLO 限制批量，而稀疏路由扩大激活专家并集并造成冷专家资源空闲，使 FFN 池难以同时获得权重带宽密度与高占用率。",
+            "methodZh": "设计将专家权重驻留在 ReRAM 近存阵列后，以有界核内多播池化、共激活感知放置和负载感知取权重恢复占用，并按诱导需求配置各级通信。",
+            "resultZh": "作者报告 side-4 pooling 将占用率从 0.328 提至 0.519；在等峰值计算下相对 H20 的单 token FFN 池延迟降低 9.5 倍、权重搬运能耗降低 20 倍，系统解码 TPOT 改进范围依模型为 1.25 至 10.4 倍。",
             "contributions": [
-              "构建面向 KV 复用的 CXL DRAM—SSD 混合内存原型",
-              "利用多轮 KV 的读多写少和追加式特征重新设计缓存管理",
-              "同时评估单聚合器和 PD 分离两种服务配置"
+              "给出面向稀疏专家并集的 ReRAM 近存架构",
+              "分解理想 MFU 与实际占用率并针对路由倾斜恢复占用",
+              "联合专家放置、局部共享和通信层级定容"
             ],
             "evidence": [
-              "arXiv 最新版本摘要和本地正文给出真实原型、LMCache 与 Mooncake 对照数据"
+              "arXiv 官方摘要确认 2026-08-14 首次提交。",
+              "摘要列出 Qwen3.5 与 GLM-5.2 上的 measured + modeled 研究及具体占用率、延迟和能耗数字。"
             ],
             "limitations": [
-              "CXL 机架内互连条件优于星间链路，远程 KV 层级需要替换时延与故障模型",
-              "对 Mooncake 的性能差距说明低成本层不能完全替代高带宽 DRAM"
+              "结果混合实测与建模，不能视作实际 ReRAM 系统端到端复现。",
+              "收益跨度较大且依赖模型、路由分布和硬件定容。"
             ],
-            "confidence": 0.8,
+            "confidence": 0.74,
             "modelVersion": "codex-scheduled-task-v1"
           }
         },
@@ -209,35 +217,77 @@
           "position": 3,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "WitCert: Sound Runtime Risk Observability and Gating for KV-Cache Quantization",
-          "url": "https://arxiv.org/abs/2607.28699",
-          "reason": "WitCert 本周更新版本把 KV 量化从离线平均分转为请求级运行时风险观测与门控，补足自适应精度方案的安全边界。",
-          "summary": "**中文标题：** WitCert：KV Cache 量化的运行时风险证书与门控\n\n**系统为每层、每头、每步计算精确与压缩注意力总变差的上界，并在风险升高时按证书或见证值选择性修复缓存。**\n\n离线基准平均分无法告诉在线服务某一个请求是否正被 KV 量化破坏，部署系统缺乏可观测、可门控的请求级质量风险指标。\n\nWitCert 提供适用于黑盒量化器的确定性带范数见证上界，以及带请求级失败预算的受控抖动 INT8 概率证书；二者接入 SGLang 后驱动风险排序和选择性修复。\n\n摘要报告门控把 hard RULER 上 raw-cast FP8 得分从 22.8 恢复到 79.7，与未压缩差异的配对区间为 +0.0 至 +0.8；认证 INT8 在同等内存下可服务 1.88 倍 KV token。",
-          "implication": "OrbitInfer 可把 WitCert 式风险计量器放在自适应 KV 精度策略之前，在内存紧张时只压缩低风险层头，并为高风险请求保留回退路径。",
+          "title": "vToken: Token-Level Virtualization for Reclaimable KV Caches",
+          "url": "https://arxiv.org/abs/2608.13263",
+          "reason": "论文把 token 级淘汰与 block 级 PagedAttention 的粒度错配转化为可实现的虚拟化层，问题具体且工程收益清晰。",
+          "summary": "**中文标题：** vToken：在不改 PagedAttention 内核的前提下回收 token 级 KV 空洞\n\n**vToken 用 token table 间接层稳定逻辑地址，并异步重排存活 token，从而回收 block 内碎片且保持 CUDA Graph 兼容。**\n\nKV 淘汰算法按 token 决策，而 PagedAttention 按固定 block 分配；被淘汰 token 留在部分占用 block 中，导致内存逻辑已释放但物理不可回收。\n\n系统将逻辑 token 存活状态与物理 block 位置解耦，通过 token-table indirection 提供稳定视图，并在后台异步重排存活 token，同时保留原 PagedAttention 内核与 CUDA Graph。\n\n作者在 vLLM 上结合 H2O、Random 和 Scissorhands 评估，相对 Naive-Evict 将每请求保留 KV block 减少 27.2% 至 72.3%，SLA 吞吐最高提高 1.37 倍，受限预算下最大并发最高提高 2 倍。",
+          "implication": "可把逻辑 token 映射作为 OrbitInfer KV 管理层的稳定接口，用后台整理换取真实可回收容量，但必须加入整理功耗和实时期限门禁。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-07-30T11:04:45+00:00",
-          "updatedAt": "2026-08-06T10:44:15+00:00",
+          "publishedAt": "2026-08-13T14:01:21+00:00",
+          "updatedAt": "2026-08-13T14:01:21+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "WitCert：KV Cache 量化的运行时风险证书与门控",
-            "oneSentenceZh": "系统为每层、每头、每步计算精确与压缩注意力总变差的上界，并在风险升高时按证书或见证值选择性修复缓存。",
-            "problemZh": "离线基准平均分无法告诉在线服务某一个请求是否正被 KV 量化破坏，部署系统缺乏可观测、可门控的请求级质量风险指标。",
-            "methodZh": "WitCert 提供适用于黑盒量化器的确定性带范数见证上界，以及带请求级失败预算的受控抖动 INT8 概率证书；二者接入 SGLang 后驱动风险排序和选择性修复。",
-            "resultZh": "摘要报告门控把 hard RULER 上 raw-cast FP8 得分从 22.8 恢复到 79.7，与未压缩差异的配对区间为 +0.0 至 +0.8；认证 INT8 在同等内存下可服务 1.88 倍 KV token。",
+            "titleZh": "vToken：在不改 PagedAttention 内核的前提下回收 token 级 KV 空洞",
+            "oneSentenceZh": "vToken 用 token table 间接层稳定逻辑地址，并异步重排存活 token，从而回收 block 内碎片且保持 CUDA Graph 兼容。",
+            "problemZh": "KV 淘汰算法按 token 决策，而 PagedAttention 按固定 block 分配；被淘汰 token 留在部分占用 block 中，导致内存逻辑已释放但物理不可回收。",
+            "methodZh": "系统将逻辑 token 存活状态与物理 block 位置解耦，通过 token-table indirection 提供稳定视图，并在后台异步重排存活 token，同时保留原 PagedAttention 内核与 CUDA Graph。",
+            "resultZh": "作者在 vLLM 上结合 H2O、Random 和 Scissorhands 评估，相对 Naive-Evict 将每请求保留 KV block 减少 27.2% 至 72.3%，SLA 吞吐最高提高 1.37 倍，受限预算下最大并发最高提高 2 倍。",
             "contributions": [
-              "给出请求级 KV 量化风险的确定性与概率上界",
-              "把风险观测和修复门控接入 SGLang 在线服务",
-              "使用 Lean 4 机器核验核心概率证书定理"
+              "明确 token 淘汰与 block 分配的粒度错配",
+              "提出兼容现有内核和图捕获的轻量虚拟化层",
+              "降低淘汰策略接入代码量并提高可回收容量"
             ],
             "evidence": [
-              "arXiv 最新版本摘要和本地正文给出 RULER、内存容量及 SGLang 接入结果",
-              "论文明确区分自适应安全的确定性界与仅适用于非自适应查询的概率证书"
+              "arXiv 官方摘要确认 2026-08-13 首次提交。",
+              "摘要给出实现位置、比较策略、27.2% 至 72.3% block 减少和最高 1.37 倍吞吐。"
             ],
             "limitations": [
-              "确定性界可能偏保守，概率证书对量化器和查询适应性有明确前提",
-              "摘要中的质量恢复集中在 hard RULER，仍需覆盖目标模型和星载任务"
+              "异步重排成本和最坏尾延迟需结合正文与目标工作负载复测。",
+              "结果来自作者实现与选定策略，尚无独立复现。"
             ],
-            "confidence": 0.78,
+            "confidence": 0.79,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "must_read",
+      "items": [
+        {
+          "position": 1,
+          "role": "must_read",
+          "itemType": "paper",
+          "title": "HBF Sucks! A Full-Stack Characterization of High-Bandwidth Flash for KV-Centric LLM Serving",
+          "url": "https://arxiv.org/abs/2608.11668",
+          "reason": "该论文以反例证明更快远端介质可能让 KV 服务更慢，直接挑战简单扩大分层存储的架构直觉。",
+          "summary": "**中文标题：** HBF Sucks：更快闪存为何反而拖慢 KV 分层服务\n\n**完整追踪驱动评估显示，把 HBF 当作 SSD 的直接替代会牺牲近端容量与带宽，并因写密集、热和寿命约束使系统整体变慢。**\n\nHBF 具有更低介质延迟和更高带宽，但 KV 分层系统的关键路径可能不在远端读取；如果换取 HBF 要缩减近端 HBM，介质优势可能被排队和容量损失吞没。\n\n作者扩展 TokenSim，回放四条两小时生产轨迹、五个稠密或 MoE 模型及 H100/B200 配置，并用成本收益模型、介质延迟扫描、3D-ICE 热模型和耐久预算拆解瓶颈。\n\n作者报告平均端到端延迟上升 2 至 5.5 倍、最大 SLO goodput 降低 1.1 至 2.7 倍；将介质延迟改善 3.75 倍对延迟影响不足 1%，且写多于读导致热与耐久受限。",
+          "implication": "OrbitInfer 的分层 KV 设计必须先测关键路径暴露比例、读写比与持续带宽，再决定远端介质；不能用峰值介质参数直接推导端到端收益。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-08-12T05:25:38+00:00",
+          "updatedAt": "2026-08-13T02:03:03+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "HBF Sucks：更快闪存为何反而拖慢 KV 分层服务",
+            "oneSentenceZh": "完整追踪驱动评估显示，把 HBF 当作 SSD 的直接替代会牺牲近端容量与带宽，并因写密集、热和寿命约束使系统整体变慢。",
+            "problemZh": "HBF 具有更低介质延迟和更高带宽，但 KV 分层系统的关键路径可能不在远端读取；如果换取 HBF 要缩减近端 HBM，介质优势可能被排队和容量损失吞没。",
+            "methodZh": "作者扩展 TokenSim，回放四条两小时生产轨迹、五个稠密或 MoE 模型及 H100/B200 配置，并用成本收益模型、介质延迟扫描、3D-ICE 热模型和耐久预算拆解瓶颈。",
+            "resultZh": "作者报告平均端到端延迟上升 2 至 5.5 倍、最大 SLO goodput 降低 1.1 至 2.7 倍；将介质延迟改善 3.75 倍对延迟影响不足 1%，且写多于读导致热与耐久受限。",
+            "contributions": [
+              "给出 HBF 替代 SSD 失败的全栈反例",
+              "提出读取暴露比例、读写比和可持续带宽三项必要条件",
+              "把热、寿命与近端机会成本纳入 KV 分层评估"
+            ],
+            "evidence": [
+              "arXiv 官方页确认论文在本周提交并修订。",
+              "候选包抓取到论文正文，包含两小时轨迹、模型范围、3D-ICE 方法和关键表格数字。",
+              "摘要明确区分设备本身与错误部署方式，避免把结论泛化为 HBF 无价值。"
+            ],
+            "limitations": [
+              "HBF 属未大规模公开的硬件方向，部分设备参数和热结果为建模投影。",
+              "结论针对 transient KV 与 SSD 式连接器，不排除专家权重等读密集对象。"
+            ],
+            "confidence": 0.84,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }
@@ -248,71 +298,37 @@
       "items": [
         {
           "position": 1,
-          "role": "must_read",
-          "itemType": "paper",
-          "title": "EdgeXpert: An Edge Device for Memory-Efficient LLM Inference with Mixture-of-Experts and Speculative Decoding",
-          "url": "https://arxiv.org/abs/2608.05303",
-          "reason": "EdgeXpert 是本周新稿，直接研究端侧 MoE 与推测解码组合时的外存访问矛盾，并同时报告时延和能耗结果。",
-          "summary": "**中文标题：** EdgeXpert：协同 MoE 与推测解码的端侧推理设备\n\n**系统在 Prefill 阶段复用提示级专家集合，在 Decode 阶段合并同深度候选 token 的专家通道，以减少外部存储访问。**\n\nMoE 通过稀疏激活减少单步计算，推测解码通过一次验证多个 token 减少步数，但二者组合会扩大候选 token 的专家权重并集，使外存访问重新成为瓶颈。\n\nPrefill 使用轻量编码器选出重要 token 并构造共享专家集合；Decode 按树深合并候选所需专家，只载入显著通道，再用计算校准补偿被省略通道。\n\n论文摘要称在 Samsung 28nm、800MHz 综合配置下，相对既有方案最高降低 56.3% 时延和 44.1% 能耗，同时维持接近基线的准确率。",
-          "implication": "OrbitInfer 可把专家权重外存访问量加入星载推测解码评估，重点验证提示级路由复用是否能在受限内存带宽下稳定降低能耗。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-08-05T18:03:47+00:00",
-          "updatedAt": "2026-08-05T18:03:47+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "EdgeXpert：协同 MoE 与推测解码的端侧推理设备",
-            "oneSentenceZh": "系统在 Prefill 阶段复用提示级专家集合，在 Decode 阶段合并同深度候选 token 的专家通道，以减少外部存储访问。",
-            "problemZh": "MoE 通过稀疏激活减少单步计算，推测解码通过一次验证多个 token 减少步数，但二者组合会扩大候选 token 的专家权重并集，使外存访问重新成为瓶颈。",
-            "methodZh": "Prefill 使用轻量编码器选出重要 token 并构造共享专家集合；Decode 按树深合并候选所需专家，只载入显著通道，再用计算校准补偿被省略通道。",
-            "resultZh": "论文摘要称在 Samsung 28nm、800MHz 综合配置下，相对既有方案最高降低 56.3% 时延和 44.1% 能耗，同时维持接近基线的准确率。",
-            "contributions": [
-              "指出 MoE 与推测解码组合后的专家权重访问冲突",
-              "提出提示级专家复用和深度感知专家合并",
-              "给出端侧加速器的软硬件协同设计"
-            ],
-            "evidence": [
-              "arXiv 官方摘要给出机制、28nm 综合条件和时延、能耗指标"
-            ],
-            "limitations": [
-              "结果来自芯片综合而非流片设备实测",
-              "摘要没有给出这里所需的完整模型规模、外存配置和精度退化表"
-            ],
-            "confidence": 0.7,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 2,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "SHIELD: A Segmented Hierarchical Memory Architecture for Energy-Efficient LLM Inference on Edge NPUs",
-          "url": "https://arxiv.org/abs/2604.07396",
-          "reason": "SHIELD 本周 v2 修订从激活生命周期和 BF16 位敏感度降低 eDRAM 刷新能源，直接关联星载 NPU 的功耗与可靠性约束。",
-          "summary": "**中文标题：** SHIELD：面向端侧 NPU 的分段分层 eDRAM\n\n**方案分离 BF16 的符号、指数和尾数，对瞬时 QO 尾数关闭刷新、对持久 KV 尾数放宽刷新，以利用不同生命周期和误差敏感度。**\n\n端侧 NPU 需要高密度 eDRAM 保存激活与 KV，但周期刷新消耗显著能量；既有研究更多优化持久 KV，忽略短生命周期 QO 激活的可容错性。\n\nSHIELD 按数据类型和 BF16 字段分段管理 eDRAM：保护高敏感符号和指数，对瞬时 Query/Output 尾数不刷新，对长期 KV 尾数使用更宽松刷新周期。\n\n摘要与正文报告相对标准刷新基线降低 35% eDRAM 刷新能源，并在 WikiText-2、PIQA 和 ARC-Easy 上保持准确率。",
-          "implication": "OrbitInfer 应把激活类型和位级可靠性加入存储能耗模型，并在辐射注错条件下重新测定 QO 与 KV 的可放宽刷新范围。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-04-08T08:23:45+00:00",
-          "updatedAt": "2026-08-05T07:48:43+00:00",
+          "title": "UnionSparse: An Index-Efficient Sparsity Framework for Low-Bit Sparse LLM Inference on Edge",
+          "url": "https://arxiv.org/abs/2608.09291",
+          "reason": "该工作直接面向低比特稀疏边缘推理，并指出量化后索引元数据成为一阶瓶颈，适合作为星载小批量解码优化参考。",
+          "summary": "**中文标题：** UnionSparse：低比特稀疏推理不能忽略索引元数据\n\n**UnionSparse 用位图编码和共享内存并行解码降低稀疏索引成本，使低比特小批量 SpMM 不再被元数据流量主导。**\n\n量化缩小权重 payload 后，稀疏索引并未同比缩小，导致边缘 GPU 上的索引流量和非零提取压低有效计算强度。\n\n论文定义 Payload-to-Metadata Ratio，并结合 Index-Efficient Bitmap Encoding 与 Low-Bit Shared-Memory Parallel Decoding，使索引遍历对齐 fragment 组装并改善小批量执行。\n\n在 W4A4、30% 至 70% 稀疏度下，作者报告相对 FlashLLM 和 SpInfer 分别快 2.30 倍和 1.43 倍，相对 CUTLASS 与 cuBLAS Tensor Core 分别快 1.56 倍和 3.46 倍；论文经 ESWEEK 2026 Journal Track 接收。",
+          "implication": "星载低比特稀疏内核应把索引字节、解码并行度与小批量占用率纳入统一代价模型，避免只按非零乘加数估算收益。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-08-10T08:43:19+00:00",
+          "updatedAt": "2026-08-10T08:43:19+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "SHIELD：面向端侧 NPU 的分段分层 eDRAM",
-            "oneSentenceZh": "方案分离 BF16 的符号、指数和尾数，对瞬时 QO 尾数关闭刷新、对持久 KV 尾数放宽刷新，以利用不同生命周期和误差敏感度。",
-            "problemZh": "端侧 NPU 需要高密度 eDRAM 保存激活与 KV，但周期刷新消耗显著能量；既有研究更多优化持久 KV，忽略短生命周期 QO 激活的可容错性。",
-            "methodZh": "SHIELD 按数据类型和 BF16 字段分段管理 eDRAM：保护高敏感符号和指数，对瞬时 Query/Output 尾数不刷新，对长期 KV 尾数使用更宽松刷新周期。",
-            "resultZh": "摘要与正文报告相对标准刷新基线降低 35% eDRAM 刷新能源，并在 WikiText-2、PIQA 和 ARC-Easy 上保持准确率。",
+            "titleZh": "UnionSparse：低比特稀疏推理不能忽略索引元数据",
+            "oneSentenceZh": "UnionSparse 用位图编码和共享内存并行解码降低稀疏索引成本，使低比特小批量 SpMM 不再被元数据流量主导。",
+            "problemZh": "量化缩小权重 payload 后，稀疏索引并未同比缩小，导致边缘 GPU 上的索引流量和非零提取压低有效计算强度。",
+            "methodZh": "论文定义 Payload-to-Metadata Ratio，并结合 Index-Efficient Bitmap Encoding 与 Low-Bit Shared-Memory Parallel Decoding，使索引遍历对齐 fragment 组装并改善小批量执行。",
+            "resultZh": "在 W4A4、30% 至 70% 稀疏度下，作者报告相对 FlashLLM 和 SpInfer 分别快 2.30 倍和 1.43 倍，相对 CUTLASS 与 cuBLAS Tensor Core 分别快 1.56 倍和 3.46 倍；论文经 ESWEEK 2026 Journal Track 接收。",
             "contributions": [
-              "联合利用激活生命周期与 BF16 位级敏感度",
-              "为 QO 与 KV 设计差异化刷新策略",
-              "在多模型和多任务上验证能耗—精度边界"
+              "提出 PMR 指标刻画低比特稀疏推理的元数据负担",
+              "联合索引编码与低比特共享内存解码",
+              "在多种稀疏度下比较主流稀疏与稠密内核"
             ],
             "evidence": [
-              "arXiv v2 摘要和本地正文明确给出 35% 刷新能源降幅及三个验证任务"
+              "arXiv 官方页确认 2026-08-10 首次提交，并标注 ESWEEK 2026 Journal Track 接收。",
+              "官方摘要给出 W4A4、稀疏度范围和四组相对性能数字。"
             ],
             "limitations": [
-              "指标聚焦 eDRAM 刷新部分，不等同于整机总能耗下降 35%",
-              "辐射环境可能改变允许的刷新松弛和位错误边界"
+              "摘要未展示完整硬件型号、模型规模、功耗和端到端生成吞吐。",
+              "内核加速比不能直接等同于应用级时延或能效提升。"
             ],
-            "confidence": 0.76,
+            "confidence": 0.8,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }

@@ -122,6 +122,15 @@ class MarkdownRenderAgent:
             issue["summary"] or "- 暂无。",
             "",
         ]
+        if not rows:
+            lines.extend(
+                [
+                    "## 本周结论",
+                    "",
+                    "本周无满足范围和证据要求的条目。",
+                    "",
+                ]
+            )
         current_section = None
         for row in rows:
             if latest_decisions.get(row["selection_id"]) in {"reject", "defer"}:
