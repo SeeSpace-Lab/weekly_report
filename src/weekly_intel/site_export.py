@@ -107,6 +107,8 @@ class SiteDataExportAgent:
             for line in (issue["summary"] or "").splitlines()
             if line.startswith("- ")
         ]
+        if not visible:
+            trends.append("本周无满足范围和证据要求的条目。")
         payload = {
             "issue": {
                 "id": issue["issue_id"],

@@ -94,6 +94,35 @@ class WeeklyPipelineTest(unittest.TestCase):
         )
         self.assertEqual(result.estimated_read_minutes, 2.5)
 
+    def test_empty_department_records_scope_and_evidence_note(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(__file__).parents[1]
+            database = Database(Path(temp_dir) / "weekly.db")
+            database.initialize(root / "schemas" / "weekly_intel.sql")
+            department = load_yaml(
+                root
+                / "config"
+                / "departments"
+                / "constellation_simulation.yaml"
+            )
+            start = datetime(2026, 8, 9, 16, tzinfo=timezone.utc)
+            end = datetime(2026, 8, 16, 15, 59, 59, tzinfo=timezone.utc)
+            output = Path(temp_dir) / "report.md"
+            result = WeeklyPipelineService(database, department).build(
+                "2026-W33", start, end, output
+            )
+            note = "本周无满足范围和证据要求的条目。"
+            self.assertIn(note, output.read_text(encoding="utf-8"))
+
+            site_data = Path(temp_dir) / "report-data.json"
+            with database.transaction() as connection:
+                SiteDataExportAgent().export(
+                    connection, result.issue_id, site_data
+                )
+            payload = json.loads(site_data.read_text(encoding="utf-8"))
+            self.assertEqual(payload["issue"]["itemCount"], 0)
+            self.assertIn(note, payload["trends"])
+
     def test_assess_select_and_render(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(__file__).parents[1]
