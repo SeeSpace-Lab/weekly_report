@@ -165,6 +165,8 @@ Codex 计划任务需要本机开机、Codex 桌面应用运行且 Docker Deskto
 其他可选凭据：
 
 - `OPENREVIEW_TOKEN`
+- `OPENALEX_API_KEY`（启用 OpenAlex 跨出版社元数据检索，覆盖 ACM、IEEE、Springer、Elsevier、USENIX 等来源）
+- `IEEE_XPLORE_API_KEY`（启用 IEEE Xplore 官方元数据检索；无需全文订阅即可检索题目和摘要，锁定内容标注“待获取全文”）
 - `GITHUB_TOKEN`（可选；未配置时 GitHub Release 自动改用官方 Atom Feed，避免匿名 API 限流）
 - `HF_TOKEN`
 - `WECHAT_FEED_BASE_URL` 或各公众号配置对应的 Feed 环境变量

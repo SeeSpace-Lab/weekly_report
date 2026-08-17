@@ -134,6 +134,13 @@ class CodexWeeklyHandoff:
             JOIN research_items r ON r.item_id=a.item_id
             WHERE a.department_id=?
               AND a.assessed_at>=?
+              AND r.latest_updated_at>=?
+              AND r.latest_updated_at<=?
+              AND (
+                  r.item_type<>'paper'
+                  OR r.first_published_at>=?
+                  OR a.recommendation IN ('must_read', 'recommended')
+              )
               AND a.assessed_at=(
                   SELECT MAX(a2.assessed_at)
                   FROM department_assessments a2
@@ -146,10 +153,21 @@ class CodexWeeklyHandoff:
                 issue["department_id"],
                 issue["window_start"],
                 issue["window_start"],
+                issue["window_end"],
+                issue["window_start"],
+                issue["window_start"],
             ),
         ).fetchall()
         candidates = []
+        min_relevance = float(
+            self.department.get("candidate_policy", {}).get(
+                "min_codex_brief_relevance",
+                0.0,
+            )
+        )
         for row in rows:
+            if float(row["department_relevance"]) < min_relevance:
+                continue
             score = (
                 0.25 * float(row["global_importance"])
                 + 0.30 * float(row["department_relevance"])
@@ -226,14 +244,36 @@ class CodexWeeklyHandoff:
                             [],
                         ),
                         "sourcePool": self.department.get("source_pool", {}),
+                        "contentRequirements": self.department.get(
+                            "content_requirements",
+                            {},
+                        ),
+                        "editorialGuidance": self.department.get(
+                            "editorial_guidance",
+                            {},
+                        ),
+                        "triagePolicy": self.department.get(
+                            "triage_policy",
+                            {},
+                        ),
+                        "investigationIndex": self.department.get(
+                            "investigation_index",
+                            {},
+                        ),
+                        "candidatePolicy": self.department.get(
+                            "candidate_policy",
+                            {},
+                        ),
                     },
                     "constraints": self.department.get("weekly_output", {}),
                     "instructions": [
                         "规则评分只用于形成候选池，最终筛选由 Codex 独立完成。",
                         "只保留本周真正值得研究员花时间阅读的项目。",
+                        "强相关与补充内容都必须属于本周七天时间窗；先输出强相关项目，再用 quick_scan 短卡片补充次相关论文、公众号或新闻。总阅读量尽量达到 minimum_read_minutes，但不得超过 target_read_minutes。",
                         "论文优先顶会接收、重要新版本或强相关邻近研究。",
                         "公众号解读只能作为辅助，事实必须回到论文、官网或仓库核验。",
                         "方法、结果和证据不得根据标题臆测；证据不足时降低置信度并写明局限。",
+                        "逐项遵守部门 contentRequirements 和 editorialGuidance；具体内容与判断必须分开写。",
                     ],
                     "candidates": selected_candidates[:limit],
                 },
@@ -283,7 +323,10 @@ class CodexWeeklyHandoff:
             """
             SELECT a.assessment_id, a.item_id
             FROM department_assessments a
+            JOIN research_items r ON r.item_id=a.item_id
             WHERE a.department_id=? AND a.assessed_at>=?
+              AND r.latest_updated_at>=?
+              AND r.latest_updated_at<=?
               AND a.assessed_at=(
                   SELECT MAX(a2.assessed_at)
                   FROM department_assessments a2
@@ -295,6 +338,8 @@ class CodexWeeklyHandoff:
             (
                 issue["department_id"],
                 issue["window_start"],
+                issue["window_start"],
+                issue["window_end"],
                 issue["window_start"],
             ),
         ).fetchall()
@@ -318,7 +363,7 @@ class CodexWeeklyHandoff:
             if section not in allowed_sections:
                 raise ValueError(f"unsupported section: {section}")
             role = _required_text(record, "role")
-            if role not in {"must_read", "deep_read"}:
+            if role not in {"must_read", "deep_read", "quick_scan"}:
                 raise ValueError(f"unsupported role: {role}")
             read_minutes = float(record.get("readMinutes") or 0)
             if not 1 <= read_minutes <= 12:

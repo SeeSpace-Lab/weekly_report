@@ -59,6 +59,38 @@ class DepartmentConfigTest(unittest.TestCase):
             sources["arxiv"].options["search_terms"],
         )
 
+        constellation = load_yaml(
+            self.root
+            / "config"
+            / "departments"
+            / "constellation_simulation.yaml"
+        )
+        constellation_sources = department_source_configs(
+            load_sources(self.sources_path),
+            constellation,
+        )
+        self.assertIn(
+            "satellite computing",
+            constellation_sources["arxiv"].options["search_terms"],
+        )
+        self.assertTrue(
+            constellation["candidate_policy"]["allow_strong_new_preprints"]
+        )
+        self.assertEqual(
+            constellation["weekly_output"]["minimum_read_minutes"], 18
+        )
+        self.assertEqual(
+            constellation["weekly_output"]["target_read_minutes"], 30
+        )
+        self.assertIn("openreview", constellation["source_pool"]["papers"])
+        self.assertIn("openalex", constellation["source_pool"]["papers"])
+        self.assertIn("ieee_xplore", constellation["source_pool"]["papers"])
+        self.assertEqual(
+            constellation["weekly_output"]["section_routing"]["mapping"]
+            ["L3"]["research"],
+            "l3_research",
+        )
+
     def test_model_application_uses_real_arxiv_queries(self) -> None:
         department = load_yaml(
             self.root
@@ -109,6 +141,14 @@ class DepartmentConfigTest(unittest.TestCase):
             ValueError,
             "topic sections missing",
         ):
+            validate_department(department)
+
+    def test_candidate_relevance_threshold_must_be_bounded(self) -> None:
+        department = copy.deepcopy(load_yaml(self.department_path))
+        department["candidate_policy"] = {
+            "min_codex_brief_relevance": 1.2,
+        }
+        with self.assertRaisesRegex(ValueError, "must be between 0 and 1"):
             validate_department(department)
 
 

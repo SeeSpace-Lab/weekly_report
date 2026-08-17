@@ -6,10 +6,12 @@ from pathlib import Path
 from .collectors import (
     ArxivCollector,
     CrossrefCollector,
+    IeeeXploreCollector,
     GitHubCollector,
     HuggingFaceCollector,
     ManualInboxCollector,
     OpenReviewCollector,
+    OpenAlexCollector,
     WechatPoolCollector,
     VenueCollector,
 )
@@ -87,6 +89,16 @@ class CollectionService:
                 },
             )
         return self._run(CrossrefCollector(), source, window)
+
+    def collect_openalex(
+        self, source: SourceConfig, window: CollectionWindow
+    ) -> CollectionBatch:
+        return self._run(OpenAlexCollector(), source, window)
+
+    def collect_ieee_xplore(
+        self, source: SourceConfig, window: CollectionWindow
+    ) -> CollectionBatch:
+        return self._run(IeeeXploreCollector(), source, window)
 
     def collect_github(
         self,

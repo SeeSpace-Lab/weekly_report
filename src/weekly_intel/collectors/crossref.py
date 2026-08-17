@@ -67,19 +67,21 @@ class CrossrefCollector:
         term: str,
         window: CollectionWindow,
         rows: int,
+        cursor: str | None = None,
     ) -> str:
-        params = urllib.parse.urlencode(
-            {
-                "query.bibliographic": term,
-                "filter": (
-                    f"from-index-date:{window.start.date().isoformat()},"
-                    f"until-index-date:{window.end.date().isoformat()}"
-                ),
-                "sort": "indexed",
-                "order": "desc",
-                "rows": str(rows),
-            }
-        )
+        query = {
+            "query.bibliographic": term,
+            "filter": (
+                f"from-index-date:{window.start.date().isoformat()},"
+                f"until-index-date:{window.end.date().isoformat()}"
+            ),
+            "sort": "indexed",
+            "order": "desc",
+            "rows": str(rows),
+        }
+        if cursor is not None:
+            query["cursor"] = cursor
+        params = urllib.parse.urlencode(query)
         return f"{endpoint.rstrip('/')}/works?{params}"
 
     @staticmethod
@@ -159,6 +161,7 @@ class CrossrefCollector:
             ],
         )
         rows = int(source.options.get("rows_per_query", 50))
+        max_pages = int(source.options.get("max_pages", 1))
         timeout = float(source.options.get("timeout_seconds", 30))
         headers = {
             "Accept": "application/json",
@@ -172,49 +175,78 @@ class CrossrefCollector:
         documents: dict[str, CollectedDocument] = {}
         errors: list[CollectionError] = []
         fetched = 0
+        requests = 0
         latest: datetime | None = None
         discovered_at = utc_now()
         for term in terms:
-            url = self._url(endpoint, str(term), window, rows)
-            try:
-                payload = json.loads(
-                    self._fetcher(url, headers, timeout).decode("utf-8")
+            cursor = "*" if max_pages > 1 else None
+            for _ in range(max_pages):
+                url = self._url(
+                    endpoint,
+                    str(term),
+                    window,
+                    rows,
+                    cursor,
                 )
-                records = payload.get("message", {}).get("items", [])
-                fetched += len(records)
-                for record in records:
-                    document = self._document(source, record, discovered_at)
-                    if document is None:
-                        continue
-                    event_time = (
-                        document.updated_at_source or document.published_at
+                try:
+                    payload = json.loads(
+                        self._fetcher(url, headers, timeout).decode("utf-8")
                     )
-                    if event_time:
-                        latest = max(latest or event_time, event_time)
-                    if event_time and window.start <= event_time <= window.end:
-                        documents[document.identifiers["doi"]] = document
-            except urllib.error.HTTPError as error:
-                errors.append(
-                    CollectionError(
-                        code=(
-                            "rate_limited"
-                            if error.code in {403, 429}
-                            else "http_error"
-                        ),
-                        message=f"Crossref HTTP {error.code}",
-                        retryable=True,
-                        target=url,
+                    requests += 1
+                    message = payload.get("message", {})
+                    records = message.get("items", [])
+                    fetched += len(records)
+                    for record in records:
+                        document = self._document(
+                            source,
+                            record,
+                            discovered_at,
+                        )
+                        if document is None:
+                            continue
+                        event_time = (
+                            document.updated_at_source
+                            or document.published_at
+                        )
+                        if event_time:
+                            latest = max(latest or event_time, event_time)
+                        if (
+                            event_time
+                            and window.start <= event_time <= window.end
+                        ):
+                            documents[document.identifiers["doi"]] = document
+                    next_cursor = message.get("next-cursor")
+                    if (
+                        cursor is None
+                        or not records
+                        or not next_cursor
+                    ):
+                        break
+                    cursor = str(next_cursor)
+                except urllib.error.HTTPError as error:
+                    errors.append(
+                        CollectionError(
+                            code=(
+                                "rate_limited"
+                                if error.code in {403, 429}
+                                else "http_error"
+                            ),
+                            message=f"Crossref HTTP {error.code}",
+                            retryable=True,
+                            target=url,
+                        )
                     )
-                )
-            except Exception as error:
-                errors.append(
-                    CollectionError(
-                        code=type(error).__name__,
-                        message=str(error),
-                        retryable=True,
-                        target=url,
+                    break
+                except Exception as error:
+                    errors.append(
+                        CollectionError(
+                            code=type(error).__name__,
+                            message=str(error),
+                            retryable=True,
+                            target=url,
+                        )
                     )
-                )
+                    break
         result = tuple(documents.values())
         if errors and result:
             status = BatchStatus.PARTIAL
@@ -233,6 +265,7 @@ class CrossrefCollector:
             errors=tuple(errors),
             stats={
                 "queries": len(terms),
+                "requests": requests,
                 "fetched": fetched,
                 "deduplicated_in_window": len(result),
             },
