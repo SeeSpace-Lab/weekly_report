@@ -143,12 +143,12 @@
       },
       "currentReport": {
         "issue": {
-          "id": "d2e57ca6-815b-4fe2-ae1d-fba9d1e9be5c",
+          "id": "737ebe20-3bfa-471f-8ff5-66c7deb43178",
           "departmentId": "orbitinfer",
-          "title": "星载大模型推理引擎周报 · 2026-W33",
-          "isoWeek": "2026-W33",
-          "windowStart": "2026-08-09T16:00:00+00:00",
-          "windowEnd": "2026-08-16T15:59:59.999999+00:00",
+          "title": "星载大模型推理引擎周报 · 2026-W34",
+          "isoWeek": "2026-W34",
+          "windowStart": "2026-08-16T16:00:00+00:00",
+          "windowEnd": "2026-08-23T15:59:59.999999+00:00",
           "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 30.0,
@@ -156,9 +156,9 @@
         },
         "trends": [
           "本周有5项相关进展，集中在推理调度与资源编排。",
-          "本周有8项相关进展，集中在LLM/VLM/MoE推理引擎。",
-          "本周有7项相关进展，集中在KV Cache与分层存储。",
-          "本周有2项相关进展，集中在边缘、端侧与实时大模型。",
+          "本周有9项相关进展，集中在LLM/VLM/MoE推理引擎。",
+          "本周有8项相关进展，集中在KV Cache与分层存储。",
+          "本周有4项相关进展，集中在动态功率/能耗/温度感知推理。",
           "本周有1项相关进展，集中在量化、压缩与自适应精度。"
         ],
         "sections": [
@@ -169,36 +169,35 @@
                 "position": 1,
                 "role": "must_read",
                 "itemType": "framework",
-                "title": "vllm-project/vllm",
-                "url": "https://github.com/vllm-project/vllm/releases/tag/v0.27.0",
-                "reason": "本周正式发布的推理框架大版本同时覆盖模型支持、KV 分层、量化、容错和异构硬件，直接影响近期引擎基线选择。",
-                "summary": "**中文标题：** vLLM v0.27.0：面向新一代模型、分层 KV 与弹性专家并行的整栈更新\n\n**vLLM v0.27.0 用一个大版本同时落地 Kimi K3、分层 KV 卸载、弹性专家并行和多项内核优化，是本周最值得跟进的工程基线更新。**\n\n快速演进的混合注意力、MoE 与超长上下文模型要求推理框架同时解决首请求编译、KV 分层、分离式部署、容错和多硬件后端适配，单点补丁难以形成可用整栈。\n\n该版本整合 Kimi K3 全栈支持、FlashAttention 4 的 FP8 KV 与 256 维头支持、新 JIT 预热、通用 P2P 次级 KV 层、可插拔淘汰策略、NIXL 分离式推理、弹性 EP 准备以及 Rust gRPC 控制面。\n\n官方发布说明列出 561 个提交、242 位贡献者；DeepSeek-V4 路径报告若干内核级或端到端改进，包括跳过空启动约 2 倍内核提升、工作区复用带来 3.9% 端到端 TTFT 改进及节省 448 MiB PP 缓冲。",
-                "implication": "应把分层 KV、弹性 EP 与预热路径拆成 OrbitInfer 的对照特性清单，并在受限功耗、有限内存和链路波动条件下复测，而不是直接继承数据中心默认参数。",
-                "readMinutes": 3.0,
-                "publishedAt": "2026-07-14T08:51:20+00:00",
-                "updatedAt": "2026-08-10T21:18:11+00:00",
-                "status": "Official release: v0.27.0",
+                "title": "kvcache-ai/ktransformers",
+                "url": "https://github.com/kvcache-ai/ktransformers/releases/tag/v0.6.4",
+                "reason": "官方 v0.6.4 在本周更新，集中给出稀疏 MoE 异构训练、低比特推理与安全修复，直接影响受限硬件上的方案选择。",
+                "summary": "**中文标题：** KTransformers v0.6.4：异构 MoE 训练、低比特推理与安全修复\n\n**该版本把全参/LoRA 异构训练、Ampere 上的 DeepSeek V4 支持、RAWINT4 加速和一项远程反序列化暴露修复合入同一正式版本。**\n\n超大稀疏 MoE 在有限 GPU 显存上需要同时解决 CPU-GPU 参数驻留、训练吞吐、旧 GPU 的低精度能力和运行时暴露面。\n\n官方版本通过 LLaMA-Factory 工作流提供全参、LoRA 与混合 SFT，加入 BF16 CPU-GPU 异构路径、Ampere FP8 MoE Marlin 回退、RAWINT4 预填充优化和 Intel iGPU SYCL 实验后端。\n\n官方说明报告 Qwen3-30B-A3B 在双 EPYC 加双 RTX 5090 上全参约 400 token/s、LoRA 约 600 token/s；单 RTX 4090 加 AMX CPU 的 LoRA 超过 700 token/s，并将 balance_serve 的 ZMQ 端点改为仅绑定 127.0.0.1。",
+                "implication": "OrbitInfer 可把 CPU-GPU 专家驻留、低比特预填充和本地控制面安全拆成独立实验项，在功耗封顶与有限内存下验证端到端收益。",
+                "readMinutes": 4.0,
+                "publishedAt": "2026-07-23T14:32:53+00:00",
+                "updatedAt": "2026-08-17T18:13:42+00:00",
+                "status": "Official release: v0.7.0",
                 "deepRead": {
-                  "titleZh": "vLLM v0.27.0：面向新一代模型、分层 KV 与弹性专家并行的整栈更新",
-                  "oneSentenceZh": "vLLM v0.27.0 用一个大版本同时落地 Kimi K3、分层 KV 卸载、弹性专家并行和多项内核优化，是本周最值得跟进的工程基线更新。",
-                  "problemZh": "快速演进的混合注意力、MoE 与超长上下文模型要求推理框架同时解决首请求编译、KV 分层、分离式部署、容错和多硬件后端适配，单点补丁难以形成可用整栈。",
-                  "methodZh": "该版本整合 Kimi K3 全栈支持、FlashAttention 4 的 FP8 KV 与 256 维头支持、新 JIT 预热、通用 P2P 次级 KV 层、可插拔淘汰策略、NIXL 分离式推理、弹性 EP 准备以及 Rust gRPC 控制面。",
-                  "resultZh": "官方发布说明列出 561 个提交、242 位贡献者；DeepSeek-V4 路径报告若干内核级或端到端改进，包括跳过空启动约 2 倍内核提升、工作区复用带来 3.9% 端到端 TTFT 改进及节省 448 MiB PP 缓冲。",
+                  "titleZh": "KTransformers v0.6.4：异构 MoE 训练、低比特推理与安全修复",
+                  "oneSentenceZh": "该版本把全参/LoRA 异构训练、Ampere 上的 DeepSeek V4 支持、RAWINT4 加速和一项远程反序列化暴露修复合入同一正式版本。",
+                  "problemZh": "超大稀疏 MoE 在有限 GPU 显存上需要同时解决 CPU-GPU 参数驻留、训练吞吐、旧 GPU 的低精度能力和运行时暴露面。",
+                  "methodZh": "官方版本通过 LLaMA-Factory 工作流提供全参、LoRA 与混合 SFT，加入 BF16 CPU-GPU 异构路径、Ampere FP8 MoE Marlin 回退、RAWINT4 预填充优化和 Intel iGPU SYCL 实验后端。",
+                  "resultZh": "官方说明报告 Qwen3-30B-A3B 在双 EPYC 加双 RTX 5090 上全参约 400 token/s、LoRA 约 600 token/s；单 RTX 4090 加 AMX CPU 的 LoRA 超过 700 token/s，并将 balance_serve 的 ZMQ 端点改为仅绑定 127.0.0.1。",
                   "contributions": [
-                    "将新模型、注意力内核、量化和多硬件支持集中到同一正式版本",
-                    "把 KV 次级层、分离式推理和弹性专家并行推进到可组合的运行时能力",
-                    "补充首请求预热、容错控制面与多项可观测性接口"
+                    "统一稀疏 MoE 的全参、LoRA 和混合异构训练路径",
+                    "扩展旧 GPU 与 RAWINT4 的模型兼容和预填充性能",
+                    "修复可导致未认证远程 pickle 反序列化的网络暴露"
                   ],
                   "evidence": [
-                    "GitHub 官方 release 标记 v0.27.0 于 2026-08-10 发布，并列出 561 个提交和 242 位贡献者。",
-                    "官方 release 明确列出 FP8 KV、分层卸载、NIXL P/D、弹性 EP、故障容错框架以及对应 PR。",
-                    "性能数字均来自官方 release 对具体 PR 的汇总，不把它们解释为统一工作负载下的独立复现实验。"
+                    "GitHub 官方 v0.6.4 release 在本周更新，列出实现 PR、安装方式和完整 changelog。",
+                    "吞吐数字、硬件配置、DeepSeek V4/RAWINT4 支持及安全公告均来自该官方 release。"
                   ],
                   "limitations": [
-                    "这是框架发布说明而非受控横向评测，不同百分比来自不同模型、硬件与 PR。",
-                    "PyTorch 2.13 等依赖升级属于破坏性环境变化，星载或边缘目标需要重新验证兼容性和镜像体积。"
+                    "吞吐数据由项目方报告，硬件与训练配置不同，不能横向直接比较。",
+                    "SYCL 后端为实验能力，CUDA、CPU ISA 和驱动兼容性仍需目标平台复测。"
                   ],
-                  "confidence": 0.86,
+                  "confidence": 0.88,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               },
@@ -206,35 +205,35 @@
                 "position": 2,
                 "role": "must_read",
                 "itemType": "framework",
-                "title": "NVIDIA/TensorRT-LLM",
-                "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc24",
-                "reason": "官方预发布版在本周给出大量模型与低精度支持，同时公开列出严重稳定性和精度风险，适合用于上线前反向门禁设计。",
-                "summary": "**中文标题：** TensorRT-LLM v1.3.0rc24：功能扩展与高风险已知问题并存\n\n**TensorRT-LLM 新预发布版的价值不仅在新增能力，更在官方集中披露 CUDA Graph、低精度 MoE、KV 传输和混合模型启动等关键失败模式。**\n\n高性能推理栈在叠加 torch.compile、CUDA Graph、多流 MTP、低精度 MoE 和高并发分离式 KV 传输后容易出现初始化崩溃、静默精度损失或异步非法访存。\n\n该候选是 NVIDIA 官方签名的预发布版本；周报从 release 的功能清单与 Known Issues 双向审阅，重点抽取可转化为回归测试的组合条件，而不是只罗列新增模型。\n\n官方页面确认版本于 2026-08-12 发布并签名；已知问题包括 torch.compile 与 CUDA Graph 组合失败、SM120 上 MLA+MTP 异步崩溃、低精度多 GPU MoE 严重精度下降以及 Python NIXL/UCX 高并发 KV 传输崩溃。",
-                "implication": "OrbitInfer 应把这些失败组合转成最小回归矩阵，尤其覆盖图执行、MTP、KVCacheManagerV2、低精度 MoE 与高并发 P/D 传输。",
-                "readMinutes": 3.0,
-                "publishedAt": "2026-07-22T22:41:15+00:00",
-                "updatedAt": "2026-08-12T08:46:46+00:00",
-                "status": "Official release: v1.3.0rc24",
+                "title": "sgl-project/sglang",
+                "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.18",
+                "reason": "SGLang v0.5.18 的本周官方更新包含启动、通信、推测解码、KV 与 MoE 的大量可落地改动。",
+                "summary": "**中文标题：** SGLang v0.5.18：缩短启动、优化通信并扩大推测解码覆盖\n\n**新版本用重叠权重加载、LMHead all-to-all、MNNVL allreduce 和多项推测解码修复推进大模型服务整栈。**\n\n大模型服务在启动权重装载、张量并行通信、推测解码状态管理和异构模型兼容上存在相互耦合的时延与正确性瓶颈。\n\n官方版本在 CUDA Graph 捕获期间并行分阶段装载 checkpoint，将 TP LMHead 的 allgather+scatter 改为 all-to-all，并复用 FlashInfer MNNVL workspace，同时扩展 DSpark、DFlash 与多模型后端。\n\n官方说明称 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对普通默认从 84.8 秒降到 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降到 169 微秒，TPOT 从 36.97 毫秒降到 35.67 毫秒。",
+                "implication": "应把冷启动、通信与推测解码状态正确性纳入 OrbitInfer 回归矩阵，并在断续供电或任务迁移场景测试恢复开销。",
+                "readMinutes": 4.0,
+                "publishedAt": "2026-07-14T08:43:33+00:00",
+                "updatedAt": "2026-08-22T00:09:15+00:00",
+                "status": "Official release: v0.5.18",
                 "deepRead": {
-                  "titleZh": "TensorRT-LLM v1.3.0rc24：功能扩展与高风险已知问题并存",
-                  "oneSentenceZh": "TensorRT-LLM 新预发布版的价值不仅在新增能力，更在官方集中披露 CUDA Graph、低精度 MoE、KV 传输和混合模型启动等关键失败模式。",
-                  "problemZh": "高性能推理栈在叠加 torch.compile、CUDA Graph、多流 MTP、低精度 MoE 和高并发分离式 KV 传输后容易出现初始化崩溃、静默精度损失或异步非法访存。",
-                  "methodZh": "该候选是 NVIDIA 官方签名的预发布版本；周报从 release 的功能清单与 Known Issues 双向审阅，重点抽取可转化为回归测试的组合条件，而不是只罗列新增模型。",
-                  "resultZh": "官方页面确认版本于 2026-08-12 发布并签名；已知问题包括 torch.compile 与 CUDA Graph 组合失败、SM120 上 MLA+MTP 异步崩溃、低精度多 GPU MoE 严重精度下降以及 Python NIXL/UCX 高并发 KV 传输崩溃。",
+                  "titleZh": "SGLang v0.5.18：缩短启动、优化通信并扩大推测解码覆盖",
+                  "oneSentenceZh": "新版本用重叠权重加载、LMHead all-to-all、MNNVL allreduce 和多项推测解码修复推进大模型服务整栈。",
+                  "problemZh": "大模型服务在启动权重装载、张量并行通信、推测解码状态管理和异构模型兼容上存在相互耦合的时延与正确性瓶颈。",
+                  "methodZh": "官方版本在 CUDA Graph 捕获期间并行分阶段装载 checkpoint，将 TP LMHead 的 allgather+scatter 改为 all-to-all，并复用 FlashInfer MNNVL workspace，同时扩展 DSpark、DFlash 与多模型后端。",
+                  "resultZh": "官方说明称 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对普通默认从 84.8 秒降到 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降到 169 微秒，TPOT 从 36.97 毫秒降到 35.67 毫秒。",
                   "contributions": [
-                    "给出可追溯签名的推理框架候选版本",
-                    "公开跨编译、图执行、量化、KV 管理与分离式传输的组合风险",
-                    "为部署前故障注入和兼容性矩阵提供直接测试输入"
+                    "把权重装载与图捕获重叠以降低冷启动",
+                    "减少 TP LMHead 与纯 allreduce 的通信开销",
+                    "补齐推测解码、注意力、MoE 和图执行的正确性修复"
                   ],
                   "evidence": [
-                    "GitHub 官方 release 显示 v1.3.0rc24 于 2026-08-12 发布，提交签名已验证。",
-                    "Known Issues 逐项列出 allocator assertion、illegal memory access、accuracy loss、startup failure 和 NIXL/UCX crash 等现象。"
+                    "GitHub 官方 v0.5.18 release 在本周更新并列出 710 个 PR、212 位贡献者和对应 PR。",
+                    "启动、LMHead 与 allreduce 数字来自官方 release 的具体硬件与模型条目。"
                   ],
                   "limitations": [
-                    "这是 rc 预发布版，不应作为生产基线直接替换稳定版本。",
-                    "官方问题描述没有给出全部复现脚本与修复时间，需在目标 GPU 和模型组合上自行确认。"
+                    "性能数字来自不同工作负载和硬件，不能合并成统一加速比。",
+                    "依赖升级到 PyTorch 2.13、Triton 3.7.1 等，可能带来目标环境重新验证成本。"
                   ],
-                  "confidence": 0.84,
+                  "confidence": 0.87,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               }
@@ -247,35 +246,107 @@
                 "position": 1,
                 "role": "must_read",
                 "itemType": "paper",
-                "title": "MemSpec: Memory-Aware Runtime for Adaptive Draft Scheduling in Speculative Decoding on Edge Devices",
-                "url": "https://arxiv.org/abs/2608.10362",
-                "reason": "论文在 Jetson Orin Nano 上处理受限内存下的自适应草稿模型切换，是星载边缘推理最贴近的本周系统证据之一。",
-                "summary": "**中文标题：** MemSpec：让草稿选择服从边缘设备的实际驻留集合\n\n**MemSpec 把草稿效果预测与执行解耦，通过主动维护驻留工作集减少草稿模型切换加载开销。**\n\n自适应推测解码会根据输入和生成阶段切换草稿模型，但在内存紧张的边缘设备上，最优草稿往往不驻留，模型加载开销抵消接受率收益。\n\n系统用轻量预测器根据提示和生成上下文估计草稿有效性，再由内存感知调度器主动维护 resident working set，使选择结果与可执行草稿集合协调。\n\n论文在 Jetson Orin Nano 上报告，相比先进的 bandit 自适应方法，稳态生成吞吐平均提高 40.7%，并接近 oracle 上界；官方页标注工作发表于 LCTES 2026。",
-                "implication": "应在 OrbitInfer 中把草稿模型视为受驻留容量约束的可调度对象，并记录切换加载、接受率与能耗三者的联合收益。",
+                "title": "DominoTree: Conditional Tree-Structured Drafting with Domino for Speculative Decoding",
+                "url": "https://arxiv.org/abs/2607.08642",
+                "reason": "本周 v3 重要修订给出可接入 SGLang 的条件树草稿机制，并报告长上下文与并发服务收益。",
+                "summary": "**中文标题：** DominoTree：用条件概率构造推测解码草稿树\n\n**DominoTree 沿候选路径重算 Domino 的因果修正，用 best-first 条件树替代独立边缘假设。**\n\n现有树式推测解码常把各位置边缘分布视为独立，但 Domino 的 GRU 因果修正让后续 token 分布依赖已选路径，直接套用因子化树会丢失信息。\n\n方法在每个根到节点路径上累积 Domino 的非因子化条件分数，限制每节点 top-M 候选控制成本，并作为 SGLang 外部插件与 AR、DFlash、EAGLE-3、Domino 同旗标对比。\n\n作者报告路径重算在已启用修正基础上再提高 4.7% 接受长度；Qwen3-8B 单请求吞吐比 Domino 高 12%，HELMET 长上下文下接受长度高 29%–36%、吞吐高 10%–34%。",
+                "implication": "可在 OrbitInfer 的推测解码调度器中加入路径条件性，但需用能耗、显存和截止期共同约束树宽与候选深度。",
                 "readMinutes": 4.0,
-                "publishedAt": "2026-08-11T01:41:37+00:00",
-                "updatedAt": "2026-08-11T01:41:37+00:00",
+                "publishedAt": "2026-07-09T16:16:35+00:00",
+                "updatedAt": "2026-08-18T06:10:29+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "MemSpec：让草稿选择服从边缘设备的实际驻留集合",
-                  "oneSentenceZh": "MemSpec 把草稿效果预测与执行解耦，通过主动维护驻留工作集减少草稿模型切换加载开销。",
-                  "problemZh": "自适应推测解码会根据输入和生成阶段切换草稿模型，但在内存紧张的边缘设备上，最优草稿往往不驻留，模型加载开销抵消接受率收益。",
-                  "methodZh": "系统用轻量预测器根据提示和生成上下文估计草稿有效性，再由内存感知调度器主动维护 resident working set，使选择结果与可执行草稿集合协调。",
-                  "resultZh": "论文在 Jetson Orin Nano 上报告，相比先进的 bandit 自适应方法，稳态生成吞吐平均提高 40.7%，并接近 oracle 上界；官方页标注工作发表于 LCTES 2026。",
+                  "titleZh": "DominoTree：用条件概率构造推测解码草稿树",
+                  "oneSentenceZh": "DominoTree 沿候选路径重算 Domino 的因果修正，用 best-first 条件树替代独立边缘假设。",
+                  "problemZh": "现有树式推测解码常把各位置边缘分布视为独立，但 Domino 的 GRU 因果修正让后续 token 分布依赖已选路径，直接套用因子化树会丢失信息。",
+                  "methodZh": "方法在每个根到节点路径上累积 Domino 的非因子化条件分数，限制每节点 top-M 候选控制成本，并作为 SGLang 外部插件与 AR、DFlash、EAGLE-3、Domino 同旗标对比。",
+                  "resultZh": "作者报告路径重算在已启用修正基础上再提高 4.7% 接受长度；Qwen3-8B 单请求吞吐比 Domino 高 12%，HELMET 长上下文下接受长度高 29%–36%、吞吐高 10%–34%。",
                   "contributions": [
-                    "揭示草稿选择与草稿驻留不一致这一边缘瓶颈",
-                    "提出预测引导的主动驻留工作集管理",
-                    "在真实受限边缘设备上报告端到端吞吐结果"
+                    "为因果修正草稿器定义条件树评分",
+                    "用 top-M 与 best-first 搜索控制树展开成本",
+                    "在研究 harness 与 SGLang 服务实现中做同配置比较"
                   ],
                   "evidence": [
-                    "arXiv 官方摘要给出机制、Jetson Orin Nano 平台和 40.7% 平均吞吐提升。",
-                    "官方页给出 LCTES 2026 论文集与关联 DOI。"
+                    "arXiv 官方 v3 于本周更新，候选包包含论文正文与实验描述。",
+                    "接受长度、吞吐和长上下文数字均来自作者摘要及正文，比较对象和模型已明确。"
                   ],
                   "limitations": [
-                    "摘要未给出功耗、峰值内存和所有草稿组合细节。",
-                    "Jetson 结果不能直接代表辐射环境或更弱星载算力平台。"
+                    "收益依赖验证阶段是否主导；预填充主导时优势会收窄。",
+                    "实现为 out-of-tree 插件，生产集成和多硬件稳定性尚未独立验证。"
                   ],
-                  "confidence": 0.8,
+                  "confidence": 0.83,
+                  "modelVersion": "codex-scheduled-task-v1"
+                }
+              },
+              {
+                "position": 2,
+                "role": "deep_read",
+                "itemType": "paper",
+                "title": "ReMP: Low-Downtime Runtime Model-Parallelism Reconfiguration for LLM Serving",
+                "url": "https://arxiv.org/abs/2606.18741",
+                "reason": "本周 v2 修订直面运行时 TP/PP 拓扑切换及 KV 状态保留，适合动态资源与故障恢复研究。",
+                "summary": "**中文标题：** ReMP：低停机重配置 LLM 模型并行拓扑\n\n**ReMP 解耦并行拓扑与运行时状态，并用二维 KV 迁移把 TP/PP 切换从分钟级重启压缩到秒级。**\n\n静态 TP/PP 拓扑无法适应负载和可用资源变化，而重启切换会造成分钟级中断、KV 丢失和大量重算。\n\n系统把模型并行拓扑从运行时状态中解耦，设计跨 TP 与 PP 维度的 KV cache 迁移，并实现不中断完整服务重建的端到端在线重配置。\n\n作者在 7B–70B 模型上报告多数拓扑切换为 1–7 秒，相比重启快数十到百余倍；动态负载下在 TTFT、TPOT 和输出吞吐上优于固定配置。",
+                "implication": "OrbitInfer 可借鉴状态/拓扑解耦设计，但必须把链路可用窗口、迁移能耗与失败回滚纳入重配置协议。",
+                "readMinutes": 4.0,
+                "publishedAt": "2026-06-17T06:36:40+00:00",
+                "updatedAt": "2026-08-17T06:55:03+00:00",
+                "status": null,
+                "deepRead": {
+                  "titleZh": "ReMP：低停机重配置 LLM 模型并行拓扑",
+                  "oneSentenceZh": "ReMP 解耦并行拓扑与运行时状态，并用二维 KV 迁移把 TP/PP 切换从分钟级重启压缩到秒级。",
+                  "problemZh": "静态 TP/PP 拓扑无法适应负载和可用资源变化，而重启切换会造成分钟级中断、KV 丢失和大量重算。",
+                  "methodZh": "系统把模型并行拓扑从运行时状态中解耦，设计跨 TP 与 PP 维度的 KV cache 迁移，并实现不中断完整服务重建的端到端在线重配置。",
+                  "resultZh": "作者在 7B–70B 模型上报告多数拓扑切换为 1–7 秒，相比重启快数十到百余倍；动态负载下在 TTFT、TPOT 和输出吞吐上优于固定配置。",
+                  "contributions": [
+                    "解耦模型并行拓扑和服务状态",
+                    "设计保留可复用状态的二维 KV 迁移",
+                    "实现并评估端到端在线拓扑切换"
+                  ],
+                  "evidence": [
+                    "arXiv 官方 v2 于本周更新，摘要与全文给出系统机制、模型范围和切换时延。",
+                    "结果明确以重启和固定拓扑为比较基线。"
+                  ],
+                  "limitations": [
+                    "摘要未覆盖网络故障、迁移中断和异构设备切换。",
+                    "星间链路环境下 KV 迁移成本可能远高于数据中心互连。"
+                  ],
+                  "confidence": 0.81,
+                  "modelVersion": "codex-scheduled-task-v1"
+                }
+              },
+              {
+                "position": 3,
+                "role": "deep_read",
+                "itemType": "paper",
+                "title": "Q-First: Most of Attention Needs Only the Query in Disaggregated LLM Decoding",
+                "url": "https://arxiv.org/abs/2608.15473",
+                "reason": "本周 v2 重要修订重新审视分离式解码的 KV 传输单位，直接对应网络受限推理。",
+                "summary": "**中文标题：** Q-First：分离式解码中多数 Attention 先传 Query 即可\n\n**Q-First 利用 attention 输出在 token 间可聚合的性质，把大多数 KV 拉取改成小得多的 query 发送与局部计算。**\n\n分离式 LLM 解码若为每步把大量远端 KV 拉到计算节点，网络流量与尾延迟会随上下文增长，限制吞吐和弹性。\n\n论文将 attention 计算重排为 query-first：向 KV 所在节点发送较小 query，在数据本地计算可组合的局部结果，再聚合返回，从而避免大部分 KV 跨节点搬运。\n\n作者在 v2 修订中报告该重排降低 KV 相关网络传输并改善分离式解码效率；具体收益依模型、上下文、并行度和互连配置，周报不跨配置合并数值。",
+                "implication": "OrbitInfer 的跨节点 attention 应比较传 query、传 KV 和迁移状态三种路径，并按链路窗口动态选择。",
+                "readMinutes": 3.0,
+                "publishedAt": "2026-08-16T01:40:07+00:00",
+                "updatedAt": "2026-08-19T14:09:49+00:00",
+                "status": null,
+                "deepRead": {
+                  "titleZh": "Q-First：分离式解码中多数 Attention 先传 Query 即可",
+                  "oneSentenceZh": "Q-First 利用 attention 输出在 token 间可聚合的性质，把大多数 KV 拉取改成小得多的 query 发送与局部计算。",
+                  "problemZh": "分离式 LLM 解码若为每步把大量远端 KV 拉到计算节点，网络流量与尾延迟会随上下文增长，限制吞吐和弹性。",
+                  "methodZh": "论文将 attention 计算重排为 query-first：向 KV 所在节点发送较小 query，在数据本地计算可组合的局部结果，再聚合返回，从而避免大部分 KV 跨节点搬运。",
+                  "resultZh": "作者在 v2 修订中报告该重排降低 KV 相关网络传输并改善分离式解码效率；具体收益依模型、上下文、并行度和互连配置，周报不跨配置合并数值。",
+                  "contributions": [
+                    "识别 query 与 KV 传输量级的不对称",
+                    "给出可聚合局部 attention 的计算重排",
+                    "面向分离式服务评估网络与执行收益"
+                  ],
+                  "evidence": [
+                    "arXiv 官方 v2 于本周更新，候选包包含全文与修订后的系统描述。",
+                    "关键机制由论文一手来源核验，并未从题名或搜索摘要推断。"
+                  ],
+                  "limitations": [
+                    "实际收益依赖远端 KV 的布局、网络拓扑和聚合开销。",
+                    "跨不可靠链路的失败恢复与一致性不在当前证据中。"
+                  ],
+                  "confidence": 0.76,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               }
@@ -288,35 +359,35 @@
                 "position": 1,
                 "role": "deep_read",
                 "itemType": "paper",
-                "title": "Beyond Capacity: Scalable MoE LLM Inference via High-Bandwidth Flash with Direct GPU and HBM Paths",
-                "url": "https://arxiv.org/abs/2608.14333",
-                "reason": "新论文直接讨论大规模 MoE 专家权重如何跨 HBF、HBM 与 GPU 双路径输送，对受容量约束的专家放置很有启发。",
-                "summary": "**中文标题：** Beyond Capacity：用 HBF 直达与 HBM 中继双路径扩展 MoE 推理\n\n**论文让 HBF 驻留专家分别走 GPU 直达和经 HBM 基座中继两条并行路径，并以前瞻专家判定隐藏读取延迟。**\n\nMoE 专家权重规模增长快于 HBM 容量，而传统 HBF 方案仍把权重经 HBM 送入 GPU，浪费了额外直连并形成共享中继瓶颈。\n\n系统把完整专家静态分配到直达或中继路径，两路并发传输且不复制权重；提前预测后续专家以重叠 HBF 读取与前序计算，并分离不可变专家流量和可变 KV 流量。\n\n作者使用事件驱动连续批处理模拟器和实测 GPU 计算延迟评估；摘要确认双路径提高聚合专家输送带宽，但具体端到端收益仍需结合正文配置解读。",
-                "implication": "可把双路径专家输送抽象为 OrbitInfer 的分层专家预取策略，但必须增加路径故障、功率封顶和预测错误成本。",
+                "title": "TokenCake: A KV-Cache-centric Serving Framework for LLM-based Multi-Agent Applications",
+                "url": "https://arxiv.org/abs/2510.18586",
+                "reason": "本周 v4 修订把多 Agent 函数调用期间的 KV 空间竞争和时间闲置统一为调度问题。",
+                "summary": "**中文标题：** TokenCake：面向多 Agent 工作流的 KV 调度与内存协同\n\n**TokenCake 在函数调用等待期主动卸载 KV，并用关键路径与运行状态联合分配 GPU 内存。**\n\n多 Agent 应用会在函数调用时长期闲置 KV，同时不同 Agent 争抢显存并淘汰关键路径状态，现有请求中心服务器缺少工作流语义。\n\nTemporal Scheduler 以事件驱动策略卸载等待函数调用的 KV 并预测性回传；Spatial Scheduler 根据调用图结构和运行状态形成混合优先级，动态划分显存。\n\n作者在代表性多 Agent benchmark 上报告相对 vLLM 端到端时延降低超过 47.06%，有效 GPU 内存利用率最高提高 16.9%。",
+                "implication": "OrbitInfer 应把外部工具等待期视作可调度 KV 空闲窗口，并用任务关键度决定保留、压缩或迁移。",
                 "readMinutes": 4.0,
-                "publishedAt": "2026-08-14T14:22:21+00:00",
-                "updatedAt": "2026-08-14T14:22:21+00:00",
+                "publishedAt": "2025-10-21T12:39:32+00:00",
+                "updatedAt": "2026-08-21T14:57:45+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "Beyond Capacity：用 HBF 直达与 HBM 中继双路径扩展 MoE 推理",
-                  "oneSentenceZh": "论文让 HBF 驻留专家分别走 GPU 直达和经 HBM 基座中继两条并行路径，并以前瞻专家判定隐藏读取延迟。",
-                  "problemZh": "MoE 专家权重规模增长快于 HBM 容量，而传统 HBF 方案仍把权重经 HBM 送入 GPU，浪费了额外直连并形成共享中继瓶颈。",
-                  "methodZh": "系统把完整专家静态分配到直达或中继路径，两路并发传输且不复制权重；提前预测后续专家以重叠 HBF 读取与前序计算，并分离不可变专家流量和可变 KV 流量。",
-                  "resultZh": "作者使用事件驱动连续批处理模拟器和实测 GPU 计算延迟评估；摘要确认双路径提高聚合专家输送带宽，但具体端到端收益仍需结合正文配置解读。",
+                  "titleZh": "TokenCake：面向多 Agent 工作流的 KV 调度与内存协同",
+                  "oneSentenceZh": "TokenCake 在函数调用等待期主动卸载 KV，并用关键路径与运行状态联合分配 GPU 内存。",
+                  "problemZh": "多 Agent 应用会在函数调用时长期闲置 KV，同时不同 Agent 争抢显存并淘汰关键路径状态，现有请求中心服务器缺少工作流语义。",
+                  "methodZh": "Temporal Scheduler 以事件驱动策略卸载等待函数调用的 KV 并预测性回传；Spatial Scheduler 根据调用图结构和运行状态形成混合优先级，动态划分显存。",
+                  "resultZh": "作者在代表性多 Agent benchmark 上报告相对 vLLM 端到端时延降低超过 47.06%，有效 GPU 内存利用率最高提高 16.9%。",
                   "contributions": [
-                    "提出无需专家复制的 HBF 双路径权重输送组织",
-                    "用提前专家判定隐藏远端读取时延",
-                    "把专家权重与 KV 流量分离管理以降低相互干扰"
+                    "把多 Agent 调用图语义引入 KV 生命周期管理",
+                    "联合时间卸载和空间关键路径预留",
+                    "在端到端多 Agent 工作负载上对比 vLLM"
                   ],
                   "evidence": [
-                    "arXiv 一手摘要明确说明论文于 2026-08-14 首次提交。",
-                    "摘要逐项描述 direct path、relay path、whole-expert assignment 与 early expert determination。"
+                    "arXiv 官方 v4 于本周更新，候选包包含摘要与论文正文。",
+                    "47.06% 与 16.9% 数字来自作者评估，基线明确为 vLLM。"
                   ],
                   "limitations": [
-                    "结论主要来自模拟器加实测算子延迟，并非完整 HBF 硬件系统实测。",
-                    "星载链路、辐射容错和功耗封装约束未在摘要中体现。"
+                    "收益依赖函数调用时长和调用图结构。",
+                    "主动卸载在低带宽或高能耗链路上的代价需重新评估。"
                   ],
-                  "confidence": 0.72,
+                  "confidence": 0.82,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               },
@@ -324,113 +395,35 @@
                 "position": 2,
                 "role": "deep_read",
                 "itemType": "paper",
-                "title": "MoE Expert Execution in Disaggregated LLM Serving with a High-Bandwidth ReRAM Near-Memory Architecture",
-                "url": "https://arxiv.org/abs/2608.13962",
-                "reason": "论文把分离式 Attention/FFN 服务与 ReRAM 近存专家执行结合，提供了容量、带宽密度与路由倾斜联合优化样例。",
-                "summary": "**中文标题：** ReRAM 近存专家池：为分离式 MoE 服务恢复稀疏路由占用率\n\n**该工作用 ReRAM 本地高带宽读、局部多播池化和共激活感知放置缓解 MoE 专家并集膨胀与路由倾斜。**\n\n在 Attention-FFN 分离后，解码 SLO 限制批量，而稀疏路由扩大激活专家并集并造成冷专家资源空闲，使 FFN 池难以同时获得权重带宽密度与高占用率。\n\n设计将专家权重驻留在 ReRAM 近存阵列后，以有界核内多播池化、共激活感知放置和负载感知取权重恢复占用，并按诱导需求配置各级通信。\n\n作者报告 side-4 pooling 将占用率从 0.328 提至 0.519；在等峰值计算下相对 H20 的单 token FFN 池延迟降低 9.5 倍、权重搬运能耗降低 20 倍，系统解码 TPOT 改进范围依模型为 1.25 至 10.4 倍。",
-                "implication": "对星载 MoE，应把占用率恢复和权重搬运能耗纳入专家放置目标，并优先验证局部共享能否在有限互连下取得类似效果。",
+                "title": "HieraSparse: Hierarchical Semi-Structured Sparse KV Attention",
+                "url": "https://arxiv.org/abs/2604.16864",
+                "reason": "本周 v2 修订把半结构稀疏真正映射到 GPU sparse tensor core，兼顾预填充与解码。",
+                "summary": "**中文标题：** HieraSparse：可由稀疏 Tensor Core 加速的分层 KV Attention\n\n**HieraSparse 用分层半结构剪枝和配套内核在可调质量损失下压缩 KV，并把稀疏转成实际速度。**\n\n大量 KV 稀疏方法产生不规则模式，虽减少理论计算与容量，却难以在 GPU 上兑现预填充和解码加速。\n\n框架构建层次化半结构 KV 稀疏模式，并提供面向 GPU sparse tensor core 的预填充、解码 attention 内核；简单幅值剪枝用于评估质量-稀疏权衡。\n\n作者称同稀疏度下相对非结构解码方法获得 1.2 倍 KV 压缩与 4.57 倍 attention 加速；最高稀疏度预填充加速 1.85 倍，无显著质量下降设置下预填充/解码为 1.34/1.71 倍。",
+                "implication": "星载 KV 压缩应优先选择硬件可执行的结构稀疏，并同时记录端到端时延、功耗与质量，而非只看理论稀疏率。",
                 "readMinutes": 4.0,
-                "publishedAt": "2026-08-14T05:12:50+00:00",
-                "updatedAt": "2026-08-14T05:12:50+00:00",
+                "publishedAt": "2026-04-18T06:28:21+00:00",
+                "updatedAt": "2026-08-17T11:03:28+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "ReRAM 近存专家池：为分离式 MoE 服务恢复稀疏路由占用率",
-                  "oneSentenceZh": "该工作用 ReRAM 本地高带宽读、局部多播池化和共激活感知放置缓解 MoE 专家并集膨胀与路由倾斜。",
-                  "problemZh": "在 Attention-FFN 分离后，解码 SLO 限制批量，而稀疏路由扩大激活专家并集并造成冷专家资源空闲，使 FFN 池难以同时获得权重带宽密度与高占用率。",
-                  "methodZh": "设计将专家权重驻留在 ReRAM 近存阵列后，以有界核内多播池化、共激活感知放置和负载感知取权重恢复占用，并按诱导需求配置各级通信。",
-                  "resultZh": "作者报告 side-4 pooling 将占用率从 0.328 提至 0.519；在等峰值计算下相对 H20 的单 token FFN 池延迟降低 9.5 倍、权重搬运能耗降低 20 倍，系统解码 TPOT 改进范围依模型为 1.25 至 10.4 倍。",
+                  "titleZh": "HieraSparse：可由稀疏 Tensor Core 加速的分层 KV Attention",
+                  "oneSentenceZh": "HieraSparse 用分层半结构剪枝和配套内核在可调质量损失下压缩 KV，并把稀疏转成实际速度。",
+                  "problemZh": "大量 KV 稀疏方法产生不规则模式，虽减少理论计算与容量，却难以在 GPU 上兑现预填充和解码加速。",
+                  "methodZh": "框架构建层次化半结构 KV 稀疏模式，并提供面向 GPU sparse tensor core 的预填充、解码 attention 内核；简单幅值剪枝用于评估质量-稀疏权衡。",
+                  "resultZh": "作者称同稀疏度下相对非结构解码方法获得 1.2 倍 KV 压缩与 4.57 倍 attention 加速；最高稀疏度预填充加速 1.85 倍，无显著质量下降设置下预填充/解码为 1.34/1.71 倍。",
                   "contributions": [
-                    "给出面向稀疏专家并集的 ReRAM 近存架构",
-                    "分解理想 MFU 与实际占用率并针对路由倾斜恢复占用",
-                    "联合专家放置、局部共享和通信层级定容"
+                    "定义可调的分层半结构 KV 稀疏",
+                    "同时提供预填充与解码加速内核",
+                    "开源代码并报告质量-速度权衡"
                   ],
                   "evidence": [
-                    "arXiv 官方摘要确认 2026-08-14 首次提交。",
-                    "摘要列出 Qwen3.5 与 GLM-5.2 上的 measured + modeled 研究及具体占用率、延迟和能耗数字。"
+                    "arXiv 官方 v2 于本周更新，摘要列出所有关键速度与压缩数字。",
+                    "论文提供官方 GitHub 代码链接，可作为后续复现入口。"
                   ],
                   "limitations": [
-                    "结果混合实测与建模，不能视作实际 ReRAM 系统端到端复现。",
-                    "收益跨度较大且依赖模型、路由分布和硬件定容。"
+                    "指标主要是 attention 层级，端到端生成收益会受其他算子限制。",
+                    "质量结论依赖选定模型、任务和简单幅值剪枝。"
                   ],
-                  "confidence": 0.74,
-                  "modelVersion": "codex-scheduled-task-v1"
-                }
-              },
-              {
-                "position": 3,
-                "role": "deep_read",
-                "itemType": "paper",
-                "title": "vToken: Token-Level Virtualization for Reclaimable KV Caches",
-                "url": "https://arxiv.org/abs/2608.13263",
-                "reason": "论文把 token 级淘汰与 block 级 PagedAttention 的粒度错配转化为可实现的虚拟化层，问题具体且工程收益清晰。",
-                "summary": "**中文标题：** vToken：在不改 PagedAttention 内核的前提下回收 token 级 KV 空洞\n\n**vToken 用 token table 间接层稳定逻辑地址，并异步重排存活 token，从而回收 block 内碎片且保持 CUDA Graph 兼容。**\n\nKV 淘汰算法按 token 决策，而 PagedAttention 按固定 block 分配；被淘汰 token 留在部分占用 block 中，导致内存逻辑已释放但物理不可回收。\n\n系统将逻辑 token 存活状态与物理 block 位置解耦，通过 token-table indirection 提供稳定视图，并在后台异步重排存活 token，同时保留原 PagedAttention 内核与 CUDA Graph。\n\n作者在 vLLM 上结合 H2O、Random 和 Scissorhands 评估，相对 Naive-Evict 将每请求保留 KV block 减少 27.2% 至 72.3%，SLA 吞吐最高提高 1.37 倍，受限预算下最大并发最高提高 2 倍。",
-                "implication": "可把逻辑 token 映射作为 OrbitInfer KV 管理层的稳定接口，用后台整理换取真实可回收容量，但必须加入整理功耗和实时期限门禁。",
-                "readMinutes": 4.0,
-                "publishedAt": "2026-08-13T14:01:21+00:00",
-                "updatedAt": "2026-08-13T14:01:21+00:00",
-                "status": null,
-                "deepRead": {
-                  "titleZh": "vToken：在不改 PagedAttention 内核的前提下回收 token 级 KV 空洞",
-                  "oneSentenceZh": "vToken 用 token table 间接层稳定逻辑地址，并异步重排存活 token，从而回收 block 内碎片且保持 CUDA Graph 兼容。",
-                  "problemZh": "KV 淘汰算法按 token 决策，而 PagedAttention 按固定 block 分配；被淘汰 token 留在部分占用 block 中，导致内存逻辑已释放但物理不可回收。",
-                  "methodZh": "系统将逻辑 token 存活状态与物理 block 位置解耦，通过 token-table indirection 提供稳定视图，并在后台异步重排存活 token，同时保留原 PagedAttention 内核与 CUDA Graph。",
-                  "resultZh": "作者在 vLLM 上结合 H2O、Random 和 Scissorhands 评估，相对 Naive-Evict 将每请求保留 KV block 减少 27.2% 至 72.3%，SLA 吞吐最高提高 1.37 倍，受限预算下最大并发最高提高 2 倍。",
-                  "contributions": [
-                    "明确 token 淘汰与 block 分配的粒度错配",
-                    "提出兼容现有内核和图捕获的轻量虚拟化层",
-                    "降低淘汰策略接入代码量并提高可回收容量"
-                  ],
-                  "evidence": [
-                    "arXiv 官方摘要确认 2026-08-13 首次提交。",
-                    "摘要给出实现位置、比较策略、27.2% 至 72.3% block 减少和最高 1.37 倍吞吐。"
-                  ],
-                  "limitations": [
-                    "异步重排成本和最坏尾延迟需结合正文与目标工作负载复测。",
-                    "结果来自作者实现与选定策略，尚无独立复现。"
-                  ],
-                  "confidence": 0.79,
-                  "modelVersion": "codex-scheduled-task-v1"
-                }
-              }
-            ]
-          },
-          {
-            "id": "must_read",
-            "items": [
-              {
-                "position": 1,
-                "role": "must_read",
-                "itemType": "paper",
-                "title": "HBF Sucks! A Full-Stack Characterization of High-Bandwidth Flash for KV-Centric LLM Serving",
-                "url": "https://arxiv.org/abs/2608.11668",
-                "reason": "该论文以反例证明更快远端介质可能让 KV 服务更慢，直接挑战简单扩大分层存储的架构直觉。",
-                "summary": "**中文标题：** HBF Sucks：更快闪存为何反而拖慢 KV 分层服务\n\n**完整追踪驱动评估显示，把 HBF 当作 SSD 的直接替代会牺牲近端容量与带宽，并因写密集、热和寿命约束使系统整体变慢。**\n\nHBF 具有更低介质延迟和更高带宽，但 KV 分层系统的关键路径可能不在远端读取；如果换取 HBF 要缩减近端 HBM，介质优势可能被排队和容量损失吞没。\n\n作者扩展 TokenSim，回放四条两小时生产轨迹、五个稠密或 MoE 模型及 H100/B200 配置，并用成本收益模型、介质延迟扫描、3D-ICE 热模型和耐久预算拆解瓶颈。\n\n作者报告平均端到端延迟上升 2 至 5.5 倍、最大 SLO goodput 降低 1.1 至 2.7 倍；将介质延迟改善 3.75 倍对延迟影响不足 1%，且写多于读导致热与耐久受限。",
-                "implication": "OrbitInfer 的分层 KV 设计必须先测关键路径暴露比例、读写比与持续带宽，再决定远端介质；不能用峰值介质参数直接推导端到端收益。",
-                "readMinutes": 4.0,
-                "publishedAt": "2026-08-12T05:25:38+00:00",
-                "updatedAt": "2026-08-13T02:03:03+00:00",
-                "status": null,
-                "deepRead": {
-                  "titleZh": "HBF Sucks：更快闪存为何反而拖慢 KV 分层服务",
-                  "oneSentenceZh": "完整追踪驱动评估显示，把 HBF 当作 SSD 的直接替代会牺牲近端容量与带宽，并因写密集、热和寿命约束使系统整体变慢。",
-                  "problemZh": "HBF 具有更低介质延迟和更高带宽，但 KV 分层系统的关键路径可能不在远端读取；如果换取 HBF 要缩减近端 HBM，介质优势可能被排队和容量损失吞没。",
-                  "methodZh": "作者扩展 TokenSim，回放四条两小时生产轨迹、五个稠密或 MoE 模型及 H100/B200 配置，并用成本收益模型、介质延迟扫描、3D-ICE 热模型和耐久预算拆解瓶颈。",
-                  "resultZh": "作者报告平均端到端延迟上升 2 至 5.5 倍、最大 SLO goodput 降低 1.1 至 2.7 倍；将介质延迟改善 3.75 倍对延迟影响不足 1%，且写多于读导致热与耐久受限。",
-                  "contributions": [
-                    "给出 HBF 替代 SSD 失败的全栈反例",
-                    "提出读取暴露比例、读写比和可持续带宽三项必要条件",
-                    "把热、寿命与近端机会成本纳入 KV 分层评估"
-                  ],
-                  "evidence": [
-                    "arXiv 官方页确认论文在本周提交并修订。",
-                    "候选包抓取到论文正文，包含两小时轨迹、模型范围、3D-ICE 方法和关键表格数字。",
-                    "摘要明确区分设备本身与错误部署方式，避免把结论泛化为 HBF 无价值。"
-                  ],
-                  "limitations": [
-                    "HBF 属未大规模公开的硬件方向，部分设备参数和热结果为建模投影。",
-                    "结论针对 transient KV 与 SSD 式连接器，不排除专家权重等读密集对象。"
-                  ],
-                  "confidence": 0.84,
+                  "confidence": 0.82,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               }
@@ -443,35 +436,35 @@
                 "position": 1,
                 "role": "deep_read",
                 "itemType": "paper",
-                "title": "UnionSparse: An Index-Efficient Sparsity Framework for Low-Bit Sparse LLM Inference on Edge",
-                "url": "https://arxiv.org/abs/2608.09291",
-                "reason": "该工作直接面向低比特稀疏边缘推理，并指出量化后索引元数据成为一阶瓶颈，适合作为星载小批量解码优化参考。",
-                "summary": "**中文标题：** UnionSparse：低比特稀疏推理不能忽略索引元数据\n\n**UnionSparse 用位图编码和共享内存并行解码降低稀疏索引成本，使低比特小批量 SpMM 不再被元数据流量主导。**\n\n量化缩小权重 payload 后，稀疏索引并未同比缩小，导致边缘 GPU 上的索引流量和非零提取压低有效计算强度。\n\n论文定义 Payload-to-Metadata Ratio，并结合 Index-Efficient Bitmap Encoding 与 Low-Bit Shared-Memory Parallel Decoding，使索引遍历对齐 fragment 组装并改善小批量执行。\n\n在 W4A4、30% 至 70% 稀疏度下，作者报告相对 FlashLLM 和 SpInfer 分别快 2.30 倍和 1.43 倍，相对 CUTLASS 与 cuBLAS Tensor Core 分别快 1.56 倍和 3.46 倍；论文经 ESWEEK 2026 Journal Track 接收。",
-                "implication": "星载低比特稀疏内核应把索引字节、解码并行度与小批量占用率纳入统一代价模型，避免只按非零乘加数估算收益。",
-                "readMinutes": 4.0,
-                "publishedAt": "2026-08-10T08:43:19+00:00",
-                "updatedAt": "2026-08-10T08:43:19+00:00",
+                "title": "Selective KV Cache Protection for Noise-Resilient LLM Inference on Analog Compute-In-Memory Systems",
+                "url": "https://arxiv.org/abs/2607.29076",
+                "reason": "本周 v2 修订首次系统处理模拟 CIM 噪声下动态 KV attention，并给出选择性保护机制。",
+                "summary": "**中文标题：** 选择性 KV 保护：让模拟存内 attention 抵抗硬件噪声\n\n**该工作只把 sink token 与最近窗口留在高精度数字路径，其余 KV 放入模拟 CIM，以小额数字开销恢复质量。**\n\n模拟 CIM 适合权重驻留计算，但 KV 每步动态写入，反复编程与噪声会让 attention 比线性层更脆弱。\n\n作者识别初始 token 和最近 token 的非均匀脆弱性，设计层次化保护：高精度数字路径保留 sink 与滑动窗口，其余 KV 交给模拟阵列，并由调度器协调编程、归属迁移和批量 MVM。\n\n九个 LLM 上平均困惑度由噪声下 33.91 降至 11.95，接近无噪声 11.06；动态 KV 编程行利用率从 23.1% 提高到 91.2%。",
+                "implication": "OrbitInfer 的可靠推理可采用关键 token 分级保护思路，并将辐射软错误、模拟噪声和动态精度统一为风险预算。",
+                "readMinutes": 3.0,
+                "publishedAt": "2026-07-31T06:56:20+00:00",
+                "updatedAt": "2026-08-19T08:05:27+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "UnionSparse：低比特稀疏推理不能忽略索引元数据",
-                  "oneSentenceZh": "UnionSparse 用位图编码和共享内存并行解码降低稀疏索引成本，使低比特小批量 SpMM 不再被元数据流量主导。",
-                  "problemZh": "量化缩小权重 payload 后，稀疏索引并未同比缩小，导致边缘 GPU 上的索引流量和非零提取压低有效计算强度。",
-                  "methodZh": "论文定义 Payload-to-Metadata Ratio，并结合 Index-Efficient Bitmap Encoding 与 Low-Bit Shared-Memory Parallel Decoding，使索引遍历对齐 fragment 组装并改善小批量执行。",
-                  "resultZh": "在 W4A4、30% 至 70% 稀疏度下，作者报告相对 FlashLLM 和 SpInfer 分别快 2.30 倍和 1.43 倍，相对 CUTLASS 与 cuBLAS Tensor Core 分别快 1.56 倍和 3.46 倍；论文经 ESWEEK 2026 Journal Track 接收。",
+                  "titleZh": "选择性 KV 保护：让模拟存内 attention 抵抗硬件噪声",
+                  "oneSentenceZh": "该工作只把 sink token 与最近窗口留在高精度数字路径，其余 KV 放入模拟 CIM，以小额数字开销恢复质量。",
+                  "problemZh": "模拟 CIM 适合权重驻留计算，但 KV 每步动态写入，反复编程与噪声会让 attention 比线性层更脆弱。",
+                  "methodZh": "作者识别初始 token 和最近 token 的非均匀脆弱性，设计层次化保护：高精度数字路径保留 sink 与滑动窗口，其余 KV 交给模拟阵列，并由调度器协调编程、归属迁移和批量 MVM。",
+                  "resultZh": "九个 LLM 上平均困惑度由噪声下 33.91 降至 11.95，接近无噪声 11.06；动态 KV 编程行利用率从 23.1% 提高到 91.2%。",
                   "contributions": [
-                    "提出 PMR 指标刻画低比特稀疏推理的元数据负担",
-                    "联合索引编码与低比特共享内存解码",
-                    "在多种稀疏度下比较主流稀疏与稠密内核"
+                    "揭示动态 attention 的 token 级噪声脆弱性",
+                    "提出数字/模拟混合选择性保护",
+                    "联合保护策略与编程调度提高阵列利用率"
                   ],
                   "evidence": [
-                    "arXiv 官方页确认 2026-08-10 首次提交，并标注 ESWEEK 2026 Journal Track 接收。",
-                    "官方摘要给出 W4A4、稀疏度范围和四组相对性能数字。"
+                    "arXiv 官方 v2 于本周更新，摘要包含九模型评估和具体困惑度、利用率。",
+                    "候选包全文支持机制与实验边界，不依赖二手解读。"
                   ],
                   "limitations": [
-                    "摘要未展示完整硬件型号、模型规模、功耗和端到端生成吞吐。",
-                    "内核加速比不能直接等同于应用级时延或能效提升。"
+                    "结果基于模拟 CIM 噪声模型，未证明真实航天环境可靠性。",
+                    "数字保护比例、写入耐久和热约束需在目标器件上重测。"
                   ],
-                  "confidence": 0.8,
+                  "confidence": 0.82,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               }
@@ -480,6 +473,337 @@
         ]
       },
       "archive": [
+        {
+          "issue": {
+            "id": "737ebe20-3bfa-471f-8ff5-66c7deb43178",
+            "departmentId": "orbitinfer",
+            "title": "星载大模型推理引擎周报 · 2026-W34",
+            "isoWeek": "2026-W34",
+            "windowStart": "2026-08-16T16:00:00+00:00",
+            "windowEnd": "2026-08-23T15:59:59.999999+00:00",
+            "status": "approved",
+            "targetReadMinutes": 30,
+            "estimatedReadMinutes": 30.0,
+            "itemCount": 8
+          },
+          "trends": [
+            "本周有5项相关进展，集中在推理调度与资源编排。",
+            "本周有9项相关进展，集中在LLM/VLM/MoE推理引擎。",
+            "本周有8项相关进展，集中在KV Cache与分层存储。",
+            "本周有4项相关进展，集中在动态功率/能耗/温度感知推理。",
+            "本周有1项相关进展，集中在量化、压缩与自适应精度。"
+          ],
+          "sections": [
+            {
+              "id": "frameworks_benchmarks_datasets",
+              "items": [
+                {
+                  "position": 1,
+                  "role": "must_read",
+                  "itemType": "framework",
+                  "title": "kvcache-ai/ktransformers",
+                  "url": "https://github.com/kvcache-ai/ktransformers/releases/tag/v0.6.4",
+                  "reason": "官方 v0.6.4 在本周更新，集中给出稀疏 MoE 异构训练、低比特推理与安全修复，直接影响受限硬件上的方案选择。",
+                  "summary": "**中文标题：** KTransformers v0.6.4：异构 MoE 训练、低比特推理与安全修复\n\n**该版本把全参/LoRA 异构训练、Ampere 上的 DeepSeek V4 支持、RAWINT4 加速和一项远程反序列化暴露修复合入同一正式版本。**\n\n超大稀疏 MoE 在有限 GPU 显存上需要同时解决 CPU-GPU 参数驻留、训练吞吐、旧 GPU 的低精度能力和运行时暴露面。\n\n官方版本通过 LLaMA-Factory 工作流提供全参、LoRA 与混合 SFT，加入 BF16 CPU-GPU 异构路径、Ampere FP8 MoE Marlin 回退、RAWINT4 预填充优化和 Intel iGPU SYCL 实验后端。\n\n官方说明报告 Qwen3-30B-A3B 在双 EPYC 加双 RTX 5090 上全参约 400 token/s、LoRA 约 600 token/s；单 RTX 4090 加 AMX CPU 的 LoRA 超过 700 token/s，并将 balance_serve 的 ZMQ 端点改为仅绑定 127.0.0.1。",
+                  "implication": "OrbitInfer 可把 CPU-GPU 专家驻留、低比特预填充和本地控制面安全拆成独立实验项，在功耗封顶与有限内存下验证端到端收益。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-07-23T14:32:53+00:00",
+                  "updatedAt": "2026-08-17T18:13:42+00:00",
+                  "status": "Official release: v0.7.0",
+                  "deepRead": {
+                    "titleZh": "KTransformers v0.6.4：异构 MoE 训练、低比特推理与安全修复",
+                    "oneSentenceZh": "该版本把全参/LoRA 异构训练、Ampere 上的 DeepSeek V4 支持、RAWINT4 加速和一项远程反序列化暴露修复合入同一正式版本。",
+                    "problemZh": "超大稀疏 MoE 在有限 GPU 显存上需要同时解决 CPU-GPU 参数驻留、训练吞吐、旧 GPU 的低精度能力和运行时暴露面。",
+                    "methodZh": "官方版本通过 LLaMA-Factory 工作流提供全参、LoRA 与混合 SFT，加入 BF16 CPU-GPU 异构路径、Ampere FP8 MoE Marlin 回退、RAWINT4 预填充优化和 Intel iGPU SYCL 实验后端。",
+                    "resultZh": "官方说明报告 Qwen3-30B-A3B 在双 EPYC 加双 RTX 5090 上全参约 400 token/s、LoRA 约 600 token/s；单 RTX 4090 加 AMX CPU 的 LoRA 超过 700 token/s，并将 balance_serve 的 ZMQ 端点改为仅绑定 127.0.0.1。",
+                    "contributions": [
+                      "统一稀疏 MoE 的全参、LoRA 和混合异构训练路径",
+                      "扩展旧 GPU 与 RAWINT4 的模型兼容和预填充性能",
+                      "修复可导致未认证远程 pickle 反序列化的网络暴露"
+                    ],
+                    "evidence": [
+                      "GitHub 官方 v0.6.4 release 在本周更新，列出实现 PR、安装方式和完整 changelog。",
+                      "吞吐数字、硬件配置、DeepSeek V4/RAWINT4 支持及安全公告均来自该官方 release。"
+                    ],
+                    "limitations": [
+                      "吞吐数据由项目方报告，硬件与训练配置不同，不能横向直接比较。",
+                      "SYCL 后端为实验能力，CUDA、CPU ISA 和驱动兼容性仍需目标平台复测。"
+                    ],
+                    "confidence": 0.88,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 2,
+                  "role": "must_read",
+                  "itemType": "framework",
+                  "title": "sgl-project/sglang",
+                  "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.18",
+                  "reason": "SGLang v0.5.18 的本周官方更新包含启动、通信、推测解码、KV 与 MoE 的大量可落地改动。",
+                  "summary": "**中文标题：** SGLang v0.5.18：缩短启动、优化通信并扩大推测解码覆盖\n\n**新版本用重叠权重加载、LMHead all-to-all、MNNVL allreduce 和多项推测解码修复推进大模型服务整栈。**\n\n大模型服务在启动权重装载、张量并行通信、推测解码状态管理和异构模型兼容上存在相互耦合的时延与正确性瓶颈。\n\n官方版本在 CUDA Graph 捕获期间并行分阶段装载 checkpoint，将 TP LMHead 的 allgather+scatter 改为 all-to-all，并复用 FlashInfer MNNVL workspace，同时扩展 DSpark、DFlash 与多模型后端。\n\n官方说明称 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对普通默认从 84.8 秒降到 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降到 169 微秒，TPOT 从 36.97 毫秒降到 35.67 毫秒。",
+                  "implication": "应把冷启动、通信与推测解码状态正确性纳入 OrbitInfer 回归矩阵，并在断续供电或任务迁移场景测试恢复开销。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-07-14T08:43:33+00:00",
+                  "updatedAt": "2026-08-22T00:09:15+00:00",
+                  "status": "Official release: v0.5.18",
+                  "deepRead": {
+                    "titleZh": "SGLang v0.5.18：缩短启动、优化通信并扩大推测解码覆盖",
+                    "oneSentenceZh": "新版本用重叠权重加载、LMHead all-to-all、MNNVL allreduce 和多项推测解码修复推进大模型服务整栈。",
+                    "problemZh": "大模型服务在启动权重装载、张量并行通信、推测解码状态管理和异构模型兼容上存在相互耦合的时延与正确性瓶颈。",
+                    "methodZh": "官方版本在 CUDA Graph 捕获期间并行分阶段装载 checkpoint，将 TP LMHead 的 allgather+scatter 改为 all-to-all，并复用 FlashInfer MNNVL workspace，同时扩展 DSpark、DFlash 与多模型后端。",
+                    "resultZh": "官方说明称 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对普通默认从 84.8 秒降到 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降到 169 微秒，TPOT 从 36.97 毫秒降到 35.67 毫秒。",
+                    "contributions": [
+                      "把权重装载与图捕获重叠以降低冷启动",
+                      "减少 TP LMHead 与纯 allreduce 的通信开销",
+                      "补齐推测解码、注意力、MoE 和图执行的正确性修复"
+                    ],
+                    "evidence": [
+                      "GitHub 官方 v0.5.18 release 在本周更新并列出 710 个 PR、212 位贡献者和对应 PR。",
+                      "启动、LMHead 与 allreduce 数字来自官方 release 的具体硬件与模型条目。"
+                    ],
+                    "limitations": [
+                      "性能数字来自不同工作负载和硬件，不能合并成统一加速比。",
+                      "依赖升级到 PyTorch 2.13、Triton 3.7.1 等，可能带来目标环境重新验证成本。"
+                    ],
+                    "confidence": 0.87,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "inference_and_scheduling",
+              "items": [
+                {
+                  "position": 1,
+                  "role": "must_read",
+                  "itemType": "paper",
+                  "title": "DominoTree: Conditional Tree-Structured Drafting with Domino for Speculative Decoding",
+                  "url": "https://arxiv.org/abs/2607.08642",
+                  "reason": "本周 v3 重要修订给出可接入 SGLang 的条件树草稿机制，并报告长上下文与并发服务收益。",
+                  "summary": "**中文标题：** DominoTree：用条件概率构造推测解码草稿树\n\n**DominoTree 沿候选路径重算 Domino 的因果修正，用 best-first 条件树替代独立边缘假设。**\n\n现有树式推测解码常把各位置边缘分布视为独立，但 Domino 的 GRU 因果修正让后续 token 分布依赖已选路径，直接套用因子化树会丢失信息。\n\n方法在每个根到节点路径上累积 Domino 的非因子化条件分数，限制每节点 top-M 候选控制成本，并作为 SGLang 外部插件与 AR、DFlash、EAGLE-3、Domino 同旗标对比。\n\n作者报告路径重算在已启用修正基础上再提高 4.7% 接受长度；Qwen3-8B 单请求吞吐比 Domino 高 12%，HELMET 长上下文下接受长度高 29%–36%、吞吐高 10%–34%。",
+                  "implication": "可在 OrbitInfer 的推测解码调度器中加入路径条件性，但需用能耗、显存和截止期共同约束树宽与候选深度。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-07-09T16:16:35+00:00",
+                  "updatedAt": "2026-08-18T06:10:29+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "DominoTree：用条件概率构造推测解码草稿树",
+                    "oneSentenceZh": "DominoTree 沿候选路径重算 Domino 的因果修正，用 best-first 条件树替代独立边缘假设。",
+                    "problemZh": "现有树式推测解码常把各位置边缘分布视为独立，但 Domino 的 GRU 因果修正让后续 token 分布依赖已选路径，直接套用因子化树会丢失信息。",
+                    "methodZh": "方法在每个根到节点路径上累积 Domino 的非因子化条件分数，限制每节点 top-M 候选控制成本，并作为 SGLang 外部插件与 AR、DFlash、EAGLE-3、Domino 同旗标对比。",
+                    "resultZh": "作者报告路径重算在已启用修正基础上再提高 4.7% 接受长度；Qwen3-8B 单请求吞吐比 Domino 高 12%，HELMET 长上下文下接受长度高 29%–36%、吞吐高 10%–34%。",
+                    "contributions": [
+                      "为因果修正草稿器定义条件树评分",
+                      "用 top-M 与 best-first 搜索控制树展开成本",
+                      "在研究 harness 与 SGLang 服务实现中做同配置比较"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v3 于本周更新，候选包包含论文正文与实验描述。",
+                      "接受长度、吞吐和长上下文数字均来自作者摘要及正文，比较对象和模型已明确。"
+                    ],
+                    "limitations": [
+                      "收益依赖验证阶段是否主导；预填充主导时优势会收窄。",
+                      "实现为 out-of-tree 插件，生产集成和多硬件稳定性尚未独立验证。"
+                    ],
+                    "confidence": 0.83,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 2,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "ReMP: Low-Downtime Runtime Model-Parallelism Reconfiguration for LLM Serving",
+                  "url": "https://arxiv.org/abs/2606.18741",
+                  "reason": "本周 v2 修订直面运行时 TP/PP 拓扑切换及 KV 状态保留，适合动态资源与故障恢复研究。",
+                  "summary": "**中文标题：** ReMP：低停机重配置 LLM 模型并行拓扑\n\n**ReMP 解耦并行拓扑与运行时状态，并用二维 KV 迁移把 TP/PP 切换从分钟级重启压缩到秒级。**\n\n静态 TP/PP 拓扑无法适应负载和可用资源变化，而重启切换会造成分钟级中断、KV 丢失和大量重算。\n\n系统把模型并行拓扑从运行时状态中解耦，设计跨 TP 与 PP 维度的 KV cache 迁移，并实现不中断完整服务重建的端到端在线重配置。\n\n作者在 7B–70B 模型上报告多数拓扑切换为 1–7 秒，相比重启快数十到百余倍；动态负载下在 TTFT、TPOT 和输出吞吐上优于固定配置。",
+                  "implication": "OrbitInfer 可借鉴状态/拓扑解耦设计，但必须把链路可用窗口、迁移能耗与失败回滚纳入重配置协议。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-06-17T06:36:40+00:00",
+                  "updatedAt": "2026-08-17T06:55:03+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "ReMP：低停机重配置 LLM 模型并行拓扑",
+                    "oneSentenceZh": "ReMP 解耦并行拓扑与运行时状态，并用二维 KV 迁移把 TP/PP 切换从分钟级重启压缩到秒级。",
+                    "problemZh": "静态 TP/PP 拓扑无法适应负载和可用资源变化，而重启切换会造成分钟级中断、KV 丢失和大量重算。",
+                    "methodZh": "系统把模型并行拓扑从运行时状态中解耦，设计跨 TP 与 PP 维度的 KV cache 迁移，并实现不中断完整服务重建的端到端在线重配置。",
+                    "resultZh": "作者在 7B–70B 模型上报告多数拓扑切换为 1–7 秒，相比重启快数十到百余倍；动态负载下在 TTFT、TPOT 和输出吞吐上优于固定配置。",
+                    "contributions": [
+                      "解耦模型并行拓扑和服务状态",
+                      "设计保留可复用状态的二维 KV 迁移",
+                      "实现并评估端到端在线拓扑切换"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要与全文给出系统机制、模型范围和切换时延。",
+                      "结果明确以重启和固定拓扑为比较基线。"
+                    ],
+                    "limitations": [
+                      "摘要未覆盖网络故障、迁移中断和异构设备切换。",
+                      "星间链路环境下 KV 迁移成本可能远高于数据中心互连。"
+                    ],
+                    "confidence": 0.81,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 3,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "Q-First: Most of Attention Needs Only the Query in Disaggregated LLM Decoding",
+                  "url": "https://arxiv.org/abs/2608.15473",
+                  "reason": "本周 v2 重要修订重新审视分离式解码的 KV 传输单位，直接对应网络受限推理。",
+                  "summary": "**中文标题：** Q-First：分离式解码中多数 Attention 先传 Query 即可\n\n**Q-First 利用 attention 输出在 token 间可聚合的性质，把大多数 KV 拉取改成小得多的 query 发送与局部计算。**\n\n分离式 LLM 解码若为每步把大量远端 KV 拉到计算节点，网络流量与尾延迟会随上下文增长，限制吞吐和弹性。\n\n论文将 attention 计算重排为 query-first：向 KV 所在节点发送较小 query，在数据本地计算可组合的局部结果，再聚合返回，从而避免大部分 KV 跨节点搬运。\n\n作者在 v2 修订中报告该重排降低 KV 相关网络传输并改善分离式解码效率；具体收益依模型、上下文、并行度和互连配置，周报不跨配置合并数值。",
+                  "implication": "OrbitInfer 的跨节点 attention 应比较传 query、传 KV 和迁移状态三种路径，并按链路窗口动态选择。",
+                  "readMinutes": 3.0,
+                  "publishedAt": "2026-08-16T01:40:07+00:00",
+                  "updatedAt": "2026-08-19T14:09:49+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "Q-First：分离式解码中多数 Attention 先传 Query 即可",
+                    "oneSentenceZh": "Q-First 利用 attention 输出在 token 间可聚合的性质，把大多数 KV 拉取改成小得多的 query 发送与局部计算。",
+                    "problemZh": "分离式 LLM 解码若为每步把大量远端 KV 拉到计算节点，网络流量与尾延迟会随上下文增长，限制吞吐和弹性。",
+                    "methodZh": "论文将 attention 计算重排为 query-first：向 KV 所在节点发送较小 query，在数据本地计算可组合的局部结果，再聚合返回，从而避免大部分 KV 跨节点搬运。",
+                    "resultZh": "作者在 v2 修订中报告该重排降低 KV 相关网络传输并改善分离式解码效率；具体收益依模型、上下文、并行度和互连配置，周报不跨配置合并数值。",
+                    "contributions": [
+                      "识别 query 与 KV 传输量级的不对称",
+                      "给出可聚合局部 attention 的计算重排",
+                      "面向分离式服务评估网络与执行收益"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，候选包包含全文与修订后的系统描述。",
+                      "关键机制由论文一手来源核验，并未从题名或搜索摘要推断。"
+                    ],
+                    "limitations": [
+                      "实际收益依赖远端 KV 的布局、网络拓扑和聚合开销。",
+                      "跨不可靠链路的失败恢复与一致性不在当前证据中。"
+                    ],
+                    "confidence": 0.76,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "kv_storage_moe_quantization",
+              "items": [
+                {
+                  "position": 1,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "TokenCake: A KV-Cache-centric Serving Framework for LLM-based Multi-Agent Applications",
+                  "url": "https://arxiv.org/abs/2510.18586",
+                  "reason": "本周 v4 修订把多 Agent 函数调用期间的 KV 空间竞争和时间闲置统一为调度问题。",
+                  "summary": "**中文标题：** TokenCake：面向多 Agent 工作流的 KV 调度与内存协同\n\n**TokenCake 在函数调用等待期主动卸载 KV，并用关键路径与运行状态联合分配 GPU 内存。**\n\n多 Agent 应用会在函数调用时长期闲置 KV，同时不同 Agent 争抢显存并淘汰关键路径状态，现有请求中心服务器缺少工作流语义。\n\nTemporal Scheduler 以事件驱动策略卸载等待函数调用的 KV 并预测性回传；Spatial Scheduler 根据调用图结构和运行状态形成混合优先级，动态划分显存。\n\n作者在代表性多 Agent benchmark 上报告相对 vLLM 端到端时延降低超过 47.06%，有效 GPU 内存利用率最高提高 16.9%。",
+                  "implication": "OrbitInfer 应把外部工具等待期视作可调度 KV 空闲窗口，并用任务关键度决定保留、压缩或迁移。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2025-10-21T12:39:32+00:00",
+                  "updatedAt": "2026-08-21T14:57:45+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "TokenCake：面向多 Agent 工作流的 KV 调度与内存协同",
+                    "oneSentenceZh": "TokenCake 在函数调用等待期主动卸载 KV，并用关键路径与运行状态联合分配 GPU 内存。",
+                    "problemZh": "多 Agent 应用会在函数调用时长期闲置 KV，同时不同 Agent 争抢显存并淘汰关键路径状态，现有请求中心服务器缺少工作流语义。",
+                    "methodZh": "Temporal Scheduler 以事件驱动策略卸载等待函数调用的 KV 并预测性回传；Spatial Scheduler 根据调用图结构和运行状态形成混合优先级，动态划分显存。",
+                    "resultZh": "作者在代表性多 Agent benchmark 上报告相对 vLLM 端到端时延降低超过 47.06%，有效 GPU 内存利用率最高提高 16.9%。",
+                    "contributions": [
+                      "把多 Agent 调用图语义引入 KV 生命周期管理",
+                      "联合时间卸载和空间关键路径预留",
+                      "在端到端多 Agent 工作负载上对比 vLLM"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v4 于本周更新，候选包包含摘要与论文正文。",
+                      "47.06% 与 16.9% 数字来自作者评估，基线明确为 vLLM。"
+                    ],
+                    "limitations": [
+                      "收益依赖函数调用时长和调用图结构。",
+                      "主动卸载在低带宽或高能耗链路上的代价需重新评估。"
+                    ],
+                    "confidence": 0.82,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 2,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "HieraSparse: Hierarchical Semi-Structured Sparse KV Attention",
+                  "url": "https://arxiv.org/abs/2604.16864",
+                  "reason": "本周 v2 修订把半结构稀疏真正映射到 GPU sparse tensor core，兼顾预填充与解码。",
+                  "summary": "**中文标题：** HieraSparse：可由稀疏 Tensor Core 加速的分层 KV Attention\n\n**HieraSparse 用分层半结构剪枝和配套内核在可调质量损失下压缩 KV，并把稀疏转成实际速度。**\n\n大量 KV 稀疏方法产生不规则模式，虽减少理论计算与容量，却难以在 GPU 上兑现预填充和解码加速。\n\n框架构建层次化半结构 KV 稀疏模式，并提供面向 GPU sparse tensor core 的预填充、解码 attention 内核；简单幅值剪枝用于评估质量-稀疏权衡。\n\n作者称同稀疏度下相对非结构解码方法获得 1.2 倍 KV 压缩与 4.57 倍 attention 加速；最高稀疏度预填充加速 1.85 倍，无显著质量下降设置下预填充/解码为 1.34/1.71 倍。",
+                  "implication": "星载 KV 压缩应优先选择硬件可执行的结构稀疏，并同时记录端到端时延、功耗与质量，而非只看理论稀疏率。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-04-18T06:28:21+00:00",
+                  "updatedAt": "2026-08-17T11:03:28+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "HieraSparse：可由稀疏 Tensor Core 加速的分层 KV Attention",
+                    "oneSentenceZh": "HieraSparse 用分层半结构剪枝和配套内核在可调质量损失下压缩 KV，并把稀疏转成实际速度。",
+                    "problemZh": "大量 KV 稀疏方法产生不规则模式，虽减少理论计算与容量，却难以在 GPU 上兑现预填充和解码加速。",
+                    "methodZh": "框架构建层次化半结构 KV 稀疏模式，并提供面向 GPU sparse tensor core 的预填充、解码 attention 内核；简单幅值剪枝用于评估质量-稀疏权衡。",
+                    "resultZh": "作者称同稀疏度下相对非结构解码方法获得 1.2 倍 KV 压缩与 4.57 倍 attention 加速；最高稀疏度预填充加速 1.85 倍，无显著质量下降设置下预填充/解码为 1.34/1.71 倍。",
+                    "contributions": [
+                      "定义可调的分层半结构 KV 稀疏",
+                      "同时提供预填充与解码加速内核",
+                      "开源代码并报告质量-速度权衡"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要列出所有关键速度与压缩数字。",
+                      "论文提供官方 GitHub 代码链接，可作为后续复现入口。"
+                    ],
+                    "limitations": [
+                      "指标主要是 attention 层级，端到端生成收益会受其他算子限制。",
+                      "质量结论依赖选定模型、任务和简单幅值剪枝。"
+                    ],
+                    "confidence": 0.82,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "power_reliability_edge_distributed",
+              "items": [
+                {
+                  "position": 1,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "Selective KV Cache Protection for Noise-Resilient LLM Inference on Analog Compute-In-Memory Systems",
+                  "url": "https://arxiv.org/abs/2607.29076",
+                  "reason": "本周 v2 修订首次系统处理模拟 CIM 噪声下动态 KV attention，并给出选择性保护机制。",
+                  "summary": "**中文标题：** 选择性 KV 保护：让模拟存内 attention 抵抗硬件噪声\n\n**该工作只把 sink token 与最近窗口留在高精度数字路径，其余 KV 放入模拟 CIM，以小额数字开销恢复质量。**\n\n模拟 CIM 适合权重驻留计算，但 KV 每步动态写入，反复编程与噪声会让 attention 比线性层更脆弱。\n\n作者识别初始 token 和最近 token 的非均匀脆弱性，设计层次化保护：高精度数字路径保留 sink 与滑动窗口，其余 KV 交给模拟阵列，并由调度器协调编程、归属迁移和批量 MVM。\n\n九个 LLM 上平均困惑度由噪声下 33.91 降至 11.95，接近无噪声 11.06；动态 KV 编程行利用率从 23.1% 提高到 91.2%。",
+                  "implication": "OrbitInfer 的可靠推理可采用关键 token 分级保护思路，并将辐射软错误、模拟噪声和动态精度统一为风险预算。",
+                  "readMinutes": 3.0,
+                  "publishedAt": "2026-07-31T06:56:20+00:00",
+                  "updatedAt": "2026-08-19T08:05:27+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "选择性 KV 保护：让模拟存内 attention 抵抗硬件噪声",
+                    "oneSentenceZh": "该工作只把 sink token 与最近窗口留在高精度数字路径，其余 KV 放入模拟 CIM，以小额数字开销恢复质量。",
+                    "problemZh": "模拟 CIM 适合权重驻留计算，但 KV 每步动态写入，反复编程与噪声会让 attention 比线性层更脆弱。",
+                    "methodZh": "作者识别初始 token 和最近 token 的非均匀脆弱性，设计层次化保护：高精度数字路径保留 sink 与滑动窗口，其余 KV 交给模拟阵列，并由调度器协调编程、归属迁移和批量 MVM。",
+                    "resultZh": "九个 LLM 上平均困惑度由噪声下 33.91 降至 11.95，接近无噪声 11.06；动态 KV 编程行利用率从 23.1% 提高到 91.2%。",
+                    "contributions": [
+                      "揭示动态 attention 的 token 级噪声脆弱性",
+                      "提出数字/模拟混合选择性保护",
+                      "联合保护策略与编程调度提高阵列利用率"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要包含九模型评估和具体困惑度、利用率。",
+                      "候选包全文支持机制与实验边界，不依赖二手解读。"
+                    ],
+                    "limitations": [
+                      "结果基于模拟 CIM 噪声模型，未证明真实航天环境可靠性。",
+                      "数字保护比例、写入耐久和热约束需在目标器件上重测。"
+                    ],
+                    "confidence": 0.82,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
         {
           "issue": {
             "id": "d2e57ca6-815b-4fe2-ae1d-fba9d1e9be5c",
@@ -1977,59 +2301,56 @@
       },
       "currentReport": {
         "issue": {
-          "id": "0fd6a6a4-e2c5-44c6-a15b-76d76b9e7bc5",
+          "id": "a2e09eab-f649-4dbe-8fc8-db4fec7d11bc",
           "departmentId": "model_and_application",
-          "title": "模型应用周报 · 2026-W33",
-          "isoWeek": "2026-W33",
-          "windowStart": "2026-08-09T16:00:00+00:00",
-          "windowEnd": "2026-08-16T15:59:59.999999+00:00",
+          "title": "模型应用周报 · 2026-W34",
+          "isoWeek": "2026-W34",
+          "windowStart": "2026-08-16T16:00:00+00:00",
+          "windowEnd": "2026-08-23T15:59:59.999999+00:00",
           "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 30.0,
           "itemCount": 8
         },
         "trends": [
-          "本周有1项相关进展，集中在多模态模型。",
-          "本周有1项相关进展，集中在Token压缩。"
+          "本周有28项相关进展，集中在多模态模型。"
         ],
         "sections": [
           {
-            "id": "must_read",
+            "id": "primary_topic",
             "items": [
               {
                 "position": 1,
                 "role": "must_read",
                 "itemType": "paper",
-                "title": "Hybrid Token Compression for Vision-Language Models",
-                "url": "https://arxiv.org/abs/2512.08240",
-                "reason": "本周 v2 明确扩展 CVPR 版本，新增理论、跨架构、系统效率和鲁棒性实验，满足旧论文重大修订门槛。",
-                "summary": "**中文标题：** HTC-VLM：用离散语义锚点与连续细节实现单视觉 token 压缩\n\n**HTC-VLM 先分离离散语义和连续外观，再把 580 个混合 token 压成一个 token，在极限预算下保持更高任务性能。**\n\n纯连续视觉压缩容易稀释对象语义，纯离散量化又会损失纹理和姿态细节，单 token 极限预算下两类方法都难兼顾语义与外观。\n\n框架保留连续 ViT patch 细节，并用 MGVQ 生成四个离散语义锚点；二者组成 580-token 混合序列，经解耦 attention mask 与 <voco> 瓶颈压缩为单 token。\n\n作者在七个基准上报告单 token 平均性能保持率 87.2%，高于连续压缩基线的 81.0%；v2 还新增多预算、跨架构、时延内存和鲁棒性分析。",
-                "implication": "视觉 token 压缩不应只按 attention 分数裁剪；模型应用组可比较混合语义锚点与纯连续压缩在遥感细粒度目标上的误差结构。",
+                "title": "Know3D: Prompting 3D Generation with Knowledge from Vision-Language Models",
+                "url": "https://arxiv.org/abs/2603.22782",
+                "reason": "本周 v2 重要修订把 VLM 隐状态作为可控三维生成先验，展示模型知识注入生成管线的具体方式。",
+                "summary": "**中文标题：** Know3D：用视觉语言模型知识约束三维背面生成\n\n**Know3D 通过隐状态注入把文字意图和 VLM 语义先验传给扩散与三维生成模型，使单视图不可见区域可控。**\n\n单视图三维重建对不可见区域存在根本歧义，有限三维数据难以提供稳定全局结构先验，导致背面随机且不符合用户意图。\n\n系统让 VLM 负责语义理解，以 VLM-diffusion 模型作为桥梁，将潜在隐状态注入三维生成过程，用语言指令约束不可见背面。\n\n作者称该设计把随机背面幻觉转为语义可控生成，并在几何细节与意图对齐上优于无知识注入基线；公开摘要未给出可独立概括的统一数值。",
+                "implication": "可把 VLM 隐状态注入作为遥感三维补全的候选机制，但必须用多视角或物理观测约束幻觉。",
                 "readMinutes": 4.0,
-                "publishedAt": "2025-12-09T04:48:38+00:00",
-                "updatedAt": "2026-08-11T11:19:44+00:00",
+                "publishedAt": "2026-03-24T04:18:29+00:00",
+                "updatedAt": "2026-08-18T07:58:01+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "HTC-VLM：用离散语义锚点与连续细节实现单视觉 token 压缩",
-                  "oneSentenceZh": "HTC-VLM 先分离离散语义和连续外观，再把 580 个混合 token 压成一个 token，在极限预算下保持更高任务性能。",
-                  "problemZh": "纯连续视觉压缩容易稀释对象语义，纯离散量化又会损失纹理和姿态细节，单 token 极限预算下两类方法都难兼顾语义与外观。",
-                  "methodZh": "框架保留连续 ViT patch 细节，并用 MGVQ 生成四个离散语义锚点；二者组成 580-token 混合序列，经解耦 attention mask 与 <voco> 瓶颈压缩为单 token。",
-                  "resultZh": "作者在七个基准上报告单 token 平均性能保持率 87.2%，高于连续压缩基线的 81.0%；v2 还新增多预算、跨架构、时延内存和鲁棒性分析。",
+                  "titleZh": "Know3D：用视觉语言模型知识约束三维背面生成",
+                  "oneSentenceZh": "Know3D 通过隐状态注入把文字意图和 VLM 语义先验传给扩散与三维生成模型，使单视图不可见区域可控。",
+                  "problemZh": "单视图三维重建对不可见区域存在根本歧义，有限三维数据难以提供稳定全局结构先验，导致背面随机且不符合用户意图。",
+                  "methodZh": "系统让 VLM 负责语义理解，以 VLM-diffusion 模型作为桥梁，将潜在隐状态注入三维生成过程，用语言指令约束不可见背面。",
+                  "resultZh": "作者称该设计把随机背面幻觉转为语义可控生成，并在几何细节与意图对齐上优于无知识注入基线；公开摘要未给出可独立概括的统一数值。",
                   "contributions": [
-                    "将语义锚点和连续细节显式分路后再压缩",
-                    "给出单 token 瓶颈的信息论解释与扩展实验",
-                    "验证跨架构与系统效率并公开代码"
+                    "把 VLM 知识注入单视图三维生成",
+                    "建立文本意图到不可见几何的隐状态桥梁",
+                    "把背面生成从随机补全转为可控补全"
                   ],
                   "evidence": [
-                    "arXiv 官方页显示 v2 于 2026-08-11 提交，评论标注 CVPR 2026 接收。",
-                    "候选全文明确列出相对会议版本新增理论、复现细节、跨架构、效率和鲁棒性实验。",
-                    "87.2% 与 81.0% 均为论文作者在同一单 token 预算下报告。"
+                    "arXiv 官方 v2 于本周更新，摘要和全文直接描述 VLM、扩散桥梁与隐状态注入。"
                   ],
                   "limitations": [
-                    "性能保持率聚合七个基准，会掩盖单任务差异。",
-                    "额外语义编码器引入的前处理开销需按实际部署硬件复测。"
+                    "公开摘要缺少完整量化对比，效果边界需以正文和代码复现。",
+                    "强语义先验也可能生成合理但不真实的不可见结构。"
                   ],
-                  "confidence": 0.86,
+                  "confidence": 0.76,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               },
@@ -2037,33 +2358,32 @@
                 "position": 2,
                 "role": "must_read",
                 "itemType": "paper",
-                "title": "When Vision Becomes Text: Visual Token Pruning via Cross-Modal Residual Guidance in VLMs",
-                "url": "https://arxiv.org/abs/2608.10489",
-                "reason": "新论文提出跨层吸收量与残差指导，兼顾训练自由、显著 token 缩减和端到端加速，机制与指标都完整。",
-                "summary": "**中文标题：** SIEVE：用跨模态残差保留尚未被文本吸收的视觉信息\n\n**SIEVE 衡量深层文本 token 已吸收的视觉子空间，只保留无法被文本解释且与任务相关、彼此互补的视觉 token。**\n\n基于相似度的视觉 token 裁剪只利用局部层信号，忽略文本 token 在整个推理过程中持续吸收视觉信息，因而可能重复保留已被文本表达的内容。\n\n论文定义 Cross Modal Absorption，并以 Tikhonov 正则最小二乘把视觉 token 投影到文本子空间；Cross Modal Residual 再结合文本注意力相关性和残差空间多样性完成训练自由筛选。\n\n在 LLaVA-NeXT-7B 上，作者报告仅保留 11.1% 视觉 token 时维持 97.5% 平均性能，同时获得 3.62 倍 prefill、2.49 倍端到端加速和 6.02 倍 KV 缩减。",
-                "implication": "可把 CMR 作为遥感 VLM 的动态视觉预算基线，并重点验证跨时间帧时文本吸收是否会误删细小变化目标。",
+                "title": "Look Clearly Before Answering: Mitigating Hallucinations in LVLMs via Saliency-Driven Perceptual Realignment",
+                "url": "https://arxiv.org/abs/2607.16841",
+                "reason": "本周 v2 修订提供无需训练的 VLM 幻觉抑制方法，同时作用于注意力、KV cache 与解码。",
+                "summary": "**中文标题：** SDPR：沿生成全程重对齐视觉证据以抑制幻觉\n\n**SDPR 重新分配被 sink token 劫持的注意力、对齐 KV 中的视觉特征，并用先验约束对比解码压制语言偏置。**\n\nLVLM 在生成过程中视觉感知会逐步退化，关键证据被非语义 sink token 和语言先验淹没，导致答案与图像不一致。\n\n框架先按显著性重分配注意力，再校正 KV cache 的空间失真以保留查询相关视觉特征，最后对比解码惩罚语言先验驱动的不忠实预测。\n\n作者报告在多种 LVLM 架构、幻觉 benchmark 与通用 benchmark 上优于现有方法，且无需额外训练、运行开销较低；论文提供官方代码仓库。",
+                "implication": "适合作为遥感 VLM 推理期防幻觉基线，并应在小目标、密集场景和压缩图像上验证显著性鲁棒性。",
                 "readMinutes": 4.0,
-                "publishedAt": "2026-08-11T05:04:33+00:00",
-                "updatedAt": "2026-08-11T05:04:33+00:00",
+                "publishedAt": "2026-07-18T14:39:16+00:00",
+                "updatedAt": "2026-08-19T14:03:57+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "SIEVE：用跨模态残差保留尚未被文本吸收的视觉信息",
-                  "oneSentenceZh": "SIEVE 衡量深层文本 token 已吸收的视觉子空间，只保留无法被文本解释且与任务相关、彼此互补的视觉 token。",
-                  "problemZh": "基于相似度的视觉 token 裁剪只利用局部层信号，忽略文本 token 在整个推理过程中持续吸收视觉信息，因而可能重复保留已被文本表达的内容。",
-                  "methodZh": "论文定义 Cross Modal Absorption，并以 Tikhonov 正则最小二乘把视觉 token 投影到文本子空间；Cross Modal Residual 再结合文本注意力相关性和残差空间多样性完成训练自由筛选。",
-                  "resultZh": "在 LLaVA-NeXT-7B 上，作者报告仅保留 11.1% 视觉 token 时维持 97.5% 平均性能，同时获得 3.62 倍 prefill、2.49 倍端到端加速和 6.02 倍 KV 缩减。",
+                  "titleZh": "SDPR：沿生成全程重对齐视觉证据以抑制幻觉",
+                  "oneSentenceZh": "SDPR 重新分配被 sink token 劫持的注意力、对齐 KV 中的视觉特征，并用先验约束对比解码压制语言偏置。",
+                  "problemZh": "LVLM 在生成过程中视觉感知会逐步退化，关键证据被非语义 sink token 和语言先验淹没，导致答案与图像不一致。",
+                  "methodZh": "框架先按显著性重分配注意力，再校正 KV cache 的空间失真以保留查询相关视觉特征，最后对比解码惩罚语言先验驱动的不忠实预测。",
+                  "resultZh": "作者报告在多种 LVLM 架构、幻觉 benchmark 与通用 benchmark 上优于现有方法，且无需额外训练、运行开销较低；论文提供官方代码仓库。",
                   "contributions": [
-                    "提出跨模态吸收量化指标",
-                    "以残差空间识别文本尚未解释的视觉信息",
-                    "实现训练自由且跨多种 VLM 架构的 token 压缩"
+                    "统一处理注意力、KV 记忆和输出解码的视觉退化",
+                    "提供训练免费推理期校正",
+                    "跨多架构评估幻觉与通用能力"
                   ],
                   "evidence": [
-                    "arXiv 官方页确认 2026-08-11 首次提交。",
-                    "官方摘要明确描述 CMA、CMR、Tikhonov 投影和三项加速或压缩数字。"
+                    "arXiv 官方 v2 于本周更新，摘要与全文列出三阶段机制和代码链接。"
                   ],
                   "limitations": [
-                    "摘要未给出高分辨率遥感长序列上的稳定性。",
-                    "矩阵投影本身的成本和数值稳定性需要端侧实测。"
+                    "摘要没有统一列出各 benchmark 数值，跨模型收益需逐表核对。",
+                    "显著性估计错误可能强化无关区域。"
                   ],
                   "confidence": 0.8,
                   "modelVersion": "codex-scheduled-task-v1"
@@ -2073,184 +2393,174 @@
                 "position": 3,
                 "role": "must_read",
                 "itemType": "paper",
-                "title": "Not All Visual Tokens Are Equally Safe to Remove:Consequence-Sensitive Visual Token Compression",
-                "url": "https://arxiv.org/abs/2608.09176",
-                "reason": "该工作首次把错误后果纳入视觉计算预算，在相同 token 预算下减少高代价错误，适合安全敏感遥感与行业应用。",
-                "summary": "**中文标题：** 后果敏感视觉 token 压缩：把算力优先给高代价问题\n\n**方法离线校准不同后果下的误差—预算曲线，在线按任务后果信号分配 token，而不是假设所有错误代价相同。**\n\n现有压缩目标通常最大化平均准确率，默认每个错误等价；但票据金额、灾害判断或关键目标漏检的错误成本远高于背景属性判断。\n\n采用 calibrate-then-allocate 流程，离线估计后果特定的 error-budget curve，在线读取问题或任务提供的后果信号，在总 token 预算内向高代价请求转移视觉计算。\n\n受控同图任务中，高代价错误率从 0.300 降至 0.133；真实混合负载下，作者报告成本加权错误降低 38%，同时比全分辨率推理降低约 21% 时延。",
-                "implication": "模型应用组可把后果权重接入遥感告警、质检和自动决策的 token 调度，使资源预算与业务损失函数一致。",
+                "title": "WNM-3D: A World Navigation Model with 3D Scene Conditioning for Closed-Loop VLN",
+                "url": "https://arxiv.org/abs/2608.07267",
+                "reason": "本周 v2 修订将三维场景表征、世界-动作生成和闭环 Agent 训练连成完整导航方案。",
+                "summary": "**中文标题：** WNM-3D：以三维场景 Token 条件化闭环视觉语言导航\n\n**WNM-3D 用冻结几何编码器和 3D Scene-to-Token Adapter，为未来视图与动作共同提供持久场景上下文。**\n\n现有 VLA 导航策略直接从观察生成动作，却没有显式建模预测动作下视觉世界如何变化；二维历史也难以保存稳定几何。\n\n系统从单目历史提取几何表征并压成固定长度前缀，以 block-causal attention 条件化世界-动作 Diffusion Transformer，再依次进行 A* SFT、DAgger-SFT 和 Counterfactual DanceGRPO。\n\n作者在 GN-Bench 上报告 WNM-3D 优于强 VLM 导航策略和二维条件对照；消融表明 DAgger-SFT 对成功率贡献更大，后续 GRPO 同时改善成功率与路径效率。",
+                "implication": "遥感/地质 Agent 可借鉴几何 Token 作为长期空间记忆，但应先评估更轻骨干与真实传感器噪声。",
                 "readMinutes": 4.0,
-                "publishedAt": "2026-08-10T06:40:18+00:00",
-                "updatedAt": "2026-08-10T06:40:18+00:00",
+                "publishedAt": "2026-08-07T14:29:00+00:00",
+                "updatedAt": "2026-08-20T03:44:24+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "后果敏感视觉 token 压缩：把算力优先给高代价问题",
-                  "oneSentenceZh": "方法离线校准不同后果下的误差—预算曲线，在线按任务后果信号分配 token，而不是假设所有错误代价相同。",
-                  "problemZh": "现有压缩目标通常最大化平均准确率，默认每个错误等价；但票据金额、灾害判断或关键目标漏检的错误成本远高于背景属性判断。",
-                  "methodZh": "采用 calibrate-then-allocate 流程，离线估计后果特定的 error-budget curve，在线读取问题或任务提供的后果信号，在总 token 预算内向高代价请求转移视觉计算。",
-                  "resultZh": "受控同图任务中，高代价错误率从 0.300 降至 0.133；真实混合负载下，作者报告成本加权错误降低 38%，同时比全分辨率推理降低约 21% 时延。",
+                  "titleZh": "WNM-3D：以三维场景 Token 条件化闭环视觉语言导航",
+                  "oneSentenceZh": "WNM-3D 用冻结几何编码器和 3D Scene-to-Token Adapter，为未来视图与动作共同提供持久场景上下文。",
+                  "problemZh": "现有 VLA 导航策略直接从观察生成动作，却没有显式建模预测动作下视觉世界如何变化；二维历史也难以保存稳定几何。",
+                  "methodZh": "系统从单目历史提取几何表征并压成固定长度前缀，以 block-causal attention 条件化世界-动作 Diffusion Transformer，再依次进行 A* SFT、DAgger-SFT 和 Counterfactual DanceGRPO。",
+                  "resultZh": "作者在 GN-Bench 上报告 WNM-3D 优于强 VLM 导航策略和二维条件对照；消融表明 DAgger-SFT 对成功率贡献更大，后续 GRPO 同时改善成功率与路径效率。",
                   "contributions": [
-                    "将错误后果显式引入视觉 token 预算优化",
-                    "构造同图高低后果对照以隔离内容混杂",
-                    "验证跨基准、模型和预算实现方式的分配原则"
+                    "把持续三维场景上下文注入世界-动作模型",
+                    "联合生成未来视觉与动作",
+                    "给出监督、闭环纠错和奖励优化的分阶段训练"
                   ],
                   "evidence": [
-                    "arXiv 官方页确认论文于 2026-08-10 首次提交。",
-                    "官方摘要给出高代价错误率、成本加权错误和时延三类结果。"
+                    "arXiv 官方 v2 于本周更新，候选包含完整方法、训练阶段和 GN-Bench 实验。"
                   ],
                   "limitations": [
-                    "在线后果信号需要可靠来源，错误标注可能反向放大风险。",
-                    "结果由作者报告，尚未验证在遥感长尾类别和开放集任务上的校准迁移。"
+                    "当前证据集中在 GN-Bench，真实环境泛化未证明。",
+                    "5B 级骨干、33 帧历史和多阶段训练成本较高。"
                   ],
-                  "confidence": 0.82,
+                  "confidence": 0.83,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               },
               {
                 "position": 4,
-                "role": "must_read",
-                "itemType": "paper",
-                "title": "VisionSelector: End-to-End Learnable Visual Token Compression for Efficient Multimodal LLMs",
-                "url": "https://arxiv.org/abs/2510.16598",
-                "reason": "本周 v2 更新并标注 ACM Multimedia 2026 接收，论文给出端到端可学习选择器和明确加速结果，构成可核验重大进展。",
-                "summary": "**中文标题：** VisionSelector：可微 Top-K 与课程退火驱动的视觉 token 选择\n\n**VisionSelector 用独立轻量评分器把 token 压缩变成端到端可学习决策，并通过可微 Top-K 和课程退火缩小训练—推理差距。**\n\n启发式 token 选择容易受 attention sink 等偏差影响，在激进压缩下误删关键信息，而且固定规则难以跨压缩率适配。\n\n框架将 12.85M 参数的 scorer 与 MLLM 主干解耦，以 differentiable Top-K 选择 token，并用 curriculum annealing 逐步逼近推理时的离散决策。\n\n作者报告在 MME 上以 30% 保留预算维持 100% 性能，在 10% 预算下比代表性启发式基线高 12.14 个百分点，并将 prefill 速度提升约 2 倍。",
-                "implication": "可将 VisionSelector 作为可学习裁剪基线，与训练自由 SIEVE 在遥感、多图和视频场景比较精度、延迟与迁移成本。",
-                "readMinutes": 3.0,
-                "publishedAt": "2025-10-18T17:54:18+00:00",
-                "updatedAt": "2026-08-10T17:25:56+00:00",
-                "status": null,
-                "deepRead": {
-                  "titleZh": "VisionSelector：可微 Top-K 与课程退火驱动的视觉 token 选择",
-                  "oneSentenceZh": "VisionSelector 用独立轻量评分器把 token 压缩变成端到端可学习决策，并通过可微 Top-K 和课程退火缩小训练—推理差距。",
-                  "problemZh": "启发式 token 选择容易受 attention sink 等偏差影响，在激进压缩下误删关键信息，而且固定规则难以跨压缩率适配。",
-                  "methodZh": "框架将 12.85M 参数的 scorer 与 MLLM 主干解耦，以 differentiable Top-K 选择 token，并用 curriculum annealing 逐步逼近推理时的离散决策。",
-                  "resultZh": "作者报告在 MME 上以 30% 保留预算维持 100% 性能，在 10% 预算下比代表性启发式基线高 12.14 个百分点，并将 prefill 速度提升约 2 倍。",
-                  "contributions": [
-                    "把视觉 token 选择建模为轻量可学习模块",
-                    "通过可微 Top-K 与课程退火对齐训练和推理",
-                    "验证多压缩率适配并给出开源实现"
-                  ],
-                  "evidence": [
-                    "arXiv 官方页显示 v2 于 2026-08-10 更新，文件体积由 6,362 KB 增至 9,712 KB。",
-                    "官方评论标注 Accepted by ACM Multimedia 2026，摘要给出参数量、预算和加速数字。"
-                  ],
-                  "limitations": [
-                    "v2 的逐项文本差异未由官方页面完整列出，重大性主要依据接收状态、扩展稿规模与新增报告判断。",
-                    "12.85M 评分器仍需额外训练与数据，跨领域迁移成本未知。"
-                  ],
-                  "confidence": 0.76,
-                  "modelVersion": "codex-scheduled-task-v1"
-                }
-              }
-            ]
-          },
-          {
-            "id": "primary_topic",
-            "items": [
-              {
-                "position": 1,
                 "role": "deep_read",
                 "itemType": "paper",
-                "title": "LongEarth-R1: Benchmarking and Aligning Vision-Language Models for Long-Horizon Earth Observation Reasoning",
-                "url": "https://arxiv.org/abs/2608.13344",
-                "reason": "新基准专门覆盖最长 30 帧的地球观测演化推理，并配套时空奖励对齐，直接命中遥感大模型范围。",
-                "summary": "**中文标题：** LongEarth-R1：面向长时序地球观测的基准与时空对齐\n\n**LongEarth-Bench 用最长 30 帧和结构化关键帧—变化区域推理链测试长时序遥感理解，LongEarth-R1 再用时空奖励强化对齐。**\n\n现有遥感 VLM 多关注单图、图像对或短序列，难以在长时段观测中定位关键帧与变化区域，并完成演化总结、异常识别和趋势预测。\n\n基准含约 12 万问答、11.7 万独立图像、平均 15.14 帧和最长 30 帧，覆盖 12 类任务；模型先用序列标识与结构化思维链监督微调，再以格式、时间和空间奖励进行 GRPO。\n\n作者报告 LongEarth-R1 在全部 12 个长序列任务上取得最佳结果，同时在标准遥感基准上保持竞争力；其中 3 万样本提供连接关键帧和变化区域的结构化推理轨迹。",
-                "implication": "模型应用组可用其任务划分检查现有遥感 VLM 的长时序缺口，并优先验证关键帧定位是否真正支撑最终答案。",
+                "title": "When Better Teachers Don't Make Better Students: Revisiting Knowledge Distillation for CLIP Models in VQA",
+                "url": "https://arxiv.org/abs/2511.17886",
+                "reason": "本周 v2 重要修订系统检验 CLIP 教师规模与学生 VQA 能力，直接挑战“教师越强越好”的压缩直觉。",
+                "summary": "**中文标题：** 更强教师未必得到更强 VLM 学生：重新审视 CLIP 蒸馏\n\n**跨多种 CLIP 教师的研究发现，现有蒸馏方法随教师变强并不稳定扩展，VQA 学生甚至可能退化。**\n\nVLM 部署需要模型压缩，但视觉语言蒸馏研究常局限于小教师与分类/检索任务，缺少对复杂 VQA 的规模规律。\n\n作者系统改变 CLIP 风格教师的规模和能力，在相同蒸馏框架下比较学生的多模态下游表现，重点检查教师能力与学生收益是否单调。\n\n研究结论是更强教师不稳定地产生更强学生，现有蒸馏框架在 VQA 等任务上可能随教师规模扩大而性能下降。",
+                "implication": "模型压缩实验应把教师选择当作超参数，并以目标任务而非教师榜单分数作为门禁。",
                 "readMinutes": 4.0,
-                "publishedAt": "2026-08-13T15:14:59+00:00",
-                "updatedAt": "2026-08-13T15:14:59+00:00",
+                "publishedAt": "2025-11-22T02:30:18+00:00",
+                "updatedAt": "2026-08-21T01:12:15+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "LongEarth-R1：面向长时序地球观测的基准与时空对齐",
-                  "oneSentenceZh": "LongEarth-Bench 用最长 30 帧和结构化关键帧—变化区域推理链测试长时序遥感理解，LongEarth-R1 再用时空奖励强化对齐。",
-                  "problemZh": "现有遥感 VLM 多关注单图、图像对或短序列，难以在长时段观测中定位关键帧与变化区域，并完成演化总结、异常识别和趋势预测。",
-                  "methodZh": "基准含约 12 万问答、11.7 万独立图像、平均 15.14 帧和最长 30 帧，覆盖 12 类任务；模型先用序列标识与结构化思维链监督微调，再以格式、时间和空间奖励进行 GRPO。",
-                  "resultZh": "作者报告 LongEarth-R1 在全部 12 个长序列任务上取得最佳结果，同时在标准遥感基准上保持竞争力；其中 3 万样本提供连接关键帧和变化区域的结构化推理轨迹。",
+                  "titleZh": "更强教师未必得到更强 VLM 学生：重新审视 CLIP 蒸馏",
+                  "oneSentenceZh": "跨多种 CLIP 教师的研究发现，现有蒸馏方法随教师变强并不稳定扩展，VQA 学生甚至可能退化。",
+                  "problemZh": "VLM 部署需要模型压缩，但视觉语言蒸馏研究常局限于小教师与分类/检索任务，缺少对复杂 VQA 的规模规律。",
+                  "methodZh": "作者系统改变 CLIP 风格教师的规模和能力，在相同蒸馏框架下比较学生的多模态下游表现，重点检查教师能力与学生收益是否单调。",
+                  "resultZh": "研究结论是更强教师不稳定地产生更强学生，现有蒸馏框架在 VQA 等任务上可能随教师规模扩大而性能下降。",
                   "contributions": [
-                    "构建大规模长时序地球观测问答基准",
-                    "提供可定位关键帧和区域的结构化推理监督",
-                    "设计时间与空间奖励的强化对齐流程"
+                    "系统覆盖多档 CLIP 风格教师",
+                    "把蒸馏评估扩展到 VQA",
+                    "揭示教师能力与学生收益的非单调关系"
                   ],
                   "evidence": [
-                    "arXiv 官方页确认 2026-08-13 首次提交。",
-                    "官方摘要给出样本、图像、帧数、任务数和训练阶段。"
+                    "arXiv 官方 v2 于本周更新，摘要与全文明确研究设计和反直觉结论。"
                   ],
                   "limitations": [
-                    "摘要没有给出数据许可、区域分布和跨传感器泄漏控制细节。",
-                    "最佳结果为作者报告，需检查基线公平性和推理轨迹真实性。"
+                    "结论针对选定 CLIP 教师、学生和蒸馏目标，不代表所有 VLM 蒸馏。",
+                    "摘要未给出统一数值，需按正文表格复现。"
+                  ],
+                  "confidence": 0.77,
+                  "modelVersion": "codex-scheduled-task-v1"
+                }
+              },
+              {
+                "position": 5,
+                "role": "deep_read",
+                "itemType": "paper",
+                "title": "Generalist Vision-Language Models for Fast Radio Burst detection: a zero-shot benchmark against a specialized detector",
+                "url": "https://arxiv.org/abs/2607.07382",
+                "reason": "本周 v2 修订用真实 FAST 数据揭示通用 VLM 在科学图像零样本迁移中的模拟-现实断层。",
+                "summary": "**中文标题：** 通用 VLM 零样本射电暴检测：模拟数据亮眼，真实数据显著失效\n\n**小型开放 VLM 在模拟动态谱上接近专用检测器，却在真实 FAST 数据上仅召回约 27%–28.5%，暴露输入表征与域偏移瓶颈。**\n\n科学检测专用模型需大量任务数据且难以改任务；通用 VLM 是否能靠提示在零样本条件替代专用检测器尚不清楚。\n\n研究先在 2000 个模拟 L 波段谱上做二/三分类，再把相同提示与模型不经适配应用到 1600 个真实 FAST-FREX 观测，并按可见信号强度分层。\n\nGemma 4 E2B 在模拟二分类达 94.05%，SwinYNet 为 92.85%；真实 600 个正样本上两模型召回仅 28.5%/27.0%，而专用基线报告 95.7%，可见 sweep 子集召回回升至 84%–85%。",
+                "implication": "遥感 VLM 评估必须同时保留模拟/真实域和信号可见性分层，不能用合成集零样本结果替代部署证据。",
+                "readMinutes": 4.0,
+                "publishedAt": "2026-07-08T13:15:29+00:00",
+                "updatedAt": "2026-08-20T17:31:28+00:00",
+                "status": null,
+                "deepRead": {
+                  "titleZh": "通用 VLM 零样本射电暴检测：模拟数据亮眼，真实数据显著失效",
+                  "oneSentenceZh": "小型开放 VLM 在模拟动态谱上接近专用检测器，却在真实 FAST 数据上仅召回约 27%–28.5%，暴露输入表征与域偏移瓶颈。",
+                  "problemZh": "科学检测专用模型需大量任务数据且难以改任务；通用 VLM 是否能靠提示在零样本条件替代专用检测器尚不清楚。",
+                  "methodZh": "研究先在 2000 个模拟 L 波段谱上做二/三分类，再把相同提示与模型不经适配应用到 1600 个真实 FAST-FREX 观测，并按可见信号强度分层。",
+                  "resultZh": "Gemma 4 E2B 在模拟二分类达 94.05%，SwinYNet 为 92.85%；真实 600 个正样本上两模型召回仅 28.5%/27.0%，而专用基线报告 95.7%，可见 sweep 子集召回回升至 84%–85%。",
+                  "contributions": [
+                    "在模拟和真实科学数据上做同模型零样本对照",
+                    "量化专用检测器与通用 VLM 的域偏移",
+                    "定位输入可见性而非纯分类器为主要限制"
+                  ],
+                  "evidence": [
+                    "arXiv 官方 v2 于本周更新，摘要给出数据规模、模型、所有关键准确率和召回率。"
+                  ],
+                  "limitations": [
+                    "任务是射电动态谱，不可直接泛化到遥感影像。",
+                    "真实数据性能受输入裁剪与去色散表示强烈影响。"
+                  ],
+                  "confidence": 0.88,
+                  "modelVersion": "codex-scheduled-task-v1"
+                }
+              },
+              {
+                "position": 6,
+                "role": "deep_read",
+                "itemType": "paper",
+                "title": "Every Picture Tells a Dangerous Story: Memory-Augmented Multi-Agent Jailbreak Attacks on VLMs",
+                "url": "https://arxiv.org/abs/2604.12616",
+                "reason": "本周 v3 重要修订给出自然图像可复用越狱锚点和十万级多 Agent 攻击轨迹，对多模态安全评测有直接价值。",
+                "summary": "**中文标题：** MemJack：自然图像也能成为可迁移的 VLM 越狱锚点\n\n**MemJack 用多 Agent 闭环发现、伪装、评估和修复自然图像攻击，并构建 11.3 万条交互轨迹。**\n\n既有多模态越狱多依赖专门制作图像或扰动，尚不清楚普通自然图像能否形成可复用、可迁移攻击入口。\n\n框架组合视觉锚点发现、视觉语义伪装、响应评估、反思修复和动态重规划，在未修改 COCO 图片上自动闭环搜索攻击。\n\n作者报告对 Qwen3-VL-Plus 的攻击成功率为 71.48%，扩展预算下达 90%；MemJack-Bench 含超过 113,000 条交互式多模态越狱轨迹。",
+                "implication": "应将自然图像锚点纳入遥感 VLM 红队集，并按多轮预算、迁移性和误拒绝共同评价防御。",
+                "readMinutes": 4.0,
+                "publishedAt": "2026-04-14T11:44:59+00:00",
+                "updatedAt": "2026-08-20T13:02:26+00:00",
+                "status": null,
+                "deepRead": {
+                  "titleZh": "MemJack：自然图像也能成为可迁移的 VLM 越狱锚点",
+                  "oneSentenceZh": "MemJack 用多 Agent 闭环发现、伪装、评估和修复自然图像攻击，并构建 11.3 万条交互轨迹。",
+                  "problemZh": "既有多模态越狱多依赖专门制作图像或扰动，尚不清楚普通自然图像能否形成可复用、可迁移攻击入口。",
+                  "methodZh": "框架组合视觉锚点发现、视觉语义伪装、响应评估、反思修复和动态重规划，在未修改 COCO 图片上自动闭环搜索攻击。",
+                  "resultZh": "作者报告对 Qwen3-VL-Plus 的攻击成功率为 71.48%，扩展预算下达 90%；MemJack-Bench 含超过 113,000 条交互式多模态越狱轨迹。",
+                  "contributions": [
+                    "证明良性自然图像可作迁移攻击锚点",
+                    "构建多 Agent 自动红队闭环",
+                    "发布十万级交互轨迹安全数据集"
+                  ],
+                  "evidence": [
+                    "arXiv 官方 v3 于本周更新，摘要和全文给出数据规模、目标模型和攻击成功率。"
+                  ],
+                  "limitations": [
+                    "高 ASR 针对特定目标模型与预算，跨模型防御效果需复现。",
+                    "攻击研究应在隔离环境用于防御评测。"
+                  ],
+                  "confidence": 0.85,
+                  "modelVersion": "codex-scheduled-task-v1"
+                }
+              },
+              {
+                "position": 7,
+                "role": "deep_read",
+                "itemType": "paper",
+                "title": "Video Evidence to Reasoning Efficient Video Understanding via Explicit Evidence Grounding",
+                "url": "https://arxiv.org/abs/2601.07761",
+                "reason": "本周 v2 重要修订用显式证据筛选与锚定降低长视频推理成本和幻觉，兼顾压缩与可靠性。",
+                "summary": "**中文标题：** Chain of Evidence：先筛视觉证据，再进行高效视频推理\n\n**CoE 用轻量 EGM 提取少量高保真证据，并通过强化学习要求推理严格引用时间锚点。**\n\n视频 VLM 在冗长推理与高计算成本之间存在矛盾，直接压缩又容易丢失证据并产生幻觉。\n\nEGM 按查询筛选紧凑视觉证据，Evidence-Anchoring Protocol 以复合奖励约束模型引用时间锚点；CoE-Instruct 用双标注分离感知与推理监督。\n\n数据集包含 16.4 万样本；作者在 Video-MME、MVBench、VSI-Bench 等五个 benchmark 上报告新的最佳结果，但摘要未给出统一增益。",
+                "implication": "对视频压缩与理解联合系统，应把任务相关证据保留率纳入码率优化，而非仅优化像素重建。",
+                "readMinutes": 3.0,
+                "publishedAt": "2026-01-12T17:46:10+00:00",
+                "updatedAt": "2026-08-20T09:26:18+00:00",
+                "status": null,
+                "deepRead": {
+                  "titleZh": "Chain of Evidence：先筛视觉证据，再进行高效视频推理",
+                  "oneSentenceZh": "CoE 用轻量 EGM 提取少量高保真证据，并通过强化学习要求推理严格引用时间锚点。",
+                  "problemZh": "视频 VLM 在冗长推理与高计算成本之间存在矛盾，直接压缩又容易丢失证据并产生幻觉。",
+                  "methodZh": "EGM 按查询筛选紧凑视觉证据，Evidence-Anchoring Protocol 以复合奖励约束模型引用时间锚点；CoE-Instruct 用双标注分离感知与推理监督。",
+                  "resultZh": "数据集包含 16.4 万样本；作者在 Video-MME、MVBench、VSI-Bench 等五个 benchmark 上报告新的最佳结果，但摘要未给出统一增益。",
+                  "contributions": [
+                    "解耦视觉证据提取与语言推理",
+                    "用奖励强制时间证据锚定",
+                    "构建感知/推理双标注视频数据集"
+                  ],
+                  "evidence": [
+                    "arXiv 官方 v2 于本周更新，摘要与正文给出模块、数据规模和五项 benchmark。"
+                  ],
+                  "limitations": [
+                    "证据筛选错误会成为不可恢复的信息瓶颈。",
+                    "SOTA 声明由作者报告，需按公开代码和统一设置复验。"
                   ],
                   "confidence": 0.79,
-                  "modelVersion": "codex-scheduled-task-v1"
-                }
-              },
-              {
-                "position": 2,
-                "role": "deep_read",
-                "itemType": "paper",
-                "title": "Task- and dataset-specific information in protein language models",
-                "url": "https://arxiv.org/abs/2608.12090",
-                "reason": "论文系统比较 13 个蛋白语言模型、15 个任务和逐层表示，结论能直接改变下游特征抽取默认使用最后一层的惯例。",
-                "summary": "**中文标题：** 蛋白语言模型的最佳信息层并不总是最后一层\n\n**逐层 probe 显示蛋白语言模型最后层很少是所有下游任务的最佳特征，最优层位置还取决于任务目标和数据分布。**\n\n蛋白语言模型通常默认取最后层 embedding 做下游任务，但内部各层承载何种任务与数据集信息缺乏系统证据。\n\n作者比较 13 个 PLM、11 个数据集上的 15 个下游任务，对每一层 embedding 训练 probe，并分析潜空间特征以定位任务信息随深度的分布。\n\n作者发现最后层很少产生最佳下游结果；DMS 数据集更偏好浅层表示，多样天然蛋白数据更偏好深层，人工蛋白任务上整体性能显著下降。",
-                "implication": "AI4S 管线应把 layer selection 作为可调超参数，并按 DMS、天然蛋白和人工蛋白分别做验证，避免统一抽取最后层。",
-                "readMinutes": 3.0,
-                "publishedAt": "2026-08-12T14:13:48+00:00",
-                "updatedAt": "2026-08-13T07:47:02+00:00",
-                "status": null,
-                "deepRead": {
-                  "titleZh": "蛋白语言模型的最佳信息层并不总是最后一层",
-                  "oneSentenceZh": "逐层 probe 显示蛋白语言模型最后层很少是所有下游任务的最佳特征，最优层位置还取决于任务目标和数据分布。",
-                  "problemZh": "蛋白语言模型通常默认取最后层 embedding 做下游任务，但内部各层承载何种任务与数据集信息缺乏系统证据。",
-                  "methodZh": "作者比较 13 个 PLM、11 个数据集上的 15 个下游任务，对每一层 embedding 训练 probe，并分析潜空间特征以定位任务信息随深度的分布。",
-                  "resultZh": "作者发现最后层很少产生最佳下游结果；DMS 数据集更偏好浅层表示，多样天然蛋白数据更偏好深层，人工蛋白任务上整体性能显著下降。",
-                  "contributions": [
-                    "大规模逐层比较蛋白语言模型表示",
-                    "区分任务目标与数据集分布对最佳层的影响",
-                    "揭示人工蛋白上的分布外性能下降"
-                  ],
-                  "evidence": [
-                    "arXiv 官方页显示 v1 与 v2 均在本周提交，分类为 cs.LG 与 q-bio.BM。",
-                    "官方摘要列出 13 个模型、15 个任务、11 个数据集和分层结论。"
-                  ],
-                  "limitations": [
-                    "probe 性能不等同于端到端微调能力。",
-                    "v2 在 v1 后一天更新且文件体积未变，不能单独视作重大旧稿修订；本次入选依据本周首次公开。"
-                  ],
-                  "confidence": 0.78,
-                  "modelVersion": "codex-scheduled-task-v1"
-                }
-              },
-              {
-                "position": 3,
-                "role": "deep_read",
-                "itemType": "paper",
-                "title": "DegradeQuery: Counterfactual Tuple Pretraining for Context-Aware PROTAC Degradation Prediction",
-                "url": "https://arxiv.org/abs/2608.10595",
-                "reason": "新工作把大量无活性标签的 PROTAC 关系记录转化为预训练监督，并在官方基准给出明确提升，契合 AI 制药方向。",
-                "summary": "**中文标题：** DegradeQuery：用反事实元组预训练利用缺标签 PROTAC 关系\n\n**DegradeQuery 不给缺标签记录伪造活性值，而是通过替换靶蛋白、E3 连接酶或二者构造反事实元组学习上下文关系。**\n\nPROTAC 降解由分子、靶蛋白和 E3 连接酶共同决定，但公开数据库大量结构化关系缺少降解测量，纯监督方法浪费这些记录。\n\n反事实元组预训练将真实 molecule-target-E3 记录与替换 target、E3 或两者的组合对比，学习上下文关联而不赋伪标签，再用完整三元上下文微调降解预测。\n\n在官方 PROTAC-8K 基准上，作者报告 AUROC 0.9065、准确率 0.8500；受控分析称主要收益来自元组级预训练，并可仅用缺标签记录恢复且与 PLM 表示互补。",
-                "implication": "AI 制药方向可复用其缺标签关系预训练思路，但应加入生物可行性过滤和时间切分，防止随机负样本与数据库泄漏夸大收益。",
-                "readMinutes": 4.0,
-                "publishedAt": "2026-08-11T07:25:41+00:00",
-                "updatedAt": "2026-08-11T07:25:41+00:00",
-                "status": null,
-                "deepRead": {
-                  "titleZh": "DegradeQuery：用反事实元组预训练利用缺标签 PROTAC 关系",
-                  "oneSentenceZh": "DegradeQuery 不给缺标签记录伪造活性值，而是通过替换靶蛋白、E3 连接酶或二者构造反事实元组学习上下文关系。",
-                  "problemZh": "PROTAC 降解由分子、靶蛋白和 E3 连接酶共同决定，但公开数据库大量结构化关系缺少降解测量，纯监督方法浪费这些记录。",
-                  "methodZh": "反事实元组预训练将真实 molecule-target-E3 记录与替换 target、E3 或两者的组合对比，学习上下文关联而不赋伪标签，再用完整三元上下文微调降解预测。",
-                  "resultZh": "在官方 PROTAC-8K 基准上，作者报告 AUROC 0.9065、准确率 0.8500；受控分析称主要收益来自元组级预训练，并可仅用缺标签记录恢复且与 PLM 表示互补。",
-                  "contributions": [
-                    "把缺标签化学生物关系转成无伪标签的对比监督",
-                    "显式建模分子、靶标与 E3 的完整上下文",
-                    "验证与蛋白语言模型表示的互补性"
-                  ],
-                  "evidence": [
-                    "arXiv 官方页确认 2026-08-11 首次提交，分类为 q-bio.BM 与 cs.AI。",
-                    "官方摘要给出反事实构造、PROTAC-8K、AUROC 和准确率。"
-                  ],
-                  "limitations": [
-                    "基准性能不代表湿实验中的真实降解成功率。",
-                    "负元组构造可能包含未观测但真实有效的关系，需要噪声鲁棒验证。"
-                  ],
-                  "confidence": 0.81,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               }
@@ -2263,35 +2573,34 @@
                 "position": 1,
                 "role": "deep_read",
                 "itemType": "paper",
-                "title": "Every Packet Counts: Dispersing Information for Loss-Resilient Learned Image Compression",
-                "url": "https://arxiv.org/abs/2608.11096",
-                "reason": "论文面向卫星与应急通信中的丢包图像压缩，既有编码机制也有 ACM MM 2026 接收和明确抗丢包指标。",
-                "summary": "**中文标题：** Every Packet Counts：面向丢包链路的信息分散式学习图像压缩\n\n**方法在分包前均衡通道信息并交错分组，再缩短自回归依赖链，使单包丢失不再摧毁集中在少数通道的关键信息。**\n\n学习图像压缩在理想链路上率失真表现良好，但信息集中和顺序熵解码依赖会让卫星或应急通信中的丢包造成严重且级联的重建退化。\n\nInter-Channel Redistribution 重新分配通道能量，Interleaved Channel Grouping 以跨步方式把潜变量分散到受限大小的数据包，两层双分支自回归结构缩短丢包后的依赖传播。\n\n在 20% 丢包率下，作者报告相对 LossResilientLIC 平均 PSNR 提高 1.84 dB、PSNR 方差降低一个数量级；只用均匀随机丢包训练仍能泛化到 Gilbert-Elliott 突发丢包。",
-                "implication": "可将通道信息分散加入遥感压缩基线，并用实际星地链路的突发丢包、带宽抖动和重传策略做联合评测。",
-                "readMinutes": 4.0,
-                "publishedAt": "2026-08-11T16:01:03+00:00",
-                "updatedAt": "2026-08-11T16:01:03+00:00",
+                "title": "Zoom-IQA: Image Quality Assessment with Reliable Region-Aware Reasoning",
+                "url": "https://arxiv.org/abs/2601.02918",
+                "reason": "本周 v4 重要修订把区域依据、分数和不确定性联合用于图像质量评估，和压缩质量评价直接相邻。",
+                "summary": "**中文标题：** Zoom-IQA：让图像质量评分绑定区域证据与不确定性\n\n**Zoom-IQA 先用区域依据监督训练，再以带 KL-Coverage 的强化学习维持推理与评分多样性。**\n\n传统 IQA 只给分数，VLM-IQA 虽能解释却容易视觉文本融合失真，出现理由不可靠或评分多样性坍缩。\n\n两阶段管线先在 GR-IQA 上监督学习关键区域 grounding，再用强化学习探索策略，以 KL-Coverage 正则和渐进重采样稳定推理、评分与标注偏差。\n\n作者报告在鲁棒性、可解释性和泛化上改进，并展示对图像恢复下游的作用；摘要未给出统一指标数字。",
+                "implication": "可用于学习压缩和遥感压缩的感知质量评价，但必须同时保留传统失真指标与人工区域标注。",
+                "readMinutes": 3.0,
+                "publishedAt": "2026-01-06T11:00:17+00:00",
+                "updatedAt": "2026-08-20T10:10:30+00:00",
                 "status": null,
                 "deepRead": {
-                  "titleZh": "Every Packet Counts：面向丢包链路的信息分散式学习图像压缩",
-                  "oneSentenceZh": "方法在分包前均衡通道信息并交错分组，再缩短自回归依赖链，使单包丢失不再摧毁集中在少数通道的关键信息。",
-                  "problemZh": "学习图像压缩在理想链路上率失真表现良好，但信息集中和顺序熵解码依赖会让卫星或应急通信中的丢包造成严重且级联的重建退化。",
-                  "methodZh": "Inter-Channel Redistribution 重新分配通道能量，Interleaved Channel Grouping 以跨步方式把潜变量分散到受限大小的数据包，两层双分支自回归结构缩短丢包后的依赖传播。",
-                  "resultZh": "在 20% 丢包率下，作者报告相对 LossResilientLIC 平均 PSNR 提高 1.84 dB、PSNR 方差降低一个数量级；只用均匀随机丢包训练仍能泛化到 Gilbert-Elliott 突发丢包。",
+                  "titleZh": "Zoom-IQA：让图像质量评分绑定区域证据与不确定性",
+                  "oneSentenceZh": "Zoom-IQA 先用区域依据监督训练，再以带 KL-Coverage 的强化学习维持推理与评分多样性。",
+                  "problemZh": "传统 IQA 只给分数，VLM-IQA 虽能解释却容易视觉文本融合失真，出现理由不可靠或评分多样性坍缩。",
+                  "methodZh": "两阶段管线先在 GR-IQA 上监督学习关键区域 grounding，再用强化学习探索策略，以 KL-Coverage 正则和渐进重采样稳定推理、评分与标注偏差。",
+                  "resultZh": "作者报告在鲁棒性、可解释性和泛化上改进，并展示对图像恢复下游的作用；摘要未给出统一指标数字。",
                   "contributions": [
-                    "从分包与熵解码两端联合处理丢包脆弱性",
-                    "把信息均衡和交错分组嵌入端到端压缩流程",
-                    "验证对未见突发丢包模型的泛化"
+                    "把不确定性、区域推理和迭代细化统一到 IQA",
+                    "构建带区域理由的 GR-IQA 数据",
+                    "用 KL-Coverage 防止推理与评分多样性坍缩"
                   ],
                   "evidence": [
-                    "arXiv 官方页确认 2026-08-11 首次提交，并标注 ACM Multimedia 2026 接收及关联 DOI。",
-                    "官方摘要明确给出 20% 丢包下 PSNR 与方差结果。"
+                    "arXiv 官方 v4 于本周更新，摘要与全文直接支持训练流程和评估范围。"
                   ],
                   "limitations": [
-                    "指标集中在重建质量，未给出端到端无线时延、重传与能耗。",
-                    "信道模型与真实卫星链路之间仍存在差距。"
+                    "无统一公开摘要数字，模型间优势需逐 benchmark 核验。",
+                    "生成式理由可能仍与真实感知因果不一致。"
                   ],
-                  "confidence": 0.84,
+                  "confidence": 0.76,
                   "modelVersion": "codex-scheduled-task-v1"
                 }
               }
@@ -2300,6 +2609,315 @@
         ]
       },
       "archive": [
+        {
+          "issue": {
+            "id": "a2e09eab-f649-4dbe-8fc8-db4fec7d11bc",
+            "departmentId": "model_and_application",
+            "title": "模型应用周报 · 2026-W34",
+            "isoWeek": "2026-W34",
+            "windowStart": "2026-08-16T16:00:00+00:00",
+            "windowEnd": "2026-08-23T15:59:59.999999+00:00",
+            "status": "approved",
+            "targetReadMinutes": 30,
+            "estimatedReadMinutes": 30.0,
+            "itemCount": 8
+          },
+          "trends": [
+            "本周有28项相关进展，集中在多模态模型。"
+          ],
+          "sections": [
+            {
+              "id": "primary_topic",
+              "items": [
+                {
+                  "position": 1,
+                  "role": "must_read",
+                  "itemType": "paper",
+                  "title": "Know3D: Prompting 3D Generation with Knowledge from Vision-Language Models",
+                  "url": "https://arxiv.org/abs/2603.22782",
+                  "reason": "本周 v2 重要修订把 VLM 隐状态作为可控三维生成先验，展示模型知识注入生成管线的具体方式。",
+                  "summary": "**中文标题：** Know3D：用视觉语言模型知识约束三维背面生成\n\n**Know3D 通过隐状态注入把文字意图和 VLM 语义先验传给扩散与三维生成模型，使单视图不可见区域可控。**\n\n单视图三维重建对不可见区域存在根本歧义，有限三维数据难以提供稳定全局结构先验，导致背面随机且不符合用户意图。\n\n系统让 VLM 负责语义理解，以 VLM-diffusion 模型作为桥梁，将潜在隐状态注入三维生成过程，用语言指令约束不可见背面。\n\n作者称该设计把随机背面幻觉转为语义可控生成，并在几何细节与意图对齐上优于无知识注入基线；公开摘要未给出可独立概括的统一数值。",
+                  "implication": "可把 VLM 隐状态注入作为遥感三维补全的候选机制，但必须用多视角或物理观测约束幻觉。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-03-24T04:18:29+00:00",
+                  "updatedAt": "2026-08-18T07:58:01+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "Know3D：用视觉语言模型知识约束三维背面生成",
+                    "oneSentenceZh": "Know3D 通过隐状态注入把文字意图和 VLM 语义先验传给扩散与三维生成模型，使单视图不可见区域可控。",
+                    "problemZh": "单视图三维重建对不可见区域存在根本歧义，有限三维数据难以提供稳定全局结构先验，导致背面随机且不符合用户意图。",
+                    "methodZh": "系统让 VLM 负责语义理解，以 VLM-diffusion 模型作为桥梁，将潜在隐状态注入三维生成过程，用语言指令约束不可见背面。",
+                    "resultZh": "作者称该设计把随机背面幻觉转为语义可控生成，并在几何细节与意图对齐上优于无知识注入基线；公开摘要未给出可独立概括的统一数值。",
+                    "contributions": [
+                      "把 VLM 知识注入单视图三维生成",
+                      "建立文本意图到不可见几何的隐状态桥梁",
+                      "把背面生成从随机补全转为可控补全"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要和全文直接描述 VLM、扩散桥梁与隐状态注入。"
+                    ],
+                    "limitations": [
+                      "公开摘要缺少完整量化对比，效果边界需以正文和代码复现。",
+                      "强语义先验也可能生成合理但不真实的不可见结构。"
+                    ],
+                    "confidence": 0.76,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 2,
+                  "role": "must_read",
+                  "itemType": "paper",
+                  "title": "Look Clearly Before Answering: Mitigating Hallucinations in LVLMs via Saliency-Driven Perceptual Realignment",
+                  "url": "https://arxiv.org/abs/2607.16841",
+                  "reason": "本周 v2 修订提供无需训练的 VLM 幻觉抑制方法，同时作用于注意力、KV cache 与解码。",
+                  "summary": "**中文标题：** SDPR：沿生成全程重对齐视觉证据以抑制幻觉\n\n**SDPR 重新分配被 sink token 劫持的注意力、对齐 KV 中的视觉特征，并用先验约束对比解码压制语言偏置。**\n\nLVLM 在生成过程中视觉感知会逐步退化，关键证据被非语义 sink token 和语言先验淹没，导致答案与图像不一致。\n\n框架先按显著性重分配注意力，再校正 KV cache 的空间失真以保留查询相关视觉特征，最后对比解码惩罚语言先验驱动的不忠实预测。\n\n作者报告在多种 LVLM 架构、幻觉 benchmark 与通用 benchmark 上优于现有方法，且无需额外训练、运行开销较低；论文提供官方代码仓库。",
+                  "implication": "适合作为遥感 VLM 推理期防幻觉基线，并应在小目标、密集场景和压缩图像上验证显著性鲁棒性。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-07-18T14:39:16+00:00",
+                  "updatedAt": "2026-08-19T14:03:57+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "SDPR：沿生成全程重对齐视觉证据以抑制幻觉",
+                    "oneSentenceZh": "SDPR 重新分配被 sink token 劫持的注意力、对齐 KV 中的视觉特征，并用先验约束对比解码压制语言偏置。",
+                    "problemZh": "LVLM 在生成过程中视觉感知会逐步退化，关键证据被非语义 sink token 和语言先验淹没，导致答案与图像不一致。",
+                    "methodZh": "框架先按显著性重分配注意力，再校正 KV cache 的空间失真以保留查询相关视觉特征，最后对比解码惩罚语言先验驱动的不忠实预测。",
+                    "resultZh": "作者报告在多种 LVLM 架构、幻觉 benchmark 与通用 benchmark 上优于现有方法，且无需额外训练、运行开销较低；论文提供官方代码仓库。",
+                    "contributions": [
+                      "统一处理注意力、KV 记忆和输出解码的视觉退化",
+                      "提供训练免费推理期校正",
+                      "跨多架构评估幻觉与通用能力"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要与全文列出三阶段机制和代码链接。"
+                    ],
+                    "limitations": [
+                      "摘要没有统一列出各 benchmark 数值，跨模型收益需逐表核对。",
+                      "显著性估计错误可能强化无关区域。"
+                    ],
+                    "confidence": 0.8,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 3,
+                  "role": "must_read",
+                  "itemType": "paper",
+                  "title": "WNM-3D: A World Navigation Model with 3D Scene Conditioning for Closed-Loop VLN",
+                  "url": "https://arxiv.org/abs/2608.07267",
+                  "reason": "本周 v2 修订将三维场景表征、世界-动作生成和闭环 Agent 训练连成完整导航方案。",
+                  "summary": "**中文标题：** WNM-3D：以三维场景 Token 条件化闭环视觉语言导航\n\n**WNM-3D 用冻结几何编码器和 3D Scene-to-Token Adapter，为未来视图与动作共同提供持久场景上下文。**\n\n现有 VLA 导航策略直接从观察生成动作，却没有显式建模预测动作下视觉世界如何变化；二维历史也难以保存稳定几何。\n\n系统从单目历史提取几何表征并压成固定长度前缀，以 block-causal attention 条件化世界-动作 Diffusion Transformer，再依次进行 A* SFT、DAgger-SFT 和 Counterfactual DanceGRPO。\n\n作者在 GN-Bench 上报告 WNM-3D 优于强 VLM 导航策略和二维条件对照；消融表明 DAgger-SFT 对成功率贡献更大，后续 GRPO 同时改善成功率与路径效率。",
+                  "implication": "遥感/地质 Agent 可借鉴几何 Token 作为长期空间记忆，但应先评估更轻骨干与真实传感器噪声。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-08-07T14:29:00+00:00",
+                  "updatedAt": "2026-08-20T03:44:24+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "WNM-3D：以三维场景 Token 条件化闭环视觉语言导航",
+                    "oneSentenceZh": "WNM-3D 用冻结几何编码器和 3D Scene-to-Token Adapter，为未来视图与动作共同提供持久场景上下文。",
+                    "problemZh": "现有 VLA 导航策略直接从观察生成动作，却没有显式建模预测动作下视觉世界如何变化；二维历史也难以保存稳定几何。",
+                    "methodZh": "系统从单目历史提取几何表征并压成固定长度前缀，以 block-causal attention 条件化世界-动作 Diffusion Transformer，再依次进行 A* SFT、DAgger-SFT 和 Counterfactual DanceGRPO。",
+                    "resultZh": "作者在 GN-Bench 上报告 WNM-3D 优于强 VLM 导航策略和二维条件对照；消融表明 DAgger-SFT 对成功率贡献更大，后续 GRPO 同时改善成功率与路径效率。",
+                    "contributions": [
+                      "把持续三维场景上下文注入世界-动作模型",
+                      "联合生成未来视觉与动作",
+                      "给出监督、闭环纠错和奖励优化的分阶段训练"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，候选包含完整方法、训练阶段和 GN-Bench 实验。"
+                    ],
+                    "limitations": [
+                      "当前证据集中在 GN-Bench，真实环境泛化未证明。",
+                      "5B 级骨干、33 帧历史和多阶段训练成本较高。"
+                    ],
+                    "confidence": 0.83,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 4,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "When Better Teachers Don't Make Better Students: Revisiting Knowledge Distillation for CLIP Models in VQA",
+                  "url": "https://arxiv.org/abs/2511.17886",
+                  "reason": "本周 v2 重要修订系统检验 CLIP 教师规模与学生 VQA 能力，直接挑战“教师越强越好”的压缩直觉。",
+                  "summary": "**中文标题：** 更强教师未必得到更强 VLM 学生：重新审视 CLIP 蒸馏\n\n**跨多种 CLIP 教师的研究发现，现有蒸馏方法随教师变强并不稳定扩展，VQA 学生甚至可能退化。**\n\nVLM 部署需要模型压缩，但视觉语言蒸馏研究常局限于小教师与分类/检索任务，缺少对复杂 VQA 的规模规律。\n\n作者系统改变 CLIP 风格教师的规模和能力，在相同蒸馏框架下比较学生的多模态下游表现，重点检查教师能力与学生收益是否单调。\n\n研究结论是更强教师不稳定地产生更强学生，现有蒸馏框架在 VQA 等任务上可能随教师规模扩大而性能下降。",
+                  "implication": "模型压缩实验应把教师选择当作超参数，并以目标任务而非教师榜单分数作为门禁。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2025-11-22T02:30:18+00:00",
+                  "updatedAt": "2026-08-21T01:12:15+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "更强教师未必得到更强 VLM 学生：重新审视 CLIP 蒸馏",
+                    "oneSentenceZh": "跨多种 CLIP 教师的研究发现，现有蒸馏方法随教师变强并不稳定扩展，VQA 学生甚至可能退化。",
+                    "problemZh": "VLM 部署需要模型压缩，但视觉语言蒸馏研究常局限于小教师与分类/检索任务，缺少对复杂 VQA 的规模规律。",
+                    "methodZh": "作者系统改变 CLIP 风格教师的规模和能力，在相同蒸馏框架下比较学生的多模态下游表现，重点检查教师能力与学生收益是否单调。",
+                    "resultZh": "研究结论是更强教师不稳定地产生更强学生，现有蒸馏框架在 VQA 等任务上可能随教师规模扩大而性能下降。",
+                    "contributions": [
+                      "系统覆盖多档 CLIP 风格教师",
+                      "把蒸馏评估扩展到 VQA",
+                      "揭示教师能力与学生收益的非单调关系"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要与全文明确研究设计和反直觉结论。"
+                    ],
+                    "limitations": [
+                      "结论针对选定 CLIP 教师、学生和蒸馏目标，不代表所有 VLM 蒸馏。",
+                      "摘要未给出统一数值，需按正文表格复现。"
+                    ],
+                    "confidence": 0.77,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 5,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "Generalist Vision-Language Models for Fast Radio Burst detection: a zero-shot benchmark against a specialized detector",
+                  "url": "https://arxiv.org/abs/2607.07382",
+                  "reason": "本周 v2 修订用真实 FAST 数据揭示通用 VLM 在科学图像零样本迁移中的模拟-现实断层。",
+                  "summary": "**中文标题：** 通用 VLM 零样本射电暴检测：模拟数据亮眼，真实数据显著失效\n\n**小型开放 VLM 在模拟动态谱上接近专用检测器，却在真实 FAST 数据上仅召回约 27%–28.5%，暴露输入表征与域偏移瓶颈。**\n\n科学检测专用模型需大量任务数据且难以改任务；通用 VLM 是否能靠提示在零样本条件替代专用检测器尚不清楚。\n\n研究先在 2000 个模拟 L 波段谱上做二/三分类，再把相同提示与模型不经适配应用到 1600 个真实 FAST-FREX 观测，并按可见信号强度分层。\n\nGemma 4 E2B 在模拟二分类达 94.05%，SwinYNet 为 92.85%；真实 600 个正样本上两模型召回仅 28.5%/27.0%，而专用基线报告 95.7%，可见 sweep 子集召回回升至 84%–85%。",
+                  "implication": "遥感 VLM 评估必须同时保留模拟/真实域和信号可见性分层，不能用合成集零样本结果替代部署证据。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-07-08T13:15:29+00:00",
+                  "updatedAt": "2026-08-20T17:31:28+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "通用 VLM 零样本射电暴检测：模拟数据亮眼，真实数据显著失效",
+                    "oneSentenceZh": "小型开放 VLM 在模拟动态谱上接近专用检测器，却在真实 FAST 数据上仅召回约 27%–28.5%，暴露输入表征与域偏移瓶颈。",
+                    "problemZh": "科学检测专用模型需大量任务数据且难以改任务；通用 VLM 是否能靠提示在零样本条件替代专用检测器尚不清楚。",
+                    "methodZh": "研究先在 2000 个模拟 L 波段谱上做二/三分类，再把相同提示与模型不经适配应用到 1600 个真实 FAST-FREX 观测，并按可见信号强度分层。",
+                    "resultZh": "Gemma 4 E2B 在模拟二分类达 94.05%，SwinYNet 为 92.85%；真实 600 个正样本上两模型召回仅 28.5%/27.0%，而专用基线报告 95.7%，可见 sweep 子集召回回升至 84%–85%。",
+                    "contributions": [
+                      "在模拟和真实科学数据上做同模型零样本对照",
+                      "量化专用检测器与通用 VLM 的域偏移",
+                      "定位输入可见性而非纯分类器为主要限制"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要给出数据规模、模型、所有关键准确率和召回率。"
+                    ],
+                    "limitations": [
+                      "任务是射电动态谱，不可直接泛化到遥感影像。",
+                      "真实数据性能受输入裁剪与去色散表示强烈影响。"
+                    ],
+                    "confidence": 0.88,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 6,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "Every Picture Tells a Dangerous Story: Memory-Augmented Multi-Agent Jailbreak Attacks on VLMs",
+                  "url": "https://arxiv.org/abs/2604.12616",
+                  "reason": "本周 v3 重要修订给出自然图像可复用越狱锚点和十万级多 Agent 攻击轨迹，对多模态安全评测有直接价值。",
+                  "summary": "**中文标题：** MemJack：自然图像也能成为可迁移的 VLM 越狱锚点\n\n**MemJack 用多 Agent 闭环发现、伪装、评估和修复自然图像攻击，并构建 11.3 万条交互轨迹。**\n\n既有多模态越狱多依赖专门制作图像或扰动，尚不清楚普通自然图像能否形成可复用、可迁移攻击入口。\n\n框架组合视觉锚点发现、视觉语义伪装、响应评估、反思修复和动态重规划，在未修改 COCO 图片上自动闭环搜索攻击。\n\n作者报告对 Qwen3-VL-Plus 的攻击成功率为 71.48%，扩展预算下达 90%；MemJack-Bench 含超过 113,000 条交互式多模态越狱轨迹。",
+                  "implication": "应将自然图像锚点纳入遥感 VLM 红队集，并按多轮预算、迁移性和误拒绝共同评价防御。",
+                  "readMinutes": 4.0,
+                  "publishedAt": "2026-04-14T11:44:59+00:00",
+                  "updatedAt": "2026-08-20T13:02:26+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "MemJack：自然图像也能成为可迁移的 VLM 越狱锚点",
+                    "oneSentenceZh": "MemJack 用多 Agent 闭环发现、伪装、评估和修复自然图像攻击，并构建 11.3 万条交互轨迹。",
+                    "problemZh": "既有多模态越狱多依赖专门制作图像或扰动，尚不清楚普通自然图像能否形成可复用、可迁移攻击入口。",
+                    "methodZh": "框架组合视觉锚点发现、视觉语义伪装、响应评估、反思修复和动态重规划，在未修改 COCO 图片上自动闭环搜索攻击。",
+                    "resultZh": "作者报告对 Qwen3-VL-Plus 的攻击成功率为 71.48%，扩展预算下达 90%；MemJack-Bench 含超过 113,000 条交互式多模态越狱轨迹。",
+                    "contributions": [
+                      "证明良性自然图像可作迁移攻击锚点",
+                      "构建多 Agent 自动红队闭环",
+                      "发布十万级交互轨迹安全数据集"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v3 于本周更新，摘要和全文给出数据规模、目标模型和攻击成功率。"
+                    ],
+                    "limitations": [
+                      "高 ASR 针对特定目标模型与预算，跨模型防御效果需复现。",
+                      "攻击研究应在隔离环境用于防御评测。"
+                    ],
+                    "confidence": 0.85,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                },
+                {
+                  "position": 7,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "Video Evidence to Reasoning Efficient Video Understanding via Explicit Evidence Grounding",
+                  "url": "https://arxiv.org/abs/2601.07761",
+                  "reason": "本周 v2 重要修订用显式证据筛选与锚定降低长视频推理成本和幻觉，兼顾压缩与可靠性。",
+                  "summary": "**中文标题：** Chain of Evidence：先筛视觉证据，再进行高效视频推理\n\n**CoE 用轻量 EGM 提取少量高保真证据，并通过强化学习要求推理严格引用时间锚点。**\n\n视频 VLM 在冗长推理与高计算成本之间存在矛盾，直接压缩又容易丢失证据并产生幻觉。\n\nEGM 按查询筛选紧凑视觉证据，Evidence-Anchoring Protocol 以复合奖励约束模型引用时间锚点；CoE-Instruct 用双标注分离感知与推理监督。\n\n数据集包含 16.4 万样本；作者在 Video-MME、MVBench、VSI-Bench 等五个 benchmark 上报告新的最佳结果，但摘要未给出统一增益。",
+                  "implication": "对视频压缩与理解联合系统，应把任务相关证据保留率纳入码率优化，而非仅优化像素重建。",
+                  "readMinutes": 3.0,
+                  "publishedAt": "2026-01-12T17:46:10+00:00",
+                  "updatedAt": "2026-08-20T09:26:18+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "Chain of Evidence：先筛视觉证据，再进行高效视频推理",
+                    "oneSentenceZh": "CoE 用轻量 EGM 提取少量高保真证据，并通过强化学习要求推理严格引用时间锚点。",
+                    "problemZh": "视频 VLM 在冗长推理与高计算成本之间存在矛盾，直接压缩又容易丢失证据并产生幻觉。",
+                    "methodZh": "EGM 按查询筛选紧凑视觉证据，Evidence-Anchoring Protocol 以复合奖励约束模型引用时间锚点；CoE-Instruct 用双标注分离感知与推理监督。",
+                    "resultZh": "数据集包含 16.4 万样本；作者在 Video-MME、MVBench、VSI-Bench 等五个 benchmark 上报告新的最佳结果，但摘要未给出统一增益。",
+                    "contributions": [
+                      "解耦视觉证据提取与语言推理",
+                      "用奖励强制时间证据锚定",
+                      "构建感知/推理双标注视频数据集"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v2 于本周更新，摘要与正文给出模块、数据规模和五项 benchmark。"
+                    ],
+                    "limitations": [
+                      "证据筛选错误会成为不可恢复的信息瓶颈。",
+                      "SOTA 声明由作者报告，需按公开代码和统一设置复验。"
+                    ],
+                    "confidence": 0.79,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "secondary_topic",
+              "items": [
+                {
+                  "position": 1,
+                  "role": "deep_read",
+                  "itemType": "paper",
+                  "title": "Zoom-IQA: Image Quality Assessment with Reliable Region-Aware Reasoning",
+                  "url": "https://arxiv.org/abs/2601.02918",
+                  "reason": "本周 v4 重要修订把区域依据、分数和不确定性联合用于图像质量评估，和压缩质量评价直接相邻。",
+                  "summary": "**中文标题：** Zoom-IQA：让图像质量评分绑定区域证据与不确定性\n\n**Zoom-IQA 先用区域依据监督训练，再以带 KL-Coverage 的强化学习维持推理与评分多样性。**\n\n传统 IQA 只给分数，VLM-IQA 虽能解释却容易视觉文本融合失真，出现理由不可靠或评分多样性坍缩。\n\n两阶段管线先在 GR-IQA 上监督学习关键区域 grounding，再用强化学习探索策略，以 KL-Coverage 正则和渐进重采样稳定推理、评分与标注偏差。\n\n作者报告在鲁棒性、可解释性和泛化上改进，并展示对图像恢复下游的作用；摘要未给出统一指标数字。",
+                  "implication": "可用于学习压缩和遥感压缩的感知质量评价，但必须同时保留传统失真指标与人工区域标注。",
+                  "readMinutes": 3.0,
+                  "publishedAt": "2026-01-06T11:00:17+00:00",
+                  "updatedAt": "2026-08-20T10:10:30+00:00",
+                  "status": null,
+                  "deepRead": {
+                    "titleZh": "Zoom-IQA：让图像质量评分绑定区域证据与不确定性",
+                    "oneSentenceZh": "Zoom-IQA 先用区域依据监督训练，再以带 KL-Coverage 的强化学习维持推理与评分多样性。",
+                    "problemZh": "传统 IQA 只给分数，VLM-IQA 虽能解释却容易视觉文本融合失真，出现理由不可靠或评分多样性坍缩。",
+                    "methodZh": "两阶段管线先在 GR-IQA 上监督学习关键区域 grounding，再用强化学习探索策略，以 KL-Coverage 正则和渐进重采样稳定推理、评分与标注偏差。",
+                    "resultZh": "作者报告在鲁棒性、可解释性和泛化上改进，并展示对图像恢复下游的作用；摘要未给出统一指标数字。",
+                    "contributions": [
+                      "把不确定性、区域推理和迭代细化统一到 IQA",
+                      "构建带区域理由的 GR-IQA 数据",
+                      "用 KL-Coverage 防止推理与评分多样性坍缩"
+                    ],
+                    "evidence": [
+                      "arXiv 官方 v4 于本周更新，摘要与全文直接支持训练流程和评估范围。"
+                    ],
+                    "limitations": [
+                      "无统一公开摘要数字，模型间优势需逐 benchmark 核验。",
+                      "生成式理由可能仍与真实感知因果不一致。"
+                    ],
+                    "confidence": 0.76,
+                    "modelVersion": "codex-scheduled-task-v1"
+                  }
+                }
+              ]
+            }
+          ]
+        },
         {
           "issue": {
             "id": "0fd6a6a4-e2c5-44c6-a15b-76d76b9e7bc5",
@@ -2971,14 +3589,14 @@
                   "position": 1,
                   "role": "must_read",
                   "itemType": "paper",
-                  "title": "Cheap Probes Predict Expensive Training in 3D-CT Vision--Language Models",
+                  "title": "When Do Cheap Probes Predict Expensive Training? Probing 3D-CT Encoders for Text Generation",
                   "url": "https://arxiv.org/abs/2607.22771",
                   "reason": "用低成本 probe 代替大量 VLM 微调实验来筛选编码器和 Token 压缩组合，直接服务压缩设计空间探索。",
                   "summary": "**中文标题：** 廉价 Probe 能否预测昂贵训练：3D CT VLM 的编码器与 Token 压缩筛选\n\n**论文用冻结视觉特征上的轻量 probe 排序编码器—压缩组合，初步与完整微调结果达到约 0.95 的相关性。**\n\n3D CT VLM 同时选择视觉编码器、Token 压缩方法和预算会形成巨大的组合空间，逐个微调 LLM 的成本过高。\n\n作者构建覆盖编码器与压缩单元格的图像 grounding probe 基准，并用 scale-sanity 与 probe-separability 两道门检查属性尺度和可解码性。\n\n摘要报告已测单元格中廉价 probe 与昂贵微调排序约为 r=0.95，但作者明确将其解释为排序信号而非精确性能预测。",
                   "implication": "可把 probe 排序用于 Token 压缩预筛选，但最终候选仍需在目标任务、模型和预算上完整训练验证。",
                   "readMinutes": 4.0,
                   "publishedAt": "2026-07-24T00:00:00+00:00",
-                  "updatedAt": "2026-07-28T00:00:00+00:00",
+                  "updatedAt": "2026-08-17T09:54:43+00:00",
                   "status": null,
                   "deepRead": {
                     "titleZh": "廉价 Probe 能否预测昂贵训练：3D CT VLM 的编码器与 Token 压缩筛选",
@@ -3519,12 +4137,12 @@
       },
       "currentReport": {
         "issue": {
-          "id": "04fb7448-a36a-4f46-afce-b31207e89878",
+          "id": "7b7cb44e-2bdc-4d96-8681-a84a62925a1c",
           "departmentId": "constellation_simulation",
-          "title": "星座智算仿真平台周报 · 2026-W33",
-          "isoWeek": "2026-W33",
-          "windowStart": "2026-08-09T16:00:00+00:00",
-          "windowEnd": "2026-08-16T15:59:59.999999+00:00",
+          "title": "星座智算仿真平台周报 · 2026-W34",
+          "isoWeek": "2026-W34",
+          "windowStart": "2026-08-16T16:00:00+00:00",
+          "windowEnd": "2026-08-23T15:59:59.999999+00:00",
           "status": "approved",
           "targetReadMinutes": 30,
           "estimatedReadMinutes": 0,
@@ -3537,6 +4155,25 @@
         "sections": []
       },
       "archive": [
+        {
+          "issue": {
+            "id": "7b7cb44e-2bdc-4d96-8681-a84a62925a1c",
+            "departmentId": "constellation_simulation",
+            "title": "星座智算仿真平台周报 · 2026-W34",
+            "isoWeek": "2026-W34",
+            "windowStart": "2026-08-16T16:00:00+00:00",
+            "windowEnd": "2026-08-23T15:59:59.999999+00:00",
+            "status": "approved",
+            "targetReadMinutes": 30,
+            "estimatedReadMinutes": 0,
+            "itemCount": 0
+          },
+          "trends": [
+            "本周尚未形成显著趋势簇。",
+            "本周无满足范围和证据要求的条目。"
+          ],
+          "sections": []
+        },
         {
           "issue": {
             "id": "04fb7448-a36a-4f46-afce-b31207e89878",
