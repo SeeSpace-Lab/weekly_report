@@ -9,7 +9,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:38:41.630882+00:00",
+      "checkedAt": "2026-08-31T03:00:36.529889+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -60,7 +60,7 @@
       "contentRole": "paper_interpretation",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:38:32.723091+00:00",
+      "checkedAt": "2026-08-31T02:58:37.690749+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -111,7 +111,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:37:06.108669+00:00",
+      "checkedAt": "2026-08-31T02:59:04.147435+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -150,7 +150,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:37:28.201437+00:00",
+      "checkedAt": "2026-08-31T02:59:24.045824+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -201,7 +201,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:37:11.348777+00:00",
+      "checkedAt": "2026-08-31T02:58:56.574146+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [
@@ -252,7 +252,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:38:49.942845+00:00",
+      "checkedAt": "2026-08-31T02:59:35.353088+00:00",
       "feedEntries": 25,
       "inWindow": 0,
       "articles": [
@@ -303,7 +303,7 @@
       "contentRole": "trend_discovery",
       "health": "no_recent_update",
       "runStatus": "unchanged",
-      "checkedAt": "2026-08-24T02:37:21.159459+00:00",
+      "checkedAt": "2026-08-31T03:00:51.095198+00:00",
       "feedEntries": 30,
       "inWindow": 0,
       "articles": [

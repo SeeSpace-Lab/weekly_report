@@ -33,7 +33,7 @@ test("server-renders the research portal", async () => {
   assert.match(html, /按部门进入周报/);
   assert.match(html, /星载大模型/);
   assert.match(html, /星座智算/);
-  assert.match(html, /2026-W34/);
+  assert.match(html, /2026-W35/);
   assert.match(html, /周一 09:00 更新/);
   assert.match(html, /顶会与重要论文库/);
   assert.match(html, /og:image/);
@@ -97,7 +97,7 @@ test("ships structured report, library and interaction controls", async () => {
 
   assert.equal(departmentPayload.departments.length, 3);
   assert.equal(orbitinfer.enabled, true);
-  assert.equal(payload.issue.isoWeek, "2026-W34");
+  assert.equal(payload.issue.isoWeek, "2026-W35");
   assert.equal(payload.issue.itemCount, 8);
   const modelDepartment = departmentPayload.departments.find(
     (department) => department.id === "model_and_application",
@@ -139,7 +139,7 @@ test("ships structured report, library and interaction controls", async () => {
   assert.ok(libraryPayload.papers.length >= 8);
   assert.equal(sourcePayload.accounts.length, 7);
   assert.ok(sourcePayload.accounts.every((account) => account.articles.length > 0));
-  assert.equal(orbitinfer.archive[0].issue.isoWeek, "2026-W34");
+  assert.equal(orbitinfer.archive[0].issue.isoWeek, "2026-W35");
 });
 
 test("exports a GitHub Pages-compatible static snapshot", async () => {
