@@ -2,6 +2,329 @@
   "issues": [
     {
       "issue": {
+        "id": "78e35b9a-6e94-499f-944d-69274a6328df",
+        "departmentId": "orbitinfer",
+        "title": "星载大模型推理引擎周报 · 2026-W36",
+        "isoWeek": "2026-W36",
+        "windowStart": "2026-08-30T16:00:00+00:00",
+        "windowEnd": "2026-09-06T15:59:59.999999+00:00",
+        "status": "approved",
+        "targetReadMinutes": 30,
+        "estimatedReadMinutes": 30.0,
+        "itemCount": 8
+      },
+      "trends": [
+        "本周有5项相关进展，集中在量化、压缩与自适应精度。",
+        "本周有12项相关进展，集中在LLM/VLM/MoE推理引擎。",
+        "本周有10项相关进展，集中在KV Cache与分层存储。",
+        "本周有2项相关进展，集中在推理调度与资源编排。",
+        "本周有1项相关进展，集中在可靠推理、软错误与恢复。"
+      ],
+      "sections": [
+        {
+          "id": "inference_and_scheduling",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "AInfer-PD: Communication-Safe In-Place Prefill-Decode Multiplexing for Distributed MoE Rollouts",
+              "url": "https://arxiv.org/abs/2609.00993",
+              "reason": "AInfer-PD 解决异步 Agent/RL 负载中 prefill 与 decode 持续共存时的跨 rank 集合通信冲突。",
+              "summary": "**中文标题：** AInfer-PD：通信安全的原位 Prefill/Decode 复用\n\n**它在共享设备、权重和 KV 的前提下统一跨 rank 集合通信顺序，并隔离 DeepEP 的 P/D 协议状态。**\n\n异步多轮轨迹不断插入 prefill，若与 decode 原位复用，会因 TP/DP 和专家通信交叉顺序不一致而干扰甚至失效；完全解耦又增加设备池和 KV 迁移成本。\n\nAInfer-PD 协调各 rank 的 P/D collective 顺序，为 DeepEP 两条路径分配独立通信状态，并在细粒度边界调度 prefill 与 decode。\n\n单节点固定工作量完成时间相对关闭复用的同引擎降低 7.1%–22.5%，相对 SGLang 降低 24.8%–32.9%；两节点相应降低 18.0%–35.3% 和 18.3%–31.8%。",
+              "implication": "多星/多加速器调度器应显式建模 collective 顺序与独立协议状态，避免只按计算负载混排 P/D。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-09-01T09:44:40+00:00",
+              "updatedAt": "2026-09-01T09:44:40+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "AInfer-PD：通信安全的原位 Prefill/Decode 复用",
+                "oneSentenceZh": "它在共享设备、权重和 KV 的前提下统一跨 rank 集合通信顺序，并隔离 DeepEP 的 P/D 协议状态。",
+                "problemZh": "异步多轮轨迹不断插入 prefill，若与 decode 原位复用，会因 TP/DP 和专家通信交叉顺序不一致而干扰甚至失效；完全解耦又增加设备池和 KV 迁移成本。",
+                "methodZh": "AInfer-PD 协调各 rank 的 P/D collective 顺序，为 DeepEP 两条路径分配独立通信状态，并在细粒度边界调度 prefill 与 decode。",
+                "resultZh": "单节点固定工作量完成时间相对关闭复用的同引擎降低 7.1%–22.5%，相对 SGLang 降低 24.8%–32.9%；两节点相应降低 18.0%–35.3% 和 18.3%–31.8%。",
+                "contributions": [
+                  "给出分布式 MoE 中 P/D 并发的通信安全条件",
+                  "保留共享 KV 状态同时减少 rollout 完成时间"
+                ],
+                "evidence": [
+                  "arXiv 2609.00993 官方摘要，2026-09-01 首发",
+                  "摘要提供单节点、双节点和细粒度边界消融数据"
+                ],
+                "limitations": [
+                  "主要面向 RL rollout，在线用户请求分布可能不同",
+                  "摘要未覆盖故障恢复和弱网络条件"
+                ],
+                "confidence": 0.75,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "OUTLETS: Output-Length Prediction from Speculative Decoding Backbones",
+              "url": "https://arxiv.org/abs/2609.01068",
+              "reason": "OUTLETS 复用已经存在的推测解码特征预测输出长度，几乎不增加代理模型开销，却能改善尾延迟调度。",
+              "summary": "**中文标题：** OUTLETS：复用推测解码骨干预测输出长度\n\n**方法从 EAGLE-3 等 draft decoder 的轨迹表征接轻量回归头，为短作业优先和解码实例均衡提供长度预测。**\n\n输出长度长尾使容量规划和集群调度困难，外部代理模型延迟高，浅层内部探针又缺少轨迹信息。\n\nOUTLETS 将推测解码骨干已计算的 draft 表征作为长度信号，仅增加轻量回归头，再把预测接入短作业优先和负载分配策略。\n\n作者报告其 MAE 低于所评方法；在饱和分离式服务中，短请求 P99 延迟降低 34.8%。",
+              "implication": "可在推测解码路径上旁路输出长度预测，用于功率预算和链路窗口下的短请求优先调度。",
+              "readMinutes": 3.0,
+              "publishedAt": "2026-09-01T11:00:39+00:00",
+              "updatedAt": "2026-09-01T11:00:39+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "OUTLETS：复用推测解码骨干预测输出长度",
+                "oneSentenceZh": "方法从 EAGLE-3 等 draft decoder 的轨迹表征接轻量回归头，为短作业优先和解码实例均衡提供长度预测。",
+                "problemZh": "输出长度长尾使容量规划和集群调度困难，外部代理模型延迟高，浅层内部探针又缺少轨迹信息。",
+                "methodZh": "OUTLETS 将推测解码骨干已计算的 draft 表征作为长度信号，仅增加轻量回归头，再把预测接入短作业优先和负载分配策略。",
+                "resultZh": "作者报告其 MAE 低于所评方法；在饱和分离式服务中，短请求 P99 延迟降低 34.8%。",
+                "contributions": [
+                  "揭示 draft decoder 表征与输出长度的结构联系",
+                  "在低附加成本下把预测用于尾延迟调度"
+                ],
+                "evidence": [
+                  "arXiv 2609.01068 官方摘要，2026-09-01 首发",
+                  "摘要明确说明饱和分离式服务与 P99 改善幅度"
+                ],
+                "limitations": [
+                  "依赖已有高级推测解码骨干",
+                  "摘要未给出跨模型、跨任务的误差分布和误判代价"
+                ],
+                "confidence": 0.73,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        },
+        {
+          "id": "kv_storage_moe_quantization",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "A Universal Context-Reuse Layer for Cross-Model KV Sharing",
+              "url": "https://arxiv.org/abs/2608.30963",
+              "reason": "跨模型 KV 转译把上下文复用从单模型缓存扩展为可迁移计算状态，对多模型编排和受限节点间的上下文移动具有新颖系统意义。",
+              "summary": "**中文标题：** 跨模型 KV 共享：把上下文变成可迁移计算状态\n\n**该工作训练转译层，让不同规模、架构、注意力配置、分词器乃至模型家族消费另一模型生成的 KV 状态。**\n\n多模型服务和 Agent 流程反复处理相同上下文，但现有 KV 复用通常要求生产者与消费者是同一模型，导致重复 prefill。\n\n作者构建 context-reuse layer，将源模型 KV 映射为目标模型可用表示，并评估同家族与跨家族、不同规模和分词器的 handoff。\n\nQwen2.5-7B→1.5B 的 LongBench2 准确率由 27.59% 升至 34.48%；Qwen2.5-1.5B→Gemma-2-2B 在 4K 上目标 prefill 成本最多降 67.05%；Llama3.1-70B→Qwen2.5-7B 延迟由 899ms 降至 138ms，准确率 44.0% 对原生 45.7%。",
+              "implication": "可设计跨模型上下文 handoff 原型，并把转译误差、传输量与节省的 prefill 能耗做联合权衡。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-08-31T15:28:17+00:00",
+              "updatedAt": "2026-08-31T15:28:17+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "跨模型 KV 共享：把上下文变成可迁移计算状态",
+                "oneSentenceZh": "该工作训练转译层，让不同规模、架构、注意力配置、分词器乃至模型家族消费另一模型生成的 KV 状态。",
+                "problemZh": "多模型服务和 Agent 流程反复处理相同上下文，但现有 KV 复用通常要求生产者与消费者是同一模型，导致重复 prefill。",
+                "methodZh": "作者构建 context-reuse layer，将源模型 KV 映射为目标模型可用表示，并评估同家族与跨家族、不同规模和分词器的 handoff。",
+                "resultZh": "Qwen2.5-7B→1.5B 的 LongBench2 准确率由 27.59% 升至 34.48%；Qwen2.5-1.5B→Gemma-2-2B 在 4K 上目标 prefill 成本最多降 67.05%；Llama3.1-70B→Qwen2.5-7B 延迟由 899ms 降至 138ms，准确率 44.0% 对原生 45.7%。",
+                "contributions": [
+                  "提出跨架构 KV 状态转译",
+                  "将 context mobility 明确为异构推理系统抽象"
+                ],
+                "evidence": [
+                  "arXiv 2608.30963 官方摘要，2026-08-31 首发",
+                  "摘要逐项报告同家族、跨家族和高度异构设置的准确率、延迟或 prefill 成本"
+                ],
+                "limitations": [
+                  "映射层训练成本和更长上下文稳定性仍需核验",
+                  "KV 迁移本身的链路字节量与能耗未在摘要给出"
+                ],
+                "confidence": 0.76,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "DASC: Decay-Aware State Compression for Hybrid Linear-Attention Serving",
+              "url": "https://arxiv.org/abs/2608.30386",
+              "reason": "DASC 针对混合线性注意力的循环状态检查点提出按保留时域压缩，比通用 KV 量化更贴近新模型状态结构。",
+              "summary": "**中文标题：** DASC：按保留时域压缩混合线性注意力状态\n\n**它从模型权重推导 head/channel 的 retention horizon，只保存长时依赖单元，并将 ragged 检查点在 TP rank 间均衡。**\n\nGDN/KDA 等循环状态原位更新，前缀复用必须额外保存状态检查点；完整保存会挤占内存并引发更多逐出与重复 prefill。\n\nDASC 分析不同头和通道的衰减时域，选择长时域状态单元、打包为不规则布局并做 TP 均衡；复用时对省略单元清零或用有限后缀刷新。\n\nKimi-Linear 上保守配置将 KDA 状态压缩 2.63 倍且质量接近完整缓存；固定内存预算下平均 TTFT 降 42.6%，输入吞吐提高 68.4%，Qwen GDN 呈相似趋势。",
+              "implication": "应把循环状态保存价值按时间尺度建模，并在缓存容量、回放计算与 TP 均衡之间做联合优化。",
+              "readMinutes": 3.0,
+              "publishedAt": "2026-08-31T07:42:43+00:00",
+              "updatedAt": "2026-08-31T07:42:43+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "DASC：按保留时域压缩混合线性注意力状态",
+                "oneSentenceZh": "它从模型权重推导 head/channel 的 retention horizon，只保存长时依赖单元，并将 ragged 检查点在 TP rank 间均衡。",
+                "problemZh": "GDN/KDA 等循环状态原位更新，前缀复用必须额外保存状态检查点；完整保存会挤占内存并引发更多逐出与重复 prefill。",
+                "methodZh": "DASC 分析不同头和通道的衰减时域，选择长时域状态单元、打包为不规则布局并做 TP 均衡；复用时对省略单元清零或用有限后缀刷新。",
+                "resultZh": "Kimi-Linear 上保守配置将 KDA 状态压缩 2.63 倍且质量接近完整缓存；固定内存预算下平均 TTFT 降 42.6%，输入吞吐提高 68.4%，Qwen GDN 呈相似趋势。",
+                "contributions": [
+                  "提出基于 retention horizon 的结构化状态选择",
+                  "把压缩布局与张量并行负载均衡结合"
+                ],
+                "evidence": [
+                  "arXiv 2608.30386 官方摘要，2026-08-31 首发",
+                  "摘要给出 Kimi-Linear、Qwen GDN 的质量—效率趋势及核心量化结果"
+                ],
+                "limitations": [
+                  "激进压缩需要额外后缀回放计算",
+                  "摘要未覆盖软错误、断点恢复和低带宽节点"
+                ],
+                "confidence": 0.76,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        },
+        {
+          "id": "must_read",
+          "items": [
+            {
+              "position": 1,
+              "role": "must_read",
+              "itemType": "framework",
+              "title": "sgl-project/sglang",
+              "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.19",
+              "reason": "v0.5.19 是本周推理运行时最密集的一次一手工程更新，覆盖 MoE 通信、KV 分层、推测解码、长上下文并行和多硬件后端。",
+              "summary": "**中文标题：** SGLang v0.5.19：MoE、KV 分层与长上下文推理全面升级\n\n**SGLang 把 DeepEP v2、统一 Radix Tree、DCP、W4A8 MoE 和更快的推测解码推进到可用实现，并给出多项硬件实测。**\n\n长上下文、跨节点 MoE、分离式 prefill/decode 和异构 GPU 同时带来通信、KV 存储与算子利用率瓶颈。\n\n版本引入固定缓冲区 DeepEP v2、默认统一 Radix Tree、Blackwell MLA 的 DCP、Hopper W4A8 MoE、KDA 融合接受路径、AMD Lean Attention，并补齐 PD KV 传输和 L3 热插拔。\n\n官方发布说明报告：KDA verify-and-commit 缩短 45%–63%，MI355X 吞吐最高 1.52 倍且 ITL 最低降 3.62 倍，Hopper W4A8 MoE 输出吞吐约增 12%；128K 输入下 DCP 继续扩展而普通 TP 约停在 680 token/s。",
+              "implication": "可将统一 Radix Tree、L3 热插拔和 DCP/PD 传输作为 OrbitInfer 的缓存层与跨节点执行基线。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-07-14T08:43:33+00:00",
+              "updatedAt": "2026-09-05T02:27:42+00:00",
+              "status": "Official release: v0.5.19",
+              "deepRead": {
+                "titleZh": "SGLang v0.5.19：MoE、KV 分层与长上下文推理全面升级",
+                "oneSentenceZh": "SGLang 把 DeepEP v2、统一 Radix Tree、DCP、W4A8 MoE 和更快的推测解码推进到可用实现，并给出多项硬件实测。",
+                "problemZh": "长上下文、跨节点 MoE、分离式 prefill/decode 和异构 GPU 同时带来通信、KV 存储与算子利用率瓶颈。",
+                "methodZh": "版本引入固定缓冲区 DeepEP v2、默认统一 Radix Tree、Blackwell MLA 的 DCP、Hopper W4A8 MoE、KDA 融合接受路径、AMD Lean Attention，并补齐 PD KV 传输和 L3 热插拔。",
+                "resultZh": "官方发布说明报告：KDA verify-and-commit 缩短 45%–63%，MI355X 吞吐最高 1.52 倍且 ITL 最低降 3.62 倍，Hopper W4A8 MoE 输出吞吐约增 12%；128K 输入下 DCP 继续扩展而普通 TP 约停在 680 token/s。",
+                "contributions": [
+                  "把 MoE、KV、推测解码和并行策略合入同一生产运行时",
+                  "提供跨 NVIDIA 与 AMD 平台的可复核性能数据"
+                ],
+                "evidence": [
+                  "GitHub 官方 v0.5.19 Release，2026-09-05 发布，列出 786 个 PR、214 位贡献者及逐项 PR 链接",
+                  "官方 release 对 DeepEP v2、DCP、W4A8、KDA 与 Lean Attention 给出配置和测量结果"
+                ],
+                "limitations": [
+                  "性能数字来自项目发布说明，尚未在星载或功耗受限硬件上独立复现",
+                  "Beam search 暂不兼容推测解码、解耦服务、DP attention 和 HiCache"
+                ],
+                "confidence": 0.9,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 2,
+              "role": "must_read",
+              "itemType": "framework",
+              "title": "NVIDIA/TensorRT-LLM",
+              "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc25",
+              "reason": "TensorRT-LLM rc25 把 KV Cache Manager V2 设为多类主流模型默认架构，同时公开大量分离式服务与多 GPU 已知问题。",
+              "summary": "**中文标题：** TensorRT-LLM 1.3.0rc25：KV Cache Manager V2 转为默认\n\n**该候选版本扩展 KV V2、分离式传输、推测解码和 Blackwell 能力，同时明确列出可能挂起、OOM 与精度退化的高风险组合。**\n\n新模型与长上下文服务要求更可扩展的 KV 管理和跨节点传输，但复杂并行、量化与推测解码组合容易出现资源和正确性故障。\n\n官方版本将 KV Cache Manager V2 设为多模型默认，加入冷页编码、零拷贝 token 传递、分布式池重平衡、Helix DCP，并扩展 NIXL/Ray 等 PD 传输和 DFlash/DSpark 路径。\n\n发布说明确认新模型后续统一使用 V2、旧模型逐步迁移并弃用 V1；同时披露 B200 间歇崩溃或 OOM、分离式服务启停挂起、MTP 与 chunked prefill 缓存异常等问题。",
+              "implication": "OrbitInfer 应把 KV V2 作为对照实现，但先建立启停、内存压力、异常中止与精度回归测试。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-07-22T22:41:15+00:00",
+              "updatedAt": "2026-08-31T03:31:00+00:00",
+              "status": "Official release: v1.3.0rc25",
+              "deepRead": {
+                "titleZh": "TensorRT-LLM 1.3.0rc25：KV Cache Manager V2 转为默认",
+                "oneSentenceZh": "该候选版本扩展 KV V2、分离式传输、推测解码和 Blackwell 能力，同时明确列出可能挂起、OOM 与精度退化的高风险组合。",
+                "problemZh": "新模型与长上下文服务要求更可扩展的 KV 管理和跨节点传输，但复杂并行、量化与推测解码组合容易出现资源和正确性故障。",
+                "methodZh": "官方版本将 KV Cache Manager V2 设为多模型默认，加入冷页编码、零拷贝 token 传递、分布式池重平衡、Helix DCP，并扩展 NIXL/Ray 等 PD 传输和 DFlash/DSpark 路径。",
+                "resultZh": "发布说明确认新模型后续统一使用 V2、旧模型逐步迁移并弃用 V1；同时披露 B200 间歇崩溃或 OOM、分离式服务启停挂起、MTP 与 chunked prefill 缓存异常等问题。",
+                "contributions": [
+                  "给出 KV V2 的迁移方向和完整特性面",
+                  "以官方已知问题形成可操作的部署负面清单"
+                ],
+                "evidence": [
+                  "NVIDIA/TensorRT-LLM 官方 v1.3.0rc25 Release 的 Highlights、Feature 与 Known Issues",
+                  "官方条目列出支持模型、KV V2 扩展和对应 PR 编号"
+                ],
+                "limitations": [
+                  "这是候选版本而非稳定版",
+                  "大量挂起和精度问题表明不宜直接用于无人值守关键链路"
+                ],
+                "confidence": 0.88,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        },
+        {
+          "id": "power_reliability_edge_distributed",
+          "items": [
+            {
+              "position": 1,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "mzCache: On-Device LLM Memory Management under Multitasking",
+              "url": "https://arxiv.org/abs/2609.01338",
+              "reason": "mzCache 直接研究移动 SoC 多任务内存压力下模型权重与 KV Cache 的恢复路径，与星载共享内存、突发任务和零等待恢复高度相邻。",
+              "summary": "**中文标题：** mzCache：多任务端侧 LLM 的弹性内存恢复\n\n**系统通过细粒度共享缓冲、混合换出和逆序驱逐，在 GPU 推理同时由 CPU 恢复被逐出的权重与 KV。**\n\n移动设备切换应用时会把 LLM 权重或 KV Cache 逐出，后续请求不得不慢速读存储或重算缓存，首 token 响应显著恶化。\n\nmzCache 将 LLM 内存拆成支持跨处理器并发访问的细粒度共享缓冲，并用 restoration-oriented 管理、hybrid swap 与 backward-out eviction 让任意驱逐状态低延迟恢复。\n\n作者在 llama.cpp 与 Android 应用上报告，相比基于存储的部分卸载，TTFT 降低 2.1–5.5 倍，并在真实多任务场景验证。",
+              "implication": "可把恢复时间、驱逐粒度和 CPU/GPU 重叠加入 OrbitInfer 的任务切换模型，评估内存压力下的首 token SLO。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-09-01T14:49:20+00:00",
+              "updatedAt": "2026-09-01T14:49:20+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "mzCache：多任务端侧 LLM 的弹性内存恢复",
+                "oneSentenceZh": "系统通过细粒度共享缓冲、混合换出和逆序驱逐，在 GPU 推理同时由 CPU 恢复被逐出的权重与 KV。",
+                "problemZh": "移动设备切换应用时会把 LLM 权重或 KV Cache 逐出，后续请求不得不慢速读存储或重算缓存，首 token 响应显著恶化。",
+                "methodZh": "mzCache 将 LLM 内存拆成支持跨处理器并发访问的细粒度共享缓冲，并用 restoration-oriented 管理、hybrid swap 与 backward-out eviction 让任意驱逐状态低延迟恢复。",
+                "resultZh": "作者在 llama.cpp 与 Android 应用上报告，相比基于存储的部分卸载，TTFT 降低 2.1–5.5 倍，并在真实多任务场景验证。",
+                "contributions": [
+                  "把驱逐后的恢复代价作为端侧缓存策略的一等目标",
+                  "利用统一内存实现 GPU 推理与 CPU 恢复重叠"
+                ],
+                "evidence": [
+                  "arXiv 2609.01338 官方摘要与论文元数据，2026-09-01 首发",
+                  "摘要明确给出实现平台、比较对象和 2.1–5.5 倍 TTFT 结果"
+                ],
+                "limitations": [
+                  "当前证据以作者摘要为主，尚未核验完整设备、模型和功耗分解",
+                  "移动 SoC 统一内存语义不能直接等同于星载异构平台"
+                ],
+                "confidence": 0.73,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            },
+            {
+              "position": 2,
+              "role": "deep_read",
+              "itemType": "paper",
+              "title": "LLM Inference on IMC-NoC Architecture with Balanced Dataflow and Fine-Grained Parallelism",
+              "url": "https://arxiv.org/abs/2609.00857",
+              "reason": "LEAP 将存内、近存与片上网络归约结合，并为 prefill/decode 动态重组资源，覆盖带宽、通信和能效三类星载约束。",
+              "summary": "**中文标题：** LEAP：面向 LLM 推理的 IMC-NoC 协同架构\n\n**该软硬协同设计让静态权重、动态中间量与部分和分别落在 IMC、NMC 和 INC，并按 prefill/decode 阶段重构 PE 组织。**\n\nLLM 参数规模和运行时中间数据同时压迫存储带宽与片上通信，单一存内计算资源难以高效处理动态数据。\n\nLEAP 组合 IMC PE、NMC PE 与网络内计算 INC，软件侧联合完成分区、映射和调度，并针对 prefill 与 decode 的计算强度差异动态重组资源。\n\n论文摘要报告，相比商用 GPU 平台吞吐至少提高 1.52 倍、能效提高 24.91 倍。",
+              "implication": "可用静态权重/动态状态/归约三分法重构 OrbitInfer 数据流模型，并把片上通信能耗纳入硬件 DSE。",
+              "readMinutes": 4.0,
+              "publishedAt": "2026-09-01T07:55:45+00:00",
+              "updatedAt": "2026-09-01T07:55:45+00:00",
+              "status": null,
+              "deepRead": {
+                "titleZh": "LEAP：面向 LLM 推理的 IMC-NoC 协同架构",
+                "oneSentenceZh": "该软硬协同设计让静态权重、动态中间量与部分和分别落在 IMC、NMC 和 INC，并按 prefill/decode 阶段重构 PE 组织。",
+                "problemZh": "LLM 参数规模和运行时中间数据同时压迫存储带宽与片上通信，单一存内计算资源难以高效处理动态数据。",
+                "methodZh": "LEAP 组合 IMC PE、NMC PE 与网络内计算 INC，软件侧联合完成分区、映射和调度，并针对 prefill 与 decode 的计算强度差异动态重组资源。",
+                "resultZh": "论文摘要报告，相比商用 GPU 平台吞吐至少提高 1.52 倍、能效提高 24.91 倍。",
+                "contributions": [
+                  "把计算、存储和通信统一成处理—通信结构",
+                  "以阶段感知调度平衡 prefill 与 decode 数据流"
+                ],
+                "evidence": [
+                  "arXiv 2609.00857 官方摘要，2026-09-01 首发",
+                  "摘要明确描述三类 PE 分工和相对 GPU 的吞吐、能效结果"
+                ],
+                "limitations": [
+                  "工艺、面积和端到端服务负载细节需读正文复核",
+                  "定制 IMC-NoC 与现有星载器件的可获得性存在差距"
+                ],
+                "confidence": 0.72,
+                "modelVersion": "codex-scheduled-task-v1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "issue": {
         "id": "38413e2b-98cb-4941-ae17-0f62b1837988",
         "departmentId": "orbitinfer",
         "title": "星载大模型推理引擎周报 · 2026-W35",
@@ -69,14 +392,14 @@
               "role": "must_read",
               "itemType": "framework",
               "title": "sgl-project/sglang",
-              "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.18",
+              "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.19",
               "reason": "SGLang v0.5.18 同时推进启动、通信、MoE、量化、推测解码与调度，是本周最密集的推理栈工程信号。",
               "summary": "**中文标题：** SGLang v0.5.18：重叠加载、通信与多后端推理栈升级\n\n**该版本用权重分段预取、LMHead all-to-all、MNNVL allreduce 和多项内核优化压缩启动及解码开销。**\n\n大模型服务启动需要串行加载权重与捕获 CUDA Graph，分布式解码又受通信、MoE 和硬件后端差异拖累。\n\n发布版将 checkpoint 页从存储预取与 CUDA Graph 捕获重叠，把纯 DP-attention 的 LMHead allgather+scatter 合并为 all-to-all，并复用 FlashInfer MNNVL 工作区执行非融合 allreduce；同时补齐 NVFP4、MoE、推测解码和调度路径。\n\n官方发布说明报告 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对默认路径由 84.8 秒降至 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降至 169 微秒，DeepSeek-V4-Flash TP4 小批量最高提升 6.9%。",
               "implication": "可将重叠加载、通信合并与统一缓存目录拆成 OrbitInfer 的启动/热切换实验项，并在受限互连上重新测量收益。",
               "readMinutes": 5.0,
               "publishedAt": "2026-07-14T08:43:33+00:00",
-              "updatedAt": "2026-08-24T23:08:04+00:00",
-              "status": "Official release: v0.5.18",
+              "updatedAt": "2026-09-05T02:27:42+00:00",
+              "status": "Official release: v0.5.19",
               "deepRead": {
                 "titleZh": "SGLang v0.5.18：重叠加载、通信与多后端推理栈升级",
                 "oneSentenceZh": "该版本用权重分段预取、LMHead all-to-all、MNNVL allreduce 和多项内核优化压缩启动及解码开销。",
@@ -188,7 +511,7 @@
               "implication": "适合借鉴为星载多传感器输入的动态 token 预算器，并测试与 fused attention 后端的接口兼容性。",
               "readMinutes": 3.0,
               "publishedAt": "2026-08-27T00:00:00+00:00",
-              "updatedAt": "2026-08-28T00:00:00+00:00",
+              "updatedAt": "2026-09-01T07:05:18+00:00",
               "status": null,
               "deepRead": {
                 "titleZh": "AVTP：面向多图输入的自适应视觉 Token 裁剪",
@@ -390,14 +713,14 @@
               "role": "must_read",
               "itemType": "framework",
               "title": "sgl-project/sglang",
-              "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.18",
+              "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.19",
               "reason": "SGLang v0.5.18 的本周官方更新包含启动、通信、推测解码、KV 与 MoE 的大量可落地改动。",
               "summary": "**中文标题：** SGLang v0.5.18：缩短启动、优化通信并扩大推测解码覆盖\n\n**新版本用重叠权重加载、LMHead all-to-all、MNNVL allreduce 和多项推测解码修复推进大模型服务整栈。**\n\n大模型服务在启动权重装载、张量并行通信、推测解码状态管理和异构模型兼容上存在相互耦合的时延与正确性瓶颈。\n\n官方版本在 CUDA Graph 捕获期间并行分阶段装载 checkpoint，将 TP LMHead 的 allgather+scatter 改为 all-to-all，并复用 FlashInfer MNNVL workspace，同时扩展 DSpark、DFlash 与多模型后端。\n\n官方说明称 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对普通默认从 84.8 秒降到 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降到 169 微秒，TPOT 从 36.97 毫秒降到 35.67 毫秒。",
               "implication": "应把冷启动、通信与推测解码状态正确性纳入 OrbitInfer 回归矩阵，并在断续供电或任务迁移场景测试恢复开销。",
               "readMinutes": 4.0,
               "publishedAt": "2026-07-14T08:43:33+00:00",
-              "updatedAt": "2026-08-24T23:08:04+00:00",
-              "status": "Official release: v0.5.18",
+              "updatedAt": "2026-09-05T02:27:42+00:00",
+              "status": "Official release: v0.5.19",
               "deepRead": {
                 "titleZh": "SGLang v0.5.18：缩短启动、优化通信并扩大推测解码覆盖",
                 "oneSentenceZh": "新版本用重叠权重加载、LMHead all-to-all、MNNVL allreduce 和多项推测解码修复推进大模型服务整栈。",
@@ -722,14 +1045,14 @@
               "role": "must_read",
               "itemType": "framework",
               "title": "NVIDIA/TensorRT-LLM",
-              "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc24",
+              "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc25",
               "reason": "官方预发布版在本周给出大量模型与低精度支持，同时公开列出严重稳定性和精度风险，适合用于上线前反向门禁设计。",
               "summary": "**中文标题：** TensorRT-LLM v1.3.0rc24：功能扩展与高风险已知问题并存\n\n**TensorRT-LLM 新预发布版的价值不仅在新增能力，更在官方集中披露 CUDA Graph、低精度 MoE、KV 传输和混合模型启动等关键失败模式。**\n\n高性能推理栈在叠加 torch.compile、CUDA Graph、多流 MTP、低精度 MoE 和高并发分离式 KV 传输后容易出现初始化崩溃、静默精度损失或异步非法访存。\n\n该候选是 NVIDIA 官方签名的预发布版本；周报从 release 的功能清单与 Known Issues 双向审阅，重点抽取可转化为回归测试的组合条件，而不是只罗列新增模型。\n\n官方页面确认版本于 2026-08-12 发布并签名；已知问题包括 torch.compile 与 CUDA Graph 组合失败、SM120 上 MLA+MTP 异步崩溃、低精度多 GPU MoE 严重精度下降以及 Python NIXL/UCX 高并发 KV 传输崩溃。",
               "implication": "OrbitInfer 应把这些失败组合转成最小回归矩阵，尤其覆盖图执行、MTP、KVCacheManagerV2、低精度 MoE 与高并发 P/D 传输。",
               "readMinutes": 3.0,
               "publishedAt": "2026-07-22T22:41:15+00:00",
-              "updatedAt": "2026-08-12T08:46:46+00:00",
-              "status": "Official release: v1.3.0rc24",
+              "updatedAt": "2026-08-31T03:31:00+00:00",
+              "status": "Official release: v1.3.0rc25",
               "deepRead": {
                 "titleZh": "TensorRT-LLM v1.3.0rc24：功能扩展与高风险已知问题并存",
                 "oneSentenceZh": "TensorRT-LLM 新预发布版的价值不仅在新增能力，更在官方集中披露 CUDA Graph、低精度 MoE、KV 传输和混合模型启动等关键失败模式。",
@@ -1345,14 +1668,14 @@
               "role": "must_read",
               "itemType": "framework",
               "title": "NVIDIA/TensorRT-LLM",
-              "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc24",
+              "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc25",
               "reason": "官方候选版同时更新 KV 压缩、会话块复用、PD 分离和可靠性修复，直接影响推理引擎接口与回归测试。",
               "summary": "**中文标题：** TensorRT-LLM v1.3.0rc23：KV 压缩、解耦服务与可靠性风险清单\n\n**该候选版扩展 KV 压缩、块复用和解耦推理能力，但官方同时列出多种挂起、崩溃与 OOM 风险。**\n\n高吞吐推理需要协同管理 KV 容量、上下文分块、预填充—解码解耦、MoE 并行和推测解码，并避免异构 GPU 配置下的稳定性故障。\n\n版本在运行时加入 KV cache compression、按会话 KV 块复用和细粒度上下文分块，并扩展稀疏注意力、MTP、attention-DP 与解耦传输路径。\n\n官方发布页确认这些能力已进入 rc23，同时记录 GB300 解耦挂起、MPI worker 崩溃、分块预填充挂起、多 LoRA 采样失败和 A100 OOM 等已知问题。",
               "implication": "可先把 KV 压缩、会话复用和细粒度分块映射到 OrbitInfer 原型，同时将官方已知问题转成故障注入与长稳测试清单。",
               "readMinutes": 4.0,
               "publishedAt": "2026-07-22T22:41:15+00:00",
-              "updatedAt": "2026-08-12T08:46:46+00:00",
-              "status": "Official release: v1.3.0rc24",
+              "updatedAt": "2026-08-31T03:31:00+00:00",
+              "status": "Official release: v1.3.0rc25",
               "deepRead": {
                 "titleZh": "TensorRT-LLM v1.3.0rc23：KV 压缩、解耦服务与可靠性风险清单",
                 "oneSentenceZh": "该候选版扩展 KV 压缩、块复用和解耦推理能力，但官方同时列出多种挂起、崩溃与 OOM 风险。",

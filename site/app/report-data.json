@@ -1,100 +1,59 @@
 {
   "issue": {
-    "id": "38413e2b-98cb-4941-ae17-0f62b1837988",
+    "id": "78e35b9a-6e94-499f-944d-69274a6328df",
     "departmentId": "orbitinfer",
-    "title": "星载大模型推理引擎周报 · 2026-W35",
-    "isoWeek": "2026-W35",
-    "windowStart": "2026-08-23T16:00:00+00:00",
-    "windowEnd": "2026-08-30T15:59:59.999999+00:00",
+    "title": "星载大模型推理引擎周报 · 2026-W36",
+    "isoWeek": "2026-W36",
+    "windowStart": "2026-08-30T16:00:00+00:00",
+    "windowEnd": "2026-09-06T15:59:59.999999+00:00",
     "status": "approved",
     "targetReadMinutes": 30,
     "estimatedReadMinutes": 30.0,
     "itemCount": 8
   },
   "trends": [
-    "本周有3项相关进展，集中在LLM/VLM/MoE推理引擎。",
-    "本周有3项相关进展，集中在推理调度与资源编排。",
-    "本周有1项相关进展，集中在量化、压缩与自适应精度。",
-    "本周有2项相关进展，集中在KV Cache与分层存储。"
+    "本周有5项相关进展，集中在量化、压缩与自适应精度。",
+    "本周有12项相关进展，集中在LLM/VLM/MoE推理引擎。",
+    "本周有10项相关进展，集中在KV Cache与分层存储。",
+    "本周有2项相关进展，集中在推理调度与资源编排。",
+    "本周有1项相关进展，集中在可靠推理、软错误与恢复。"
   ],
   "sections": [
-    {
-      "id": "frameworks_benchmarks_datasets",
-      "items": [
-        {
-          "position": 1,
-          "role": "must_read",
-          "itemType": "dataset",
-          "title": "SoroushVahidi/llm-serving-scheduler-baselines",
-          "url": "https://huggingface.co/datasets/SoroushVahidi/llm-serving-scheduler-baselines",
-          "reason": "该数据集为调度策略、缓存压力、SLO 和 OOD 工作负载提供结构化对照，可直接补强 OrbitInfer 调度仿真基线。",
-          "summary": "**中文标题：** LLM Serving Scheduler Baselines v1.1：调度压力测试与 OOD 策略结果集\n\n**数据集汇总 13 类调度策略在 41 个合成压力包络和 512 个 TraceLab 派生窗口上的仿真结果。**\n\n调度器比较常因工作负载、缓存压力、抢占成本和 SLO 定义不一致而难复现，也缺少面向分布外窗口的统一结果表。\n\n官方数据卡提供 36,975 行 per_policy_results 和 13,824 行 TraceLab 派生 OOD sweep，覆盖 FIFO、EDF、vLLM/Sarathi/Orca/Scorpio 风格策略及 APT-Serve；记录完成率、TTFT/TPOT、SLO 违例、goodput、吞吐、GPU 利用率和缓存转换成本。\n\n数据卡确认主表覆盖 41 类压力、到达、长度及缓存结构包络；OOD 表含 512 个窗口、27 个策略，其中 320 个训练/开发、64 个时序 OOD、64 个模型/提供方 OOD 和 64 个最终 OOD。",
-          "implication": "可作为 OrbitServe/OrbitInfer 调度仿真的外部基线字段模板，但必须用星载链路、SOC、热和故障参数重新校准。",
-          "readMinutes": 4.0,
-          "publishedAt": "2026-08-16T15:03:26+00:00",
-          "updatedAt": "2026-08-24T22:59:58+00:00",
-          "status": "Official dataset update: de4b2d534588577efdeb59307cc819639fb4cbde",
-          "deepRead": {
-            "titleZh": "LLM Serving Scheduler Baselines v1.1：调度压力测试与 OOD 策略结果集",
-            "oneSentenceZh": "数据集汇总 13 类调度策略在 41 个合成压力包络和 512 个 TraceLab 派生窗口上的仿真结果。",
-            "problemZh": "调度器比较常因工作负载、缓存压力、抢占成本和 SLO 定义不一致而难复现，也缺少面向分布外窗口的统一结果表。",
-            "methodZh": "官方数据卡提供 36,975 行 per_policy_results 和 13,824 行 TraceLab 派生 OOD sweep，覆盖 FIFO、EDF、vLLM/Sarathi/Orca/Scorpio 风格策略及 APT-Serve；记录完成率、TTFT/TPOT、SLO 违例、goodput、吞吐、GPU 利用率和缓存转换成本。",
-            "resultZh": "数据卡确认主表覆盖 41 类压力、到达、长度及缓存结构包络；OOD 表含 512 个窗口、27 个策略，其中 320 个训练/开发、64 个时序 OOD、64 个模型/提供方 OOD 和 64 个最终 OOD。",
-            "contributions": [
-              "提供多调度策略的统一结构化仿真结果",
-              "细化 KV 转换、驱逐、重算和恢复代价字段",
-              "加入 TraceLab 派生的 OOD 策略覆盖集"
-            ],
-            "evidence": [
-              "Hugging Face 官方 README 列出两个配置的 36,975 与 13,824 行规模。",
-              "同一数据卡列出 13 个主策略、41 类工作负载包络及指标字典。"
-            ],
-            "limitations": [
-              "全部是事件驱动仿真输出，不是实机 GPU 集群测量；绝对 TTFT/吞吐不能当生产预测。",
-              "多数公开策略是 simulator-level inspired approximation，provenance 中记录的源提交当前不可解析。"
-            ],
-            "confidence": 0.84,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        }
-      ]
-    },
     {
       "id": "inference_and_scheduling",
       "items": [
         {
           "position": 1,
-          "role": "must_read",
-          "itemType": "framework",
-          "title": "sgl-project/sglang",
-          "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.18",
-          "reason": "SGLang v0.5.18 同时推进启动、通信、MoE、量化、推测解码与调度，是本周最密集的推理栈工程信号。",
-          "summary": "**中文标题：** SGLang v0.5.18：重叠加载、通信与多后端推理栈升级\n\n**该版本用权重分段预取、LMHead all-to-all、MNNVL allreduce 和多项内核优化压缩启动及解码开销。**\n\n大模型服务启动需要串行加载权重与捕获 CUDA Graph，分布式解码又受通信、MoE 和硬件后端差异拖累。\n\n发布版将 checkpoint 页从存储预取与 CUDA Graph 捕获重叠，把纯 DP-attention 的 LMHead allgather+scatter 合并为 all-to-all，并复用 FlashInfer MNNVL 工作区执行非融合 allreduce；同时补齐 NVFP4、MoE、推测解码和调度路径。\n\n官方发布说明报告 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对默认路径由 84.8 秒降至 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降至 169 微秒，DeepSeek-V4-Flash TP4 小批量最高提升 6.9%。",
-          "implication": "可将重叠加载、通信合并与统一缓存目录拆成 OrbitInfer 的启动/热切换实验项，并在受限互连上重新测量收益。",
-          "readMinutes": 5.0,
-          "publishedAt": "2026-07-14T08:43:33+00:00",
-          "updatedAt": "2026-08-24T23:08:04+00:00",
-          "status": "Official release: v0.5.18",
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "AInfer-PD: Communication-Safe In-Place Prefill-Decode Multiplexing for Distributed MoE Rollouts",
+          "url": "https://arxiv.org/abs/2609.00993",
+          "reason": "AInfer-PD 解决异步 Agent/RL 负载中 prefill 与 decode 持续共存时的跨 rank 集合通信冲突。",
+          "summary": "**中文标题：** AInfer-PD：通信安全的原位 Prefill/Decode 复用\n\n**它在共享设备、权重和 KV 的前提下统一跨 rank 集合通信顺序，并隔离 DeepEP 的 P/D 协议状态。**\n\n异步多轮轨迹不断插入 prefill，若与 decode 原位复用，会因 TP/DP 和专家通信交叉顺序不一致而干扰甚至失效；完全解耦又增加设备池和 KV 迁移成本。\n\nAInfer-PD 协调各 rank 的 P/D collective 顺序，为 DeepEP 两条路径分配独立通信状态，并在细粒度边界调度 prefill 与 decode。\n\n单节点固定工作量完成时间相对关闭复用的同引擎降低 7.1%–22.5%，相对 SGLang 降低 24.8%–32.9%；两节点相应降低 18.0%–35.3% 和 18.3%–31.8%。",
+          "implication": "多星/多加速器调度器应显式建模 collective 顺序与独立协议状态，避免只按计算负载混排 P/D。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-09-01T09:44:40+00:00",
+          "updatedAt": "2026-09-01T09:44:40+00:00",
+          "status": null,
           "deepRead": {
-            "titleZh": "SGLang v0.5.18：重叠加载、通信与多后端推理栈升级",
-            "oneSentenceZh": "该版本用权重分段预取、LMHead all-to-all、MNNVL allreduce 和多项内核优化压缩启动及解码开销。",
-            "problemZh": "大模型服务启动需要串行加载权重与捕获 CUDA Graph，分布式解码又受通信、MoE 和硬件后端差异拖累。",
-            "methodZh": "发布版将 checkpoint 页从存储预取与 CUDA Graph 捕获重叠，把纯 DP-attention 的 LMHead allgather+scatter 合并为 all-to-all，并复用 FlashInfer MNNVL 工作区执行非融合 allreduce；同时补齐 NVFP4、MoE、推测解码和调度路径。",
-            "resultZh": "官方发布说明报告 Qwen3-32B/H100 启动相对串行预取快 8.6%–11.7%，相对默认路径由 84.8 秒降至 35.6 秒；DeepSeek-V4-Pro/B200 的 LMHead 从 320 微秒降至 169 微秒，DeepSeek-V4-Flash TP4 小批量最高提升 6.9%。",
+            "titleZh": "AInfer-PD：通信安全的原位 Prefill/Decode 复用",
+            "oneSentenceZh": "它在共享设备、权重和 KV 的前提下统一跨 rank 集合通信顺序，并隔离 DeepEP 的 P/D 协议状态。",
+            "problemZh": "异步多轮轨迹不断插入 prefill，若与 decode 原位复用，会因 TP/DP 和专家通信交叉顺序不一致而干扰甚至失效；完全解耦又增加设备池和 KV 迁移成本。",
+            "methodZh": "AInfer-PD 协调各 rank 的 P/D collective 顺序，为 DeepEP 两条路径分配独立通信状态，并在细粒度边界调度 prefill 与 decode。",
+            "resultZh": "单节点固定工作量完成时间相对关闭复用的同引擎降低 7.1%–22.5%，相对 SGLang 降低 24.8%–32.9%；两节点相应降低 18.0%–35.3% 和 18.3%–31.8%。",
             "contributions": [
-              "把权重加载 I/O 与图捕获组织成可选的重叠启动流水线",
-              "在张量并行与纯 DP-attention 路径减少集合通信次数",
-              "扩展 AMD/NVIDIA 量化、MoE 和推测解码覆盖并修复多项正确性问题"
+              "给出分布式 MoE 中 P/D 并发的通信安全条件",
+              "保留共享 KV 状态同时减少 rollout 完成时间"
             ],
             "evidence": [
-              "GitHub 官方 v0.5.18 release 明列 --startup-weight-load-mode overlap 及 35.6 秒对 84.8 秒结果。",
-              "同一 release 给出 TP LMHead 320us→169us、TPOT 36.97ms→35.67ms，以及 MNNVL 小批量最高 +6.9%。"
+              "arXiv 2609.00993 官方摘要，2026-09-01 首发",
+              "摘要提供单节点、双节点和细粒度边界消融数据"
             ],
             "limitations": [
-              "性能数字来自指定 H100/B200/Blackwell/MI355X 模型组合，不能直接外推到星载硬件。",
-              "710 个 PR 的大版本需要按后端建立回归清单，不能把单项微基准视为整栈收益。"
+              "主要面向 RL rollout，在线用户请求分布可能不同",
+              "摘要未覆盖故障恢复和弱网络条件"
             ],
-            "confidence": 0.9,
+            "confidence": 0.75,
             "modelVersion": "codex-scheduled-task-v1"
           }
         },
@@ -102,35 +61,34 @@
           "position": 2,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "Visual Information-Guided Parallel Decoding for Diffusion Multimodal Large Language Models",
-          "url": "https://arxiv.org/abs/2608.26580",
-          "reason": "VIG-Sampler 直接研究扩散式多模态模型的并行解码次序和步数，是新解码范式的调度信号。",
-          "summary": "**中文标题：** VIG-Sampler：用视觉信息增益调度扩散式多模态并行解码\n\n**该采样器优先解码高图像注意 token，并惩罚与已选 token 信息重复的候选。**\n\n扩散式 MLLM 每步应解码哪些 masked token 会改变后续上下文；按置信度或通用影响力排序可能忽略输入图像并重复选择相似信息。\n\nVIG-Sampler 用候选 token 对图像 token 的注意力确定优先级，并对与已选 token 具有相似图像注意分布的候选施加惩罚，以提高并行子集的信息增益。\n\n摘要报告在 3 个开源 dMLLM、7 个 caption/VQA 基准上，相对 Info-Gain Sampler 的 caption 平均提高 19.3 CIDEr，并在 COCO Caption 用一半解码步数取得更好结果。",
-          "implication": "可将该方法纳入 OrbitInfer 非自回归/扩散解码实验，重点测量并行 token 选择的控制开销与步数节省。",
+          "title": "OUTLETS: Output-Length Prediction from Speculative Decoding Backbones",
+          "url": "https://arxiv.org/abs/2609.01068",
+          "reason": "OUTLETS 复用已经存在的推测解码特征预测输出长度，几乎不增加代理模型开销，却能改善尾延迟调度。",
+          "summary": "**中文标题：** OUTLETS：复用推测解码骨干预测输出长度\n\n**方法从 EAGLE-3 等 draft decoder 的轨迹表征接轻量回归头，为短作业优先和解码实例均衡提供长度预测。**\n\n输出长度长尾使容量规划和集群调度困难，外部代理模型延迟高，浅层内部探针又缺少轨迹信息。\n\nOUTLETS 将推测解码骨干已计算的 draft 表征作为长度信号，仅增加轻量回归头，再把预测接入短作业优先和负载分配策略。\n\n作者报告其 MAE 低于所评方法；在饱和分离式服务中，短请求 P99 延迟降低 34.8%。",
+          "implication": "可在推测解码路径上旁路输出长度预测，用于功率预算和链路窗口下的短请求优先调度。",
           "readMinutes": 3.0,
-          "publishedAt": "2026-08-27T00:00:00+00:00",
-          "updatedAt": "2026-08-28T00:00:00+00:00",
+          "publishedAt": "2026-09-01T11:00:39+00:00",
+          "updatedAt": "2026-09-01T11:00:39+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "VIG-Sampler：用视觉信息增益调度扩散式多模态并行解码",
-            "oneSentenceZh": "该采样器优先解码高图像注意 token，并惩罚与已选 token 信息重复的候选。",
-            "problemZh": "扩散式 MLLM 每步应解码哪些 masked token 会改变后续上下文；按置信度或通用影响力排序可能忽略输入图像并重复选择相似信息。",
-            "methodZh": "VIG-Sampler 用候选 token 对图像 token 的注意力确定优先级，并对与已选 token 具有相似图像注意分布的候选施加惩罚，以提高并行子集的信息增益。",
-            "resultZh": "摘要报告在 3 个开源 dMLLM、7 个 caption/VQA 基准上，相对 Info-Gain Sampler 的 caption 平均提高 19.3 CIDEr，并在 COCO Caption 用一半解码步数取得更好结果。",
+            "titleZh": "OUTLETS：复用推测解码骨干预测输出长度",
+            "oneSentenceZh": "方法从 EAGLE-3 等 draft decoder 的轨迹表征接轻量回归头，为短作业优先和解码实例均衡提供长度预测。",
+            "problemZh": "输出长度长尾使容量规划和集群调度困难，外部代理模型延迟高，浅层内部探针又缺少轨迹信息。",
+            "methodZh": "OUTLETS 将推测解码骨干已计算的 draft 表征作为长度信号，仅增加轻量回归头，再把预测接入短作业优先和负载分配策略。",
+            "resultZh": "作者报告其 MAE 低于所评方法；在饱和分离式服务中，短请求 P99 延迟降低 34.8%。",
             "contributions": [
-              "把输入图像注意显式引入并行解码排序",
-              "通过分布去重提高同一步并行 token 的信息覆盖",
-              "跨模型和任务验证质量—步数权衡"
+              "揭示 draft decoder 表征与输出长度的结构联系",
+              "在低附加成本下把预测用于尾延迟调度"
             ],
             "evidence": [
-              "arXiv 官方摘要说明视觉注意优先级和相似分布惩罚。",
-              "摘要给出平均 +19.3 CIDEr 与 COCO 一半步数的比较。"
+              "arXiv 2609.01068 官方摘要，2026-09-01 首发",
+              "摘要明确说明饱和分离式服务与 P99 改善幅度"
             ],
             "limitations": [
-              "CIDEr 提升不能直接转换为通用推理吞吐或能耗收益。",
-              "本次未核查完整表格中的方差与每个模型的失败案例。"
+              "依赖已有高级推测解码骨干",
+              "摘要未给出跨模型、跨任务的误差分布和误判代价"
             ],
-            "confidence": 0.78,
+            "confidence": 0.73,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }
@@ -141,37 +99,36 @@
       "items": [
         {
           "position": 1,
-          "role": "must_read",
-          "itemType": "framework",
-          "title": "vllm-project/vllm",
-          "url": "https://github.com/vllm-project/vllm/releases/tag/v0.28.0",
-          "reason": "vLLM v0.28.0 的分层 KV 卸载、模型运行器 V2、推测解码和大模型专项优化直接对应 OrbitInfer 的存储与调度路线。",
-          "summary": "**中文标题：** vLLM v0.28.0：分层 KV 卸载与新一代模型运行器成熟\n\n**vLLM 将磁盘二级 KV、可插拔 tier manager、E/P/D 解耦和自适应推测预算并入正式版本。**\n\n长上下文和大规模模型让显存中的 KV、权重及推测解码状态持续膨胀，同时跨后端部署需要更稳定的运行器和卸载接口。\n\n版本加入磁盘 KV offload、外置二级层管理器、部分命中返回与并行无关的 CPU 布局；Model Runner V2 支持编码/预填充/解码解耦、权重卸载和多层 MTP KV，并对 Kimi-K3、DeepSeek-V4、DSpark/DFlash2 做专项内核与调度优化。\n\n官方 release 报告 Kimi-K3 合并 all-gather 的内核级加速为 1.5–3 倍，自适应推测 token 预算令 DSpark TTFT 改善约 60%，可选 shared-expert 分片每 GPU 节省约 17 GiB。",
-          "implication": "应把可插拔 tier manager 抽象为 OrbitInfer 分层 KV 接口参考，并验证 NVMe/闪存延迟、写放大与链路迁移的联合影响。",
-          "readMinutes": 5.0,
-          "publishedAt": "2026-07-14T08:51:20+00:00",
-          "updatedAt": "2026-08-26T10:17:05+00:00",
-          "status": "Official release: v0.28.0",
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "A Universal Context-Reuse Layer for Cross-Model KV Sharing",
+          "url": "https://arxiv.org/abs/2608.30963",
+          "reason": "跨模型 KV 转译把上下文复用从单模型缓存扩展为可迁移计算状态，对多模型编排和受限节点间的上下文移动具有新颖系统意义。",
+          "summary": "**中文标题：** 跨模型 KV 共享：把上下文变成可迁移计算状态\n\n**该工作训练转译层，让不同规模、架构、注意力配置、分词器乃至模型家族消费另一模型生成的 KV 状态。**\n\n多模型服务和 Agent 流程反复处理相同上下文，但现有 KV 复用通常要求生产者与消费者是同一模型，导致重复 prefill。\n\n作者构建 context-reuse layer，将源模型 KV 映射为目标模型可用表示，并评估同家族与跨家族、不同规模和分词器的 handoff。\n\nQwen2.5-7B→1.5B 的 LongBench2 准确率由 27.59% 升至 34.48%；Qwen2.5-1.5B→Gemma-2-2B 在 4K 上目标 prefill 成本最多降 67.05%；Llama3.1-70B→Qwen2.5-7B 延迟由 899ms 降至 138ms，准确率 44.0% 对原生 45.7%。",
+          "implication": "可设计跨模型上下文 handoff 原型，并把转译误差、传输量与节省的 prefill 能耗做联合权衡。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-08-31T15:28:17+00:00",
+          "updatedAt": "2026-08-31T15:28:17+00:00",
+          "status": null,
           "deepRead": {
-            "titleZh": "vLLM v0.28.0：分层 KV 卸载与新一代模型运行器成熟",
-            "oneSentenceZh": "vLLM 将磁盘二级 KV、可插拔 tier manager、E/P/D 解耦和自适应推测预算并入正式版本。",
-            "problemZh": "长上下文和大规模模型让显存中的 KV、权重及推测解码状态持续膨胀，同时跨后端部署需要更稳定的运行器和卸载接口。",
-            "methodZh": "版本加入磁盘 KV offload、外置二级层管理器、部分命中返回与并行无关的 CPU 布局；Model Runner V2 支持编码/预填充/解码解耦、权重卸载和多层 MTP KV，并对 Kimi-K3、DeepSeek-V4、DSpark/DFlash2 做专项内核与调度优化。",
-            "resultZh": "官方 release 报告 Kimi-K3 合并 all-gather 的内核级加速为 1.5–3 倍，自适应推测 token 预算令 DSpark TTFT 改善约 60%，可选 shared-expert 分片每 GPU 节省约 17 GiB。",
+            "titleZh": "跨模型 KV 共享：把上下文变成可迁移计算状态",
+            "oneSentenceZh": "该工作训练转译层，让不同规模、架构、注意力配置、分词器乃至模型家族消费另一模型生成的 KV 状态。",
+            "problemZh": "多模型服务和 Agent 流程反复处理相同上下文，但现有 KV 复用通常要求生产者与消费者是同一模型，导致重复 prefill。",
+            "methodZh": "作者构建 context-reuse layer，将源模型 KV 映射为目标模型可用表示，并评估同家族与跨家族、不同规模和分词器的 handoff。",
+            "resultZh": "Qwen2.5-7B→1.5B 的 LongBench2 准确率由 27.59% 升至 34.48%；Qwen2.5-1.5B→Gemma-2-2B 在 4K 上目标 prefill 成本最多降 67.05%；Llama3.1-70B→Qwen2.5-7B 延迟由 899ms 降至 138ms，准确率 44.0% 对原生 45.7%。",
             "contributions": [
-              "把 KV cache 从 CPU 扩展到磁盘和可插拔二级存储层",
-              "完善 Model Runner V2 的解耦、卸载和多层 MTP 状态管理",
-              "将推测解码、MoE 和混合模型优化纳入可发布工件"
+              "提出跨架构 KV 状态转译",
+              "将 context mobility 明确为异构推理系统抽象"
             ],
             "evidence": [
-              "GitHub 官方 v0.28.0 release 的 Highlights 明列 tiered KV cache offloading 与 Model Runner V2 能力。",
-              "同页给出 Kimi-K3 1.5–3x 内核加速、约 60% DSpark TTFT 改善和约 17 GiB/GPU 节省。"
+              "arXiv 2608.30963 官方摘要，2026-08-31 首发",
+              "摘要逐项报告同家族、跨家族和高度异构设置的准确率、延迟或 prefill 成本"
             ],
             "limitations": [
-              "release 汇总跨越大量 PR，指标来自各自硬件和模型配置，尚无统一端到端对照。",
-              "磁盘 KV 对星载存储介质的写放大、耐久度和故障恢复仍需独立评估。"
+              "映射层训练成本和更长上下文稳定性仍需核验",
+              "KV 迁移本身的链路字节量与能耗未在摘要给出"
             ],
-            "confidence": 0.9,
+            "confidence": 0.76,
             "modelVersion": "codex-scheduled-task-v1"
           }
         },
@@ -179,143 +136,184 @@
           "position": 2,
           "role": "deep_read",
           "itemType": "paper",
-          "title": "Multi-Image Visual Token Pruning in Large Visual Language Models",
-          "url": "https://arxiv.org/abs/2608.26806",
-          "reason": "AVTP 给出不依赖标准 attention 矩阵、可兼容 FlashAttention 的多图视觉 token 自适应裁剪路径。",
-          "summary": "**中文标题：** AVTP：面向多图输入的自适应视觉 Token 裁剪\n\n**该方法按图像重要性分配保留比例，在多个 LVLM 架构上以训练自由方式减少视觉 token。**\n\n静态视觉 token 裁剪难适配不同 LVLM 架构与多图重要性差异，且依赖显式 attention 的方案与 FlashAttention 等高效实现冲突。\n\nAVTP 先依据不同模型的视觉注意分布选择裁剪层，再为多图输入估计相对重要性并自适应分配 token 保留比例，无需训练或新增模型。\n\n论文摘要报告 Qwen3VL-8B 获得 2 倍推理加速并保持 96.1% 原始准确率，InternVL3.5-8B 保持 94.1%，LLaVA-OV-7B 略高于原基线。",
-          "implication": "适合借鉴为星载多传感器输入的动态 token 预算器，并测试与 fused attention 后端的接口兼容性。",
+          "title": "DASC: Decay-Aware State Compression for Hybrid Linear-Attention Serving",
+          "url": "https://arxiv.org/abs/2608.30386",
+          "reason": "DASC 针对混合线性注意力的循环状态检查点提出按保留时域压缩，比通用 KV 量化更贴近新模型状态结构。",
+          "summary": "**中文标题：** DASC：按保留时域压缩混合线性注意力状态\n\n**它从模型权重推导 head/channel 的 retention horizon，只保存长时依赖单元，并将 ragged 检查点在 TP rank 间均衡。**\n\nGDN/KDA 等循环状态原位更新，前缀复用必须额外保存状态检查点；完整保存会挤占内存并引发更多逐出与重复 prefill。\n\nDASC 分析不同头和通道的衰减时域，选择长时域状态单元、打包为不规则布局并做 TP 均衡；复用时对省略单元清零或用有限后缀刷新。\n\nKimi-Linear 上保守配置将 KDA 状态压缩 2.63 倍且质量接近完整缓存；固定内存预算下平均 TTFT 降 42.6%，输入吞吐提高 68.4%，Qwen GDN 呈相似趋势。",
+          "implication": "应把循环状态保存价值按时间尺度建模，并在缓存容量、回放计算与 TP 均衡之间做联合优化。",
           "readMinutes": 3.0,
-          "publishedAt": "2026-08-27T00:00:00+00:00",
-          "updatedAt": "2026-08-28T00:00:00+00:00",
+          "publishedAt": "2026-08-31T07:42:43+00:00",
+          "updatedAt": "2026-08-31T07:42:43+00:00",
           "status": null,
           "deepRead": {
-            "titleZh": "AVTP：面向多图输入的自适应视觉 Token 裁剪",
-            "oneSentenceZh": "该方法按图像重要性分配保留比例，在多个 LVLM 架构上以训练自由方式减少视觉 token。",
-            "problemZh": "静态视觉 token 裁剪难适配不同 LVLM 架构与多图重要性差异，且依赖显式 attention 的方案与 FlashAttention 等高效实现冲突。",
-            "methodZh": "AVTP 先依据不同模型的视觉注意分布选择裁剪层，再为多图输入估计相对重要性并自适应分配 token 保留比例，无需训练或新增模型。",
-            "resultZh": "论文摘要报告 Qwen3VL-8B 获得 2 倍推理加速并保持 96.1% 原始准确率，InternVL3.5-8B 保持 94.1%，LLaVA-OV-7B 略高于原基线。",
+            "titleZh": "DASC：按保留时域压缩混合线性注意力状态",
+            "oneSentenceZh": "它从模型权重推导 head/channel 的 retention horizon，只保存长时依赖单元，并将 ragged 检查点在 TP rank 间均衡。",
+            "problemZh": "GDN/KDA 等循环状态原位更新，前缀复用必须额外保存状态检查点；完整保存会挤占内存并引发更多逐出与重复 prefill。",
+            "methodZh": "DASC 分析不同头和通道的衰减时域，选择长时域状态单元、打包为不规则布局并做 TP 均衡；复用时对省略单元清零或用有限后缀刷新。",
+            "resultZh": "Kimi-Linear 上保守配置将 KDA 状态压缩 2.63 倍且质量接近完整缓存；固定内存预算下平均 TTFT 降 42.6%，输入吞吐提高 68.4%，Qwen GDN 呈相似趋势。",
             "contributions": [
-              "提出跨架构的训练自由多图 token 裁剪框架",
-              "用图像重要性而非固定比例分配多图 token 预算",
-              "在三个 LVLM 系列上验证速度—精度权衡"
+              "提出基于 retention horizon 的结构化状态选择",
+              "把压缩布局与张量并行负载均衡结合"
             ],
             "evidence": [
-              "arXiv 官方摘要描述裁剪层选择、按图重要性分配和 FlashAttention 兼容动机。",
-              "摘要明确给出 Qwen3VL-8B 2x、96.1% 和 InternVL3.5-8B 94.1% 等结果。"
+              "arXiv 2608.30386 官方摘要，2026-08-31 首发",
+              "摘要给出 Kimi-Linear、Qwen GDN 的质量—效率趋势及核心量化结果"
             ],
             "limitations": [
-              "本次核验以官方摘要为主，尚未逐表核查不同多图基准与硬件延迟定义。",
-              "视觉 token 方案不能直接等同于文本 KV 压缩。"
+              "激进压缩需要额外后缀回放计算",
+              "摘要未覆盖软错误、断点恢复和低带宽节点"
             ],
-            "confidence": 0.78,
+            "confidence": 0.76,
             "modelVersion": "codex-scheduled-task-v1"
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": "must_read",
+      "items": [
         {
-          "position": 3,
+          "position": 1,
           "role": "must_read",
-          "itemType": "paper",
-          "title": "E2S-Pruner: Progressive Two-Stage Evidence Fusion for Visual Token Pruning in Vision-Language Models",
-          "url": "https://arxiv.org/abs/2608.23253",
-          "reason": "E2S-Pruner 把跨头和跨层冲突显式建模，可用于可靠性约束下的 token 缩减。",
-          "summary": "**中文标题：** E2S-Pruner：用两阶段证据融合裁剪视觉 Token\n\n**该方法以证据清晰度、头间一致性和跨层冲突决定 token 保留，并用空间新颖性避免注意区域塌缩。**\n\n直接平均多个注意头与层会掩盖证据不确定性和冲突，导致裁剪误删关键区域或只保留局部显著块。\n\n第一阶段把每个注意头视为独立证据源，按清晰度与一致性估计可靠性并输出重要/不重要/不确定三态；第二阶段用 Dempster–Shafer 理论融合跨层证据，再施加空间新颖性约束。\n\n摘要报告 LLaVA-1.5-7B 保留 192/128/64 个 token 时保持 98.0%/96.8%/90.6% 综合性能，128 与 64 token 设置吞吐分别提升 1.96 倍和 2.09 倍，并在 Qwen2-VL-7B 上验证迁移。",
-          "implication": "可把不确定/冲突量作为 OrbitInfer 自适应精度与可靠裁剪的保护信号，避免仅按平均注意力做激进裁剪。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-08-24T00:00:00+00:00",
-          "updatedAt": "2026-08-25T00:00:00+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "E2S-Pruner：用两阶段证据融合裁剪视觉 Token",
-            "oneSentenceZh": "该方法以证据清晰度、头间一致性和跨层冲突决定 token 保留，并用空间新颖性避免注意区域塌缩。",
-            "problemZh": "直接平均多个注意头与层会掩盖证据不确定性和冲突，导致裁剪误删关键区域或只保留局部显著块。",
-            "methodZh": "第一阶段把每个注意头视为独立证据源，按清晰度与一致性估计可靠性并输出重要/不重要/不确定三态；第二阶段用 Dempster–Shafer 理论融合跨层证据，再施加空间新颖性约束。",
-            "resultZh": "摘要报告 LLaVA-1.5-7B 保留 192/128/64 个 token 时保持 98.0%/96.8%/90.6% 综合性能，128 与 64 token 设置吞吐分别提升 1.96 倍和 2.09 倍，并在 Qwen2-VL-7B 上验证迁移。",
-            "contributions": [
-              "显式表示注意头证据的不确定和冲突",
-              "用跨层 Dempster–Shafer 融合代替直接平均",
-              "加入空间覆盖约束并提供跨模型实验"
-            ],
-            "evidence": [
-              "arXiv 官方摘要给出两阶段证据融合和空间新颖性机制。",
-              "摘要给出三档 token 预算下的性能保持率及 1.96x/2.09x 吞吐。"
-            ],
-            "limitations": [
-              "指标来自 LVLM 视觉 token，尚未验证辐射软错误或星载输入漂移。",
-              "本次只核验摘要和官方代码链接，未复现实验。"
-            ],
-            "confidence": 0.8,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 4,
-          "role": "deep_read",
-          "itemType": "paper",
-          "title": "HAP: Head-Adaptive Visual Token Pruning via Cross-Modal Alignment",
-          "url": "https://arxiv.org/abs/2608.23921",
-          "reason": "HAP 用 prompt 对齐质量筛掉误导性注意头，给动态 token 预算提供了更直接的相关性信号。",
-          "summary": "**中文标题：** HAP：按跨模态对齐质量自适应裁剪视觉 Token\n\n**HAP 以 PAQ 衡量注意头与提示词—图像区域的对齐质量，再分组分配和保留 token。**\n\n均匀平均所有注意头会让与查询不对齐的头放大背景 token，淹没细粒度视觉线索。\n\n方法用 PAQ 量化各头的 prompt-grounded 对齐质量，先按 FLOPs 预算为层组分配 token，再用 PAQ-softmax 加权聚合注意图并在组内保留高分 token。\n\n官方摘要称在 18 个基准上取得领先权衡；LLaVA-1.5-7B 的 9 个任务仅保留 5.6% token 即保持 99.1% 原性能，比 AutoPrune 高 4.2 个点。",
-          "implication": "可将 PAQ 类信号加入星载 VLM 的功耗预算控制，按任务提示动态分配感知 token，而非使用静态比例。",
-          "readMinutes": 3.0,
-          "publishedAt": "2026-08-24T00:00:00+00:00",
-          "updatedAt": "2026-08-26T00:00:00+00:00",
-          "status": null,
-          "deepRead": {
-            "titleZh": "HAP：按跨模态对齐质量自适应裁剪视觉 Token",
-            "oneSentenceZh": "HAP 以 PAQ 衡量注意头与提示词—图像区域的对齐质量，再分组分配和保留 token。",
-            "problemZh": "均匀平均所有注意头会让与查询不对齐的头放大背景 token，淹没细粒度视觉线索。",
-            "methodZh": "方法用 PAQ 量化各头的 prompt-grounded 对齐质量，先按 FLOPs 预算为层组分配 token，再用 PAQ-softmax 加权聚合注意图并在组内保留高分 token。",
-            "resultZh": "官方摘要称在 18 个基准上取得领先权衡；LLaVA-1.5-7B 的 9 个任务仅保留 5.6% token 即保持 99.1% 原性能，比 AutoPrune 高 4.2 个点。",
-            "contributions": [
-              "提出注意头级提示对齐质量 PAQ",
-              "联合层组预算与头级加权完成结构化裁剪",
-              "在低保留率下验证跨任务性能"
-            ],
-            "evidence": [
-              "arXiv 官方摘要描述 PAQ、层组预算和 PAQ 加权矩阵。",
-              "摘要给出 5.6% token、99.1% 性能保持率和相对 AutoPrune +4.2 点。"
-            ],
-            "limitations": [
-              "摘要未展开 PAQ 计算开销对端到端时延的占比。",
-              "结论基于地面 GPU 的 LVLM 基准。"
-            ],
-            "confidence": 0.79,
-            "modelVersion": "codex-scheduled-task-v1"
-          }
-        },
-        {
-          "position": 5,
-          "role": "deep_read",
-          "itemType": "paper",
-          "title": "Semantic Compression Trees: Multi-Resolution Knowledge Retrieval via Hierarchical Semantic Residuals",
-          "url": "https://arxiv.org/abs/2608.21610",
-          "reason": "SCT 同时给出语义残差有效和树形路由失败的负结果，适合指导受限存储下的 RAG 索引设计。",
-          "summary": "**中文标题：** 语义压缩树：残差表示有效，但自顶向下路由未获支持\n\n**SCT 用层次语义残差减少存储和查询工作，却发现根节点过度压缩会显著伤害文档路由。**\n\n平坦 RAG 索引忽略文档层次且查询成本随集合增长；层次索引若在高层压缩过强，又可能丢失决定路由所需的信息。\n\n每个树节点只保存相对父节点新增的语义残差，查询从根逐层下降；论文在 QASPER 上比较给定相关文档和需自行选文档两种协议，并用 bootstrap 区间与配对检验评估。\n\n给定文档时，零 LLM 抽取压缩器以 30% 更少 context token 达到 0.274 F1，对比 dense 0.277（p=0.37）；但自行选文档时树下降为 0.122，低于平坦检索 0.165，正确文档路由率 20.2% 对 39.3%。",
-          "implication": "OrbitInfer 若做分层语义缓存，应把残差存储与路由器解耦，并避免用最压缩层承担一次性全局路由。",
+          "itemType": "framework",
+          "title": "sgl-project/sglang",
+          "url": "https://github.com/sgl-project/sglang/releases/tag/v0.5.19",
+          "reason": "v0.5.19 是本周推理运行时最密集的一次一手工程更新，覆盖 MoE 通信、KV 分层、推测解码、长上下文并行和多硬件后端。",
+          "summary": "**中文标题：** SGLang v0.5.19：MoE、KV 分层与长上下文推理全面升级\n\n**SGLang 把 DeepEP v2、统一 Radix Tree、DCP、W4A8 MoE 和更快的推测解码推进到可用实现，并给出多项硬件实测。**\n\n长上下文、跨节点 MoE、分离式 prefill/decode 和异构 GPU 同时带来通信、KV 存储与算子利用率瓶颈。\n\n版本引入固定缓冲区 DeepEP v2、默认统一 Radix Tree、Blackwell MLA 的 DCP、Hopper W4A8 MoE、KDA 融合接受路径、AMD Lean Attention，并补齐 PD KV 传输和 L3 热插拔。\n\n官方发布说明报告：KDA verify-and-commit 缩短 45%–63%，MI355X 吞吐最高 1.52 倍且 ITL 最低降 3.62 倍，Hopper W4A8 MoE 输出吞吐约增 12%；128K 输入下 DCP 继续扩展而普通 TP 约停在 680 token/s。",
+          "implication": "可将统一 Radix Tree、L3 热插拔和 DCP/PD 传输作为 OrbitInfer 的缓存层与跨节点执行基线。",
           "readMinutes": 4.0,
-          "publishedAt": "2026-08-21T00:00:00+00:00",
-          "updatedAt": "2026-08-25T00:00:00+00:00",
-          "status": null,
+          "publishedAt": "2026-07-14T08:43:33+00:00",
+          "updatedAt": "2026-09-05T02:27:42+00:00",
+          "status": "Official release: v0.5.19",
           "deepRead": {
-            "titleZh": "语义压缩树：残差表示有效，但自顶向下路由未获支持",
-            "oneSentenceZh": "SCT 用层次语义残差减少存储和查询工作，却发现根节点过度压缩会显著伤害文档路由。",
-            "problemZh": "平坦 RAG 索引忽略文档层次且查询成本随集合增长；层次索引若在高层压缩过强，又可能丢失决定路由所需的信息。",
-            "methodZh": "每个树节点只保存相对父节点新增的语义残差，查询从根逐层下降；论文在 QASPER 上比较给定相关文档和需自行选文档两种协议，并用 bootstrap 区间与配对检验评估。",
-            "resultZh": "给定文档时，零 LLM 抽取压缩器以 30% 更少 context token 达到 0.274 F1，对比 dense 0.277（p=0.37）；但自行选文档时树下降为 0.122，低于平坦检索 0.165，正确文档路由率 20.2% 对 39.3%。",
+            "titleZh": "SGLang v0.5.19：MoE、KV 分层与长上下文推理全面升级",
+            "oneSentenceZh": "SGLang 把 DeepEP v2、统一 Radix Tree、DCP、W4A8 MoE 和更快的推测解码推进到可用实现，并给出多项硬件实测。",
+            "problemZh": "长上下文、跨节点 MoE、分离式 prefill/decode 和异构 GPU 同时带来通信、KV 存储与算子利用率瓶颈。",
+            "methodZh": "版本引入固定缓冲区 DeepEP v2、默认统一 Radix Tree、Blackwell MLA 的 DCP、Hopper W4A8 MoE、KDA 融合接受路径、AMD Lean Attention，并补齐 PD KV 传输和 L3 热插拔。",
+            "resultZh": "官方发布说明报告：KDA verify-and-commit 缩短 45%–63%，MI355X 吞吐最高 1.52 倍且 ITL 最低降 3.62 倍，Hopper W4A8 MoE 输出吞吐约增 12%；128K 输入下 DCP 继续扩展而普通 TP 约停在 680 token/s。",
             "contributions": [
-              "提出多分辨率语义残差索引",
-              "分离表示收益和树形路由收益进行统计检验",
-              "明确报告路由失败并定位到根残差信息不足"
+              "把 MoE、KV、推测解码和并行策略合入同一生产运行时",
+              "提供跨 NVIDIA 与 AMD 平台的可复核性能数据"
             ],
             "evidence": [
-              "arXiv 官方摘要给出 QASPER 两种协议、F1、p 值、context token 和路由率。",
-              "作者在摘要中明确结论为保留残差表示、放弃当前自顶向下路由。"
+              "GitHub 官方 v0.5.19 Release，2026-09-05 发布，列出 786 个 PR、214 位贡献者及逐项 PR 链接",
+              "官方 release 对 DeepEP v2、DCP、W4A8、KDA 与 Lean Attention 给出配置和测量结果"
             ],
             "limitations": [
-              "实验集合为 50 篇论文、173 个问题，规模和领域有限。",
-              "该工作针对检索索引，不是模型内部 KV cache 压缩。"
+              "性能数字来自项目发布说明，尚未在星载或功耗受限硬件上独立复现",
+              "Beam search 暂不兼容推测解码、解耦服务、DP attention 和 HiCache"
             ],
-            "confidence": 0.84,
+            "confidence": 0.9,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        },
+        {
+          "position": 2,
+          "role": "must_read",
+          "itemType": "framework",
+          "title": "NVIDIA/TensorRT-LLM",
+          "url": "https://github.com/NVIDIA/TensorRT-LLM/releases/tag/v1.3.0rc25",
+          "reason": "TensorRT-LLM rc25 把 KV Cache Manager V2 设为多类主流模型默认架构，同时公开大量分离式服务与多 GPU 已知问题。",
+          "summary": "**中文标题：** TensorRT-LLM 1.3.0rc25：KV Cache Manager V2 转为默认\n\n**该候选版本扩展 KV V2、分离式传输、推测解码和 Blackwell 能力，同时明确列出可能挂起、OOM 与精度退化的高风险组合。**\n\n新模型与长上下文服务要求更可扩展的 KV 管理和跨节点传输，但复杂并行、量化与推测解码组合容易出现资源和正确性故障。\n\n官方版本将 KV Cache Manager V2 设为多模型默认，加入冷页编码、零拷贝 token 传递、分布式池重平衡、Helix DCP，并扩展 NIXL/Ray 等 PD 传输和 DFlash/DSpark 路径。\n\n发布说明确认新模型后续统一使用 V2、旧模型逐步迁移并弃用 V1；同时披露 B200 间歇崩溃或 OOM、分离式服务启停挂起、MTP 与 chunked prefill 缓存异常等问题。",
+          "implication": "OrbitInfer 应把 KV V2 作为对照实现，但先建立启停、内存压力、异常中止与精度回归测试。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-07-22T22:41:15+00:00",
+          "updatedAt": "2026-08-31T03:31:00+00:00",
+          "status": "Official release: v1.3.0rc25",
+          "deepRead": {
+            "titleZh": "TensorRT-LLM 1.3.0rc25：KV Cache Manager V2 转为默认",
+            "oneSentenceZh": "该候选版本扩展 KV V2、分离式传输、推测解码和 Blackwell 能力，同时明确列出可能挂起、OOM 与精度退化的高风险组合。",
+            "problemZh": "新模型与长上下文服务要求更可扩展的 KV 管理和跨节点传输，但复杂并行、量化与推测解码组合容易出现资源和正确性故障。",
+            "methodZh": "官方版本将 KV Cache Manager V2 设为多模型默认，加入冷页编码、零拷贝 token 传递、分布式池重平衡、Helix DCP，并扩展 NIXL/Ray 等 PD 传输和 DFlash/DSpark 路径。",
+            "resultZh": "发布说明确认新模型后续统一使用 V2、旧模型逐步迁移并弃用 V1；同时披露 B200 间歇崩溃或 OOM、分离式服务启停挂起、MTP 与 chunked prefill 缓存异常等问题。",
+            "contributions": [
+              "给出 KV V2 的迁移方向和完整特性面",
+              "以官方已知问题形成可操作的部署负面清单"
+            ],
+            "evidence": [
+              "NVIDIA/TensorRT-LLM 官方 v1.3.0rc25 Release 的 Highlights、Feature 与 Known Issues",
+              "官方条目列出支持模型、KV V2 扩展和对应 PR 编号"
+            ],
+            "limitations": [
+              "这是候选版本而非稳定版",
+              "大量挂起和精度问题表明不宜直接用于无人值守关键链路"
+            ],
+            "confidence": 0.88,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "power_reliability_edge_distributed",
+      "items": [
+        {
+          "position": 1,
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "mzCache: On-Device LLM Memory Management under Multitasking",
+          "url": "https://arxiv.org/abs/2609.01338",
+          "reason": "mzCache 直接研究移动 SoC 多任务内存压力下模型权重与 KV Cache 的恢复路径，与星载共享内存、突发任务和零等待恢复高度相邻。",
+          "summary": "**中文标题：** mzCache：多任务端侧 LLM 的弹性内存恢复\n\n**系统通过细粒度共享缓冲、混合换出和逆序驱逐，在 GPU 推理同时由 CPU 恢复被逐出的权重与 KV。**\n\n移动设备切换应用时会把 LLM 权重或 KV Cache 逐出，后续请求不得不慢速读存储或重算缓存，首 token 响应显著恶化。\n\nmzCache 将 LLM 内存拆成支持跨处理器并发访问的细粒度共享缓冲，并用 restoration-oriented 管理、hybrid swap 与 backward-out eviction 让任意驱逐状态低延迟恢复。\n\n作者在 llama.cpp 与 Android 应用上报告，相比基于存储的部分卸载，TTFT 降低 2.1–5.5 倍，并在真实多任务场景验证。",
+          "implication": "可把恢复时间、驱逐粒度和 CPU/GPU 重叠加入 OrbitInfer 的任务切换模型，评估内存压力下的首 token SLO。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-09-01T14:49:20+00:00",
+          "updatedAt": "2026-09-01T14:49:20+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "mzCache：多任务端侧 LLM 的弹性内存恢复",
+            "oneSentenceZh": "系统通过细粒度共享缓冲、混合换出和逆序驱逐，在 GPU 推理同时由 CPU 恢复被逐出的权重与 KV。",
+            "problemZh": "移动设备切换应用时会把 LLM 权重或 KV Cache 逐出，后续请求不得不慢速读存储或重算缓存，首 token 响应显著恶化。",
+            "methodZh": "mzCache 将 LLM 内存拆成支持跨处理器并发访问的细粒度共享缓冲，并用 restoration-oriented 管理、hybrid swap 与 backward-out eviction 让任意驱逐状态低延迟恢复。",
+            "resultZh": "作者在 llama.cpp 与 Android 应用上报告，相比基于存储的部分卸载，TTFT 降低 2.1–5.5 倍，并在真实多任务场景验证。",
+            "contributions": [
+              "把驱逐后的恢复代价作为端侧缓存策略的一等目标",
+              "利用统一内存实现 GPU 推理与 CPU 恢复重叠"
+            ],
+            "evidence": [
+              "arXiv 2609.01338 官方摘要与论文元数据，2026-09-01 首发",
+              "摘要明确给出实现平台、比较对象和 2.1–5.5 倍 TTFT 结果"
+            ],
+            "limitations": [
+              "当前证据以作者摘要为主，尚未核验完整设备、模型和功耗分解",
+              "移动 SoC 统一内存语义不能直接等同于星载异构平台"
+            ],
+            "confidence": 0.73,
+            "modelVersion": "codex-scheduled-task-v1"
+          }
+        },
+        {
+          "position": 2,
+          "role": "deep_read",
+          "itemType": "paper",
+          "title": "LLM Inference on IMC-NoC Architecture with Balanced Dataflow and Fine-Grained Parallelism",
+          "url": "https://arxiv.org/abs/2609.00857",
+          "reason": "LEAP 将存内、近存与片上网络归约结合，并为 prefill/decode 动态重组资源，覆盖带宽、通信和能效三类星载约束。",
+          "summary": "**中文标题：** LEAP：面向 LLM 推理的 IMC-NoC 协同架构\n\n**该软硬协同设计让静态权重、动态中间量与部分和分别落在 IMC、NMC 和 INC，并按 prefill/decode 阶段重构 PE 组织。**\n\nLLM 参数规模和运行时中间数据同时压迫存储带宽与片上通信，单一存内计算资源难以高效处理动态数据。\n\nLEAP 组合 IMC PE、NMC PE 与网络内计算 INC，软件侧联合完成分区、映射和调度，并针对 prefill 与 decode 的计算强度差异动态重组资源。\n\n论文摘要报告，相比商用 GPU 平台吞吐至少提高 1.52 倍、能效提高 24.91 倍。",
+          "implication": "可用静态权重/动态状态/归约三分法重构 OrbitInfer 数据流模型，并把片上通信能耗纳入硬件 DSE。",
+          "readMinutes": 4.0,
+          "publishedAt": "2026-09-01T07:55:45+00:00",
+          "updatedAt": "2026-09-01T07:55:45+00:00",
+          "status": null,
+          "deepRead": {
+            "titleZh": "LEAP：面向 LLM 推理的 IMC-NoC 协同架构",
+            "oneSentenceZh": "该软硬协同设计让静态权重、动态中间量与部分和分别落在 IMC、NMC 和 INC，并按 prefill/decode 阶段重构 PE 组织。",
+            "problemZh": "LLM 参数规模和运行时中间数据同时压迫存储带宽与片上通信，单一存内计算资源难以高效处理动态数据。",
+            "methodZh": "LEAP 组合 IMC PE、NMC PE 与网络内计算 INC，软件侧联合完成分区、映射和调度，并针对 prefill 与 decode 的计算强度差异动态重组资源。",
+            "resultZh": "论文摘要报告，相比商用 GPU 平台吞吐至少提高 1.52 倍、能效提高 24.91 倍。",
+            "contributions": [
+              "把计算、存储和通信统一成处理—通信结构",
+              "以阶段感知调度平衡 prefill 与 decode 数据流"
+            ],
+            "evidence": [
+              "arXiv 2609.00857 官方摘要，2026-09-01 首发",
+              "摘要明确描述三类 PE 分工和相对 GPU 的吞吐、能效结果"
+            ],
+            "limitations": [
+              "工艺、面积和端到端服务负载细节需读正文复核",
+              "定制 IMC-NoC 与现有星载器件的可获得性存在差距"
+            ],
+            "confidence": 0.72,
             "modelVersion": "codex-scheduled-task-v1"
           }
         }

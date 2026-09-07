@@ -7,10 +7,10 @@
       "homepageUrl": null,
       "accountAlias": "ai-front",
       "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T03:00:36.529889+00:00",
-      "feedEntries": 30,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:36:24.849409+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
@@ -58,10 +58,10 @@
       "homepageUrl": null,
       "accountAlias": "paperweekly",
       "contentRole": "paper_interpretation",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T02:58:37.690749+00:00",
-      "feedEntries": 30,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:37:38.126990+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
@@ -109,10 +109,10 @@
       "homepageUrl": "https://hub.baai.ac.cn/",
       "accountAlias": "BAAIHub",
       "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T02:59:04.147435+00:00",
-      "feedEntries": 30,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:34:42.145417+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
@@ -148,10 +148,10 @@
       "homepageUrl": null,
       "accountAlias": "almosthuman2014",
       "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T02:59:24.045824+00:00",
-      "feedEntries": 30,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:35:54.917419+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
@@ -199,10 +199,10 @@
       "homepageUrl": null,
       "accountAlias": "aitechtalk",
       "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T02:58:56.574146+00:00",
-      "feedEntries": 30,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:36:53.729955+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
@@ -250,10 +250,10 @@
       "homepageUrl": null,
       "accountAlias": "xixiaoyaoQAQ",
       "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T02:59:35.353088+00:00",
-      "feedEntries": 25,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:36:22.818558+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
@@ -301,10 +301,10 @@
       "homepageUrl": null,
       "accountAlias": "QbitAI",
       "contentRole": "trend_discovery",
-      "health": "no_recent_update",
-      "runStatus": "unchanged",
-      "checkedAt": "2026-08-31T03:00:51.095198+00:00",
-      "feedEntries": 30,
+      "health": "network_error",
+      "runStatus": "error",
+      "checkedAt": "2026-09-07T00:36:51.687964+00:00",
+      "feedEntries": 0,
       "inWindow": 0,
       "articles": [
         {
