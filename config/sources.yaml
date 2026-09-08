@@ -80,6 +80,35 @@ sources:
     user_agent: weekly-intel/0.1 (OrbitInfer research survey)
     schedule: weekly
 
+  - source_id: openalex
+    name: OpenAlex（跨出版社论文索引）
+    source_type: paper_api
+    connector: OpenAlexCollector
+    tier: S_Core
+    homepage_url: https://openalex.org/
+    endpoint: https://api.openalex.org/works
+    api_key_env: OPENALEX_API_KEY
+    search_terms: [satellite computing]
+    per_page: 100
+    max_pages: 3
+    timeout_seconds: 30
+    user_agent: weekly-intel/0.1 (constellation simulation survey)
+    schedule: weekly
+
+  - source_id: ieee_xplore
+    name: IEEE Xplore Metadata API
+    source_type: paper_api
+    connector: IeeeXploreCollector
+    tier: S_Core
+    homepage_url: https://ieeexplore.ieee.org/
+    endpoint: https://ieeexploreapi.ieee.org/api/v1/search/articles
+    api_key_env: IEEE_XPLORE_API_KEY
+    search_terms: [satellite computing]
+    max_records: 200
+    timeout_seconds: 30
+    user_agent: weekly-intel/0.1 (constellation simulation survey)
+    schedule: weekly
+
   - source_id: venue_official_pages
     name: 顶会官方页面
     source_type: venue

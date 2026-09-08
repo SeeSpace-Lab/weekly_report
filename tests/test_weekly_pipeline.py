@@ -22,9 +22,78 @@ from weekly_intel.review import ReviewService
 from weekly_intel.utils import json_dumps, sha256_text
 from weekly_intel.weekly import WeeklyPipelineService
 from weekly_intel.site_export import SiteDataExportAgent
+from weekly_intel.agents.assessment import DepartmentAssessmentAgent
 
 
 class WeeklyPipelineTest(unittest.TestCase):
+    def test_constellation_accepts_strong_new_preprint_and_routes_l3(self) -> None:
+        root = Path(__file__).parents[1]
+        department = load_yaml(
+            root
+            / "config"
+            / "departments"
+            / "constellation_simulation.yaml"
+        )
+        result = DepartmentAssessmentAgent(department).assess_row(
+            {
+                "item_id": "paper-1",
+                "item_type": "paper",
+                "canonical_title": (
+                    "Satellite Computing for LEO Edge Services"
+                ),
+                "abstract_or_summary": (
+                    "We study satellite computing, task offloading and "
+                    "service placement in a LEO compute constellation."
+                ),
+                "metadata_text": "",
+                "publication_status": "",
+                "release_status": "",
+                "version_count": 1,
+                "max_version_number": 1,
+                "identifier_count": 1,
+                "source_tier": "S_Core",
+                "source_ids_csv": "arxiv",
+            }
+        )
+        self.assertEqual(result.recommendation, "recommended")
+        self.assertEqual(result.recommended_section, "l3_research")
+
+    def test_constellation_routes_same_week_related_news_to_supplement(self) -> None:
+        root = Path(__file__).parents[1]
+        department = load_yaml(
+            root
+            / "config"
+            / "departments"
+            / "constellation_simulation.yaml"
+        )
+        agent = DepartmentAssessmentAgent(department)
+        result = agent.assess_row(
+            {
+                "item_id": "news-current",
+                "item_type": "industry_update",
+                "canonical_title": "Space-Based Data Centers Patent Issued",
+                "abstract_or_summary": (
+                    "A modular space data center architecture combines "
+                    "solar power, radiative cooling and orbital computing."
+                ),
+                "metadata_text": "",
+                "publication_status": "",
+                "release_status": "",
+                "version_count": 1,
+                "max_version_number": 1,
+                "identifier_count": 1,
+                "source_tier": "S_Core",
+                "source_ids_csv": "manual_inbox",
+                "latest_updated_at": "2026-07-30T00:00:00+00:00",
+                "first_published_at": "2026-07-30T00:00:00+00:00",
+            }
+        )
+        self.assertEqual(result.recommendation, "scan")
+        self.assertEqual(
+            result.recommended_section, "related_updates_index"
+        )
+        self.assertEqual(result.estimated_read_minutes, 2.5)
+
     def test_empty_department_records_scope_and_evidence_note(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(__file__).parents[1]

@@ -94,6 +94,10 @@ class WeeklyOrchestrator:
                         ),
                     )
                 )
+            elif source.connector == "OpenAlexCollector":
+                batches.append(service.collect_openalex(source, window))
+            elif source.connector == "IeeeXploreCollector":
+                batches.append(service.collect_ieee_xplore(source, window))
             elif source.connector == "GitHubCollector":
                 batches.append(
                     service.collect_github(source, window, per_page=100)

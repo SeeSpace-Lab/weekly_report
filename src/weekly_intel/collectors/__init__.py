@@ -1,5 +1,7 @@
 from .arxiv import ArxivCollector
 from .crossref import CrossrefCollector
+from .ieee_xplore import IeeeXploreCollector
+from .openalex import OpenAlexCollector
 from .github import GitHubCollector
 from .huggingface import HuggingFaceCollector
 from .manual import ManualInboxCollector

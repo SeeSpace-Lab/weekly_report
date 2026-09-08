@@ -123,6 +123,7 @@ class DepartmentAssessmentAgent:
     def __init__(self, department: dict[str, Any]):
         self.department = department
         self.department_id = str(department["department_id"])
+        self.candidate_policy = department.get("candidate_policy", {})
         self.topic_weights = {
             topic["id"]: float(topic.get("weight", 1.0))
             for topic in department.get("core_topics", [])
@@ -142,6 +143,15 @@ class DepartmentAssessmentAgent:
             for topic in department.get("core_topics", [])
             if topic.get("section")
         }
+        self.topic_layers = {
+            str(topic["id"]): str(topic.get("layer"))
+            for topic in department.get("core_topics", [])
+            if topic.get("layer")
+        }
+        self.default_topic = next(iter(self.topic_weights), "inference_runtime")
+        self.section_routing = department.get("weekly_output", {}).get(
+            "section_routing", {}
+        )
         self.allowed_source_ids = department_source_ids(department)
         self.include_keywords = [
             normalize_title(str(value))
@@ -160,6 +170,7 @@ class DepartmentAssessmentAgent:
             for item in department.get("paper_watchlist", [])
             if isinstance(item, dict)
         ]
+        self.primary_window_start: datetime | None = None
 
     def assess_row(self, row: sqlite3.Row) -> AssessmentResult:
         text = normalize_title(
@@ -203,7 +214,74 @@ class DepartmentAssessmentAgent:
         version_count = int(row["version_count"])
         max_version_number = int(row["max_version_number"] or 1)
         identifier_count = int(row["identifier_count"])
-        important_revision = max_version_number > 1 and relevance >= 0.55
+        source_ids = {
+            source_id
+            for source_id in str(row["source_ids_csv"] or "").split(",")
+            if source_id
+        }
+        row_keys = set(row.keys())
+        updated_value = (
+            row["latest_updated_at"]
+            if "latest_updated_at" in row_keys
+            else None
+        )
+        item_updated_at = (
+            datetime.fromisoformat(
+                str(updated_value).replace("Z", "+00:00")
+            )
+            if updated_value
+            else None
+        )
+        in_primary_window = (
+            self.primary_window_start is None
+            or item_updated_at is None
+            or item_updated_at >= self.primary_window_start
+        )
+        first_published_value = (
+            row["first_published_at"]
+            if "first_published_at" in row_keys
+            else None
+        )
+        first_published_at = (
+            datetime.fromisoformat(
+                str(first_published_value).replace("Z", "+00:00")
+            )
+            if first_published_value
+            else None
+        )
+        paper_published_in_window = (
+            row["item_type"] != "paper"
+            or self.primary_window_start is None
+            or (
+                first_published_at is not None
+                and first_published_at >= self.primary_window_start
+            )
+        )
+        important_revision = (
+            in_primary_window
+            and max_version_number > 1
+            and relevance >= 0.55
+        )
+        strong_new_preprint = (
+            row["item_type"] == "paper"
+            and "arxiv" in source_ids
+            and bool(
+                self.candidate_policy.get(
+                    "allow_strong_new_preprints",
+                    False,
+                )
+            )
+            and not accepted
+            and in_primary_window
+            and max_version_number == 1
+            and relevance
+            >= float(
+                self.candidate_policy.get(
+                    "min_strong_new_preprint_relevance",
+                    0.75,
+                )
+            )
+        )
         artifact_release = bool(release_status) and row["item_type"] in {
             "framework", "benchmark", "dataset"
         }
@@ -245,18 +323,28 @@ class DepartmentAssessmentAgent:
         novelty = min(0.9, 0.55 + (0.08 if version_count > 1 else 0))
         trend_signal = min(0.85, 0.4 + 0.08 * len(topic_scores))
         combined = relevance * 0.55 + importance * 0.3 + evidence_quality * 0.15
-        if accepted and relevance >= 0.55:
+        read_minutes_config = self.candidate_policy.get("read_minutes", {})
+        if not isinstance(read_minutes_config, dict):
+            read_minutes_config = {}
+
+        def configured_minutes(key: str, default: float) -> float:
+            return float(read_minutes_config.get(key, default))
+
+        if in_primary_window and accepted and relevance >= 0.55:
             recommendation = "must_read"
-            minutes = 4.0
+            minutes = configured_minutes("accepted", 4.0)
         elif important_revision and combined >= 0.58:
             recommendation = "recommended"
-            minutes = 2.0
+            minutes = configured_minutes("important_revision", 2.0)
+        elif strong_new_preprint:
+            recommendation = "recommended"
+            minutes = configured_minutes("strong_new_preprint", 2.5)
         elif artifact_release and relevance >= 0.45:
             recommendation = "recommended"
             minutes = 1.5
         elif authoritative_review and relevance >= 0.4:
             recommendation = "recommended"
-            minutes = 1.5
+            minutes = configured_minutes("authoritative_review", 1.5)
         elif official_venue_event:
             # Conference home-page changes are collected as evidence. They do
             # not belong in the weekly report unless they resolve to an
@@ -266,6 +354,22 @@ class DepartmentAssessmentAgent:
         elif exclusion_hits:
             recommendation = "exclude"
             minutes = 0.0
+        elif (
+            row["item_type"] in {
+                "paper",
+                "review_article",
+                "industry_update",
+            }
+            and relevance
+            >= float(
+                self.candidate_policy.get(
+                    "min_supplemental_relevance", 1.0
+                )
+            )
+            and (paper_published_in_window or important_revision)
+        ):
+            recommendation = "scan"
+            minutes = configured_minutes("supplemental", 2.5)
         else:
             recommendation = "archive"
             minutes = 0.0
@@ -275,22 +379,50 @@ class DepartmentAssessmentAgent:
                 topic_scores.items(), key=lambda pair: pair[1], reverse=True
             )
         )
-        primary_topic = tags[0] if tags else "inference_runtime"
-        section = (
-            "frameworks_benchmarks_datasets"
-            if row["item_type"] in {"framework", "benchmark", "dataset"}
-            else (
-                "venue_updates"
-                if official_venue_event
-                else self.topic_sections.get(
-                    primary_topic,
-                    SECTION_BY_TOPIC.get(
+        primary_topic = tags[0] if tags else self.default_topic
+        routing_mapping = (
+            self.section_routing.get("mapping", {})
+            if isinstance(self.section_routing, dict)
+            else {}
+        )
+        if routing_mapping and not official_venue_event:
+            layer = self.topic_layers.get(
+                primary_topic,
+                str(self.section_routing.get("default_layer", "L3")),
+            )
+            if row["item_type"] == "review_article":
+                source_category = "wechat"
+            elif row["item_type"] == "industry_update":
+                source_category = "news"
+            else:
+                source_category = "research"
+            section = str(
+                routing_mapping.get(layer, {}).get(source_category)
+                or self.topic_sections.get(primary_topic)
+                or "department_relevance"
+            )
+        else:
+            section = (
+                "frameworks_benchmarks_datasets"
+                if row["item_type"] in {"framework", "benchmark", "dataset"}
+                else (
+                    "venue_updates"
+                    if official_venue_event
+                    else self.topic_sections.get(
                         primary_topic,
-                        "department_relevance",
-                    ),
+                        SECTION_BY_TOPIC.get(
+                            primary_topic,
+                            "department_relevance",
+                        ),
+                    )
                 )
             )
-        )
+        if recommendation == "scan":
+            section = str(
+                self.candidate_policy.get(
+                    "supplemental_section", section
+                )
+            )
         reasons = []
         if tags:
             reasons.append("涉及" + "、".join(tags[:3]))
@@ -302,7 +434,11 @@ class DepartmentAssessmentAgent:
             reasons.append(f"检测到{version_count}个版本")
         elif max_version_number > 1:
             reasons.append(f"当前为arXiv v{max_version_number}重要修订候选")
-        if not accepted and not important_revision:
+        if strong_new_preprint:
+            reasons.append("属于部门允许进入候选的强相关新预印本")
+        if recommendation == "scan":
+            reasons.append("属于本周次相关内容，作为补充阅读和原文索引保留")
+        if not accepted and not important_revision and not strong_new_preprint:
             if artifact_release:
                 reasons.append("属于官方框架、Benchmark或数据集更新")
             elif authoritative_review:
@@ -333,7 +469,9 @@ class DepartmentAssessmentAgent:
         connection: sqlite3.Connection,
         window_start: datetime,
         window_end: datetime,
+        primary_window_start: datetime | None = None,
     ) -> list[tuple[str, AssessmentResult]]:
+        self.primary_window_start = primary_window_start or window_start
         rows = connection.execute(
             """
             SELECT r.*,

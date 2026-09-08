@@ -63,7 +63,8 @@ class WeeklySelectionAgent:
             connection.execute(
                 """
                 UPDATE weekly_issues SET window_start=?, window_end=?,
-                    status='draft', title=?, summary=?, generated_at=?
+                    status='draft', title=?, summary=?,
+                    target_read_minutes=?, generated_at=?
                 WHERE issue_id=?
                 """,
                 (
@@ -71,6 +72,7 @@ class WeeklySelectionAgent:
                     isoformat(window_end),
                     title,
                     summary,
+                    int(self.output_config.get("target_read_minutes", 30)),
                     now,
                     issue_id,
                 ),
